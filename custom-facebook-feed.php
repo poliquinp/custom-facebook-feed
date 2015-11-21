@@ -1,6 +1,6 @@
 <?php 
 /*
-Plugin Name: Custom Facebook Feed Test
+Plugin Name: Custom Facebook Feed
 Plugin URI: http://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
 Version: 2.3.6

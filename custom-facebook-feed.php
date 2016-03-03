@@ -3,13 +3,13 @@
 Plugin Name: Custom Facebook Feed
 Plugin URI: http://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.3.6
+Version: 2.4
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
 */
 /* 
-Copyright 2013  Smash Balloon LLC (email : hey@smashballoon.com)
+Copyright 2016  Smash Balloon LLC (email : hey@smashballoon.com)
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //Include admin
 include dirname( __FILE__ ) .'/custom-facebook-feed-admin.php';
 
-define('CFFVER', '2.3.6');
+define('CFFVER', '2.4');
 
 // Add shortcodes
 add_shortcode('custom-facebook-feed', 'display_cff');
@@ -64,6 +64,7 @@ function display_cff($atts) {
 
         //General
         'width' => isset($options[ 'cff_feed_width' ]) ? $options[ 'cff_feed_width' ] : '',
+        'widthresp' => isset($options[ 'cff_feed_width_resp' ]) ? $options[ 'cff_feed_width_resp' ] : '',
         'height' => isset($options[ 'cff_feed_height' ]) ? $options[ 'cff_feed_height' ] : '',
         'padding' => isset($options[ 'cff_feed_padding' ]) ? $options[ 'cff_feed_padding' ] : '',
         'bgcolor' => isset($options[ 'cff_bg_color' ]) ? $options[ 'cff_bg_color' ] : '',
@@ -157,6 +158,7 @@ function display_cff($atts) {
 
         'credit' => isset($options[ 'cff_show_credit' ]) ? $options[ 'cff_show_credit' ] : '',
         'nofollow' => 'true',
+        'disablestyles' => isset($options[ 'cff_disable_styles' ]) ? $options[ 'cff_disable_styles' ] : '',
 
         //Page Header
         'showheader' => isset($options[ 'cff_show_header' ]) ? $options[ 'cff_show_header' ] : '',
@@ -194,6 +196,11 @@ function display_cff($atts) {
 
     $cff_feed_width = $atts[ 'width' ];
     if ( is_numeric(substr($cff_feed_width, -1, 1)) ) $cff_feed_width = $cff_feed_width . 'px';
+
+    //Set to be 100% width on mobile?
+    $cff_feed_width_resp = $atts[ 'widthresp' ];
+    ( $cff_feed_width_resp == 'on' || $cff_feed_width_resp == 'true' || $cff_feed_width_resp == true ) ? $cff_feed_width_resp = true : $cff_feed_width_resp = false;
+    if( $atts[ 'widthresp' ] == 'false' ) $cff_feed_width_resp = false;
 
     $cff_feed_height = $atts[ 'height' ];
     if ( is_numeric(substr($cff_feed_height, -1, 1)) ) $cff_feed_height = $cff_feed_height . 'px';
@@ -680,6 +687,7 @@ function display_cff($atts) {
     } else {
         $cff_post_limit = intval(intval($show_posts) + 7);
     }
+    if( $cff_post_limit >= 100 ) $cff_post_limit = 100;
 
 
     //Calculate the cache time in seconds
@@ -698,7 +706,6 @@ function display_cff($atts) {
     $like_box = '<div class="cff-likebox';
     if ($cff_like_box_outside) $like_box .= ' cff-outside';
     $like_box .= ($cff_like_box_position == 'top') ? ' cff-top' : ' cff-bottom';
-    // $like_box .= '" ' . $cff_likebox_styles . '><script src="https://connect.facebook.net/' . $cff_locale . '/all.js#xfbml=1 '.$cff_like_box_params.'"></script><fb:like-box href="http://www.facebook.com/' . $page_id . '" show_faces="'.$cff_like_box_faces.'" stream="false" header="false" colorscheme="'. $cff_like_box_colorscheme .'" show_border="'. $cff_like_box_border .'" data-height="'.$cff_likebox_height.'"></fb:like-box><div id="fb-root"></div></div>';
 
     $like_box_page_id = explode(",", str_replace(' ', '', $page_id) );
 
@@ -757,11 +764,18 @@ function display_cff($atts) {
     $cff_content .= '<div class="cff-wrapper">';
     $cff_content .= '<div id="cff" data-char="'.$title_limit.'"';
 
+    //Disable default CSS styles?
+    $cff_disable_styles = $atts['disablestyles'];
+    ( $cff_disable_styles == 'on' || $cff_disable_styles == 'true' || $cff_disable_styles == true ) ? $cff_disable_styles = true : $cff_disable_styles = false;
+    if( $atts[ 'disablestyles' ] === 'false' ) $cff_disable_styles = false;
+
     //If there's a class then add it here
-    if( !empty($cff_class) || !empty($cff_feed_height) ) $cff_content .= ' class="';
+    if( !empty($cff_class) || !empty($cff_feed_height) || !$cff_disable_styles || $cff_feed_width_resp ) $cff_content .= ' class="';
         if( !empty($cff_class) ) $cff_content .= $cff_class . ' ';
         if ( !empty($cff_feed_height) ) $cff_content .= 'cff-fixed-height ';
-    if( !empty($cff_class) || !empty($cff_feed_height) ) $cff_content .= '"';
+        if ( $cff_feed_width_resp ) $cff_content .= 'cff-width-resp ';
+        if ( !$cff_disable_styles ) $cff_content .= 'cff-default-styles';
+    if( !empty($cff_class) || !empty($cff_feed_height) || !$cff_disable_styles || $cff_feed_width_resp ) $cff_content .= '"';
 
     $cff_content .= ' ' . $cff_feed_styles . '>';
 
@@ -785,8 +799,15 @@ function display_cff($atts) {
 
         //Don't use caching if the cache time is set to zero
         if ($cff_cache_time != 0){
-            // Get any existing copy of our transient data
-            $transient_name = 'cff_'. $graph_query .'_json_' . $page_id . $cff_post_limit . $show_posts_by;
+
+            //Create the transient name
+            //Split the Page ID in half and stick it together so we definitely have the beginning and end of it
+            $trans_page_id = substr($page_id, 0, 17) . substr($page_id, -16);
+            $transient_name = 'cff_' . substr($graph_query, 0, 1) . '_' . $trans_page_id . substr($cff_post_limit, 0, 3) . substr($show_posts_by, 0, 2);
+            //Limit to 45 chars max
+            $transient_name = substr($transient_name, 0, 45);
+
+            //Get any existing copy of our transient data
             if ( false === ( $posts_json = get_transient( $transient_name ) ) || $posts_json === null ) {
                 //Get the contents of the Facebook page
                 $posts_json = cff_fetchUrl($cff_posts_json_url);
@@ -887,7 +908,7 @@ function display_cff($atts) {
             //ONLY show posts by others
             if ( $cff_show_only_others ) {
                 //Get the numeric ID of the page
-                $page_object = cff_fetchUrl('https://graph.facebook.com/' . $page_id . '?access_token=' . $access_token);
+                $page_object = cff_fetchUrl('https://graph.facebook.com/v2.5/' . $page_id . '?fields=name,id&access_token=' . $access_token);
                 $page_object = json_decode($page_object);
                 $numeric_page_id = $page_object->id;
 
@@ -1052,10 +1073,16 @@ function display_cff($atts) {
 
                 //Start HTML for post text
                 $cff_post_text .= '<span class="cff-text" data-color="'.$cff_posttext_link_color.'">';
-                if ($cff_title_link) $cff_post_text .= '<a class="cff-post-text-link" '.$cff_title_styles.' href="'.$link.'" '.$target.'>';
+                if ($cff_title_link){
+                    //Link to the Facebook post if it's a link or a video
+                    ($cff_post_type == 'link' || $cff_post_type == 'video') ? $text_link = "https://www.facebook.com/" . $page_id . "/posts/" . $PostID[1] : $text_link = $link;
+
+                    $cff_post_text .= '<a class="cff-post-text-link" '.$cff_title_styles.' href="'.$text_link.'" '.$target.$cff_nofollow.'>';
+                }
 
                 //Which content should we use?
                 $cff_post_text_type = '';
+                $post_text = '';
                 //Use the story
                 if (!empty($news->story)) {
                     $post_text = htmlspecialchars($news->story);
@@ -1098,14 +1125,17 @@ function display_cff($atts) {
                     if( ( $cff_post_text_type == 'message' && isset($news->message_tags) ) || ( $cff_post_text_type == 'story' && !isset($news->message_tags) ) ) {
 
                         //Does the Post Text contain any html tags? - the & symbol is the best indicator of this
-                        $cff_html_check_array = array('&lt;', '’', '“', '&quot;', '&amp;', '&gt;&gt;');
+                        $cff_html_check_array = array('&lt;', '’', '“', '&quot;', '&amp;', '&gt;&gt;', '&gt;');
 
                         //always use the text replace method
                         if( cff_stripos_arr($post_text, $cff_html_check_array) !== false ) {
                             //Loop through the tags
                             foreach($text_tags as $message_tag ) {
-                                $tag_name = $message_tag[0]->name;
-                                $tag_link = '<a href="http://facebook.com/' . $message_tag[0]->id . '" style="color: #'.$cff_posttext_link_color.';" target="_blank">' . $message_tag[0]->name . '</a>';
+
+                                ( isset($message_tag->id) ) ? $message_tag = $message_tag : $message_tag = $message_tag[0];
+
+                                $tag_name = $message_tag->name;
+                                $tag_link = '<a href="http://facebook.com/' . $message_tag->id . '" style="color: #'.$cff_posttext_link_color.';" target="_blank">' . $message_tag->name . '</a>';
 
                                 $post_text = str_replace($tag_name, $tag_link, $post_text);
                             }
@@ -1117,15 +1147,18 @@ function display_cff($atts) {
                             $i = 0;
                             foreach($text_tags as $message_tag ) {
                                 $i++;
+
+                                ( isset($message_tag->id) ) ? $message_tag = $message_tag : $message_tag = $message_tag[0];
+
                                 $message_tags_arr = cff_array_push_assoc(
                                     $message_tags_arr,
                                     $i,
                                     array(
-                                        'id' => $message_tag[0]->id,
-                                        'name' => $message_tag[0]->name,
-                                        'type' => isset($message_tag[0]->type) ? $message_tag[0]->type : '',
-                                        'offset' => $message_tag[0]->offset,
-                                        'length' => $message_tag[0]->length
+                                        'id' => $message_tag->id,
+                                        'name' => $message_tag->name,
+                                        'type' => isset($message_tag->type) ? $message_tag->type : '',
+                                        'offset' => $message_tag->offset,
+                                        'length' => $message_tag->length
                                     )
                                 );
                             }
@@ -1209,8 +1242,9 @@ function display_cff($atts) {
                     if (!empty($news->description)) {
                         $cff_shared_link .= '<div class="cff-text-link ';
                         $cff_shared_link .= 'cff-no-image';
+                        $cff_shared_link .= '">';
                         //The link title:
-                        $cff_shared_link .= '"><'.$cff_link_title_format.' class="cff-link-title" '.$cff_link_title_styles.'><a href="'.$link.'" '.$target.$cff_nofollow.' style="color:#' . $cff_link_title_color . ';">'. $news->name . '</a></'.$cff_link_title_format.'>';
+                        $cff_shared_link .= '<'.$cff_link_title_format.' class="cff-link-title" '.$cff_link_title_styles.'><a href="'.$link.'" '.$target.$cff_nofollow.' style="color:#' . $cff_link_title_color . ';">'. $news->name . '</a></'.$cff_link_title_format.'>';
                         //The link source:
                         (!empty($news->caption)) ? $cff_link_caption = $news->caption : $cff_link_caption = '';
                         if(!empty($cff_link_caption)) $cff_shared_link .= '<p class="cff-link-caption" style="color:#' . str_replace('#', '', $cff_link_url_color) . ';">'.$cff_link_caption.'</p>';
@@ -1244,7 +1278,9 @@ function display_cff($atts) {
                         //Don't use caching if the cache time is set to zero
                         if ($cff_cache_time != 0){
                             // Get any existing copy of our transient data
-                            $transient_name = 'cff_timeline_event_json_' . $eventID;
+                            $transient_name = 'cff_tle_' . $eventID;
+                            $transient_name = substr($transient_name, 0, 45);
+
                             if ( false === ( $event_json = get_transient( $transient_name ) ) || $event_json === null ) {
                                 //Get the contents of the Facebook page
                                 $event_json = cff_fetchUrl($event_json_url);
@@ -1502,21 +1538,30 @@ function display_cff($atts) {
 
 //Get JSON object of feed data
 function cff_fetchUrl($url){
-    //Can we use cURL?
-    if(is_callable('curl_init')){
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_ENCODING, '');
-        $feedData = curl_exec($ch);
-        curl_close($ch);
-    //If not then use file_get_contents
-    } elseif ( (ini_get('allow_url_fopen') == 1 || ini_get('allow_url_fopen') === TRUE ) && in_array('https', stream_get_wrappers()) ) {
-        $feedData = @file_get_contents($url);
-    //Or else use the WP HTTP API
-    } else {
+
+    //Style options
+    $options = get_option('cff_style_settings');
+    isset( $options['cff_request_method'] ) ? $cff_request_method = $options['cff_request_method'] : $cff_request_method = 'auto';
+
+    if($cff_request_method == '1'){
+        //Use cURL
+        if(is_callable('curl_init')){
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_ENCODING, '');
+            $feedData = curl_exec($ch);
+            curl_close($ch);
+        }
+    } else if($cff_request_method == '2') {
+        //Use file_get_contents
+        if ( (ini_get('allow_url_fopen') == 1 || ini_get('allow_url_fopen') === TRUE ) && in_array('https', stream_get_wrappers()) ){
+            $feedData = @file_get_contents($url);
+        }
+    } else if($cff_request_method == '3'){
+        //Use the WP HTTP API
         $request = new WP_Http;
         $response = $request->request($url, array('timeout' => 60, 'sslverify' => false));
         if( is_wp_error( $response ) ) {
@@ -1524,6 +1569,28 @@ function cff_fetchUrl($url){
             $FBdata = null;
         } else {
             $feedData = wp_remote_retrieve_body($response);
+        }
+    } else {
+        //Auto detect
+        if(is_callable('curl_init')){
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_ENCODING, '');
+            $feedData = curl_exec($ch);
+            curl_close($ch);
+        } elseif ( (ini_get('allow_url_fopen') == 1 || ini_get('allow_url_fopen') === TRUE ) && in_array('https', stream_get_wrappers()) ) {
+            $feedData = @file_get_contents($url);
+        } else {
+            $request = new WP_Http;
+            $response = $request->request($url, array('timeout' => 60, 'sslverify' => false));
+            if( is_wp_error( $response ) ) {
+                $FBdata = null;
+            } else {
+                $feedData = wp_remote_retrieve_body($response);
+            }
         }
     }
     
@@ -1899,15 +1966,15 @@ function cff_add_my_stylesheet() {
     $options = get_option('cff_style_settings');
 
     if( !isset( $options[ 'cff_font_source' ] ) ){
-        wp_enqueue_style( 'cff-font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', array(), '4.2.0' );
+        wp_enqueue_style( 'cff-font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.5.0' );
     } else {
 
         if( $options[ 'cff_font_source' ] == 'none' ){
             //Do nothing
         } else if( $options[ 'cff_font_source' ] == 'local' ){
-            wp_enqueue_style( 'cff-font-awesome', plugins_url('css/font-awesome.min.css', __FILE__), array(), '4.3.0' );
+            wp_enqueue_style( 'cff-font-awesome', plugins_url('css/font-awesome.min.css', __FILE__), array(), '4.5.0' );
         } else {
-            wp_enqueue_style( 'cff-font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css', array(), '4.2.0' );
+            wp_enqueue_style( 'cff-font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.5.0' );
         }
 
     }
@@ -1948,8 +2015,17 @@ function cff_activate() {
 
     get_option('cff_show_access_token');
     update_option( 'cff_show_access_token', false );
+
+    //Run cron twice daily when plugin is first activated for new users
+    wp_schedule_event(time(), 'twicedaily', 'cff_cron_job');
 }
 register_activation_hook( __FILE__, 'cff_activate' );
+
+function cff_deactivate() {
+    wp_clear_scheduled_hook('cff_cron_job');
+}
+register_deactivation_hook(__FILE__, 'cff_deactivate');
+
 //Uninstall
 function cff_uninstall()
 {
@@ -2347,7 +2423,4 @@ function cff_autolink_email($text, $tagfill=''){
 ####################################################################
 
 
-//Comment out the lines below to view PHP notices and errors
-// ini_set('display_errors', 1);
-// error_reporting(~0);
 ?>

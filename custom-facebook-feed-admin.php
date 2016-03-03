@@ -94,27 +94,23 @@ function cff_settings_page() {
         $options[ 'cff_timezone' ] = $cff_timezone;
         update_option( 'cff_style_settings', $options );
         
-        //Delete the transient for the main page ID
-        delete_transient( 'cff_posts_json_' .$page_id_val );
-        delete_transient( 'cff_feed_json_' .$page_id_val );
-        delete_transient( 'cff_events_json_' . $page_id_val );
         //Delete ALL transients
         global $wpdb;
         $table_name = $wpdb->prefix . "options";
         $wpdb->query( "
             DELETE
             FROM $table_name
-            WHERE `option_name` LIKE ('%cff\_posts\_json\_%')
+            WHERE `option_name` LIKE ('%\_transient\_cff\_%')
             " );
         $wpdb->query( "
             DELETE
             FROM $table_name
-            WHERE `option_name` LIKE ('%cff\_feed\_json\_%')
+            WHERE `option_name` LIKE ('%\_transient\_cff\_tle\_%')
             " );
         $wpdb->query( "
             DELETE
             FROM $table_name
-            WHERE `option_name` LIKE ('%cff\_events\_json\_%')
+            WHERE `option_name` LIKE ('%\_transient\_timeout\_cff\_%')
             " );
         // Put an settings updated message on the screen 
     ?>
@@ -127,15 +123,15 @@ function cff_settings_page() {
         </div>
 
         <?php
-        $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'configuration';
+        $cff_active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'configuration';
         ?>
         <h2 class="nav-tab-wrapper">
-            <a href="?page=cff-top&amp;tab=configuration" class="nav-tab <?php echo $active_tab == 'configuration' ? 'nav-tab-active' : ''; ?>"><?php _e('Configuration'); ?></a>
-            <a href="?page=cff-style" class="nav-tab <?php echo $active_tab == 'customize' ? 'nav-tab-active' : ''; ?>"><?php _e('Customize'); ?></a>
-            <a href="?page=cff-top&amp;tab=support" class="nav-tab <?php echo $active_tab == 'support' ? 'nav-tab-active' : ''; ?>"><?php _e('Support'); ?></a>
+            <a href="?page=cff-top&amp;tab=configuration" class="nav-tab <?php echo $cff_active_tab == 'configuration' ? 'nav-tab-active' : ''; ?>"><?php _e('Configuration'); ?></a>
+            <a href="?page=cff-style" class="nav-tab <?php echo $cff_active_tab == 'customize' ? 'nav-tab-active' : ''; ?>"><?php _e('Customize'); ?></a>
+            <a href="?page=cff-top&amp;tab=support" class="nav-tab <?php echo $cff_active_tab == 'support' ? 'nav-tab-active' : ''; ?>"><?php _e('Support'); ?></a>
         </h2>
 
-        <?php if( $active_tab == 'configuration' ) { //Start Extensions tab ?>
+        <?php if( $cff_active_tab == 'configuration' ) { //Start Extensions tab ?>
 
         <form name="form1" method="post" action="">
             <input type="hidden" name="<?php echo $hidden_field_name; ?>" value="Y">
@@ -144,7 +140,8 @@ function cff_settings_page() {
             <table class="form-table">
                 <tbody>
                     <tr valign="top">
-                        <th scope="row"><?php _e('Facebook Page ID<br /><i style="font-weight: normal; font-size: 12px;">ID of your Facebook Page or Group</i>'); ?></th>
+                        <th scope="row"><label><?php _e('Facebook Page ID<br /><i style="font-weight: normal; font-size: 12px;">ID of your Facebook Page or Group</i>'); ?></label><code class="cff_shortcode"> id
+                        Eg: id="YOUR_PAGE_ID"</code></th>
                         <td>
                             <input name="cff_page_id" id="cff_page_id" type="text" value="<?php esc_attr_e( $page_id_val ); ?>" size="45" />
                             &nbsp;<a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What\'s my Page ID?'); ?></a>
@@ -184,7 +181,8 @@ function cff_settings_page() {
                 <tbody>
                     <h3><?php _e('Settings'); ?></h3>
                     <tr valign="top" class="cff-page-type">
-                        <th scope="row"><?php _e('Is this a page, group or profile?'); ?></th>
+                        <th scope="row"><label><?php _e('Is this a page, group or profile?'); ?></label><code class="cff_shortcode"> pagetype
+                        Eg: pagetype=group</code></th>
                         <td>
                             <select name="cff_page_type">
                                 <option value="page" <?php if($cff_page_type_val == "page") echo 'selected="selected"' ?> ><?php _e('Page'); ?></option>
@@ -198,7 +196,8 @@ function cff_settings_page() {
                     </tr>
 
                     <tr valign="top" class="cff-page-options">
-                        <th scope="row"><?php _e('Show posts on my page by:'); ?></th>
+                        <th scope="row"><label><?php _e('Show posts on my page by:'); ?></label><code class="cff_shortcode"> showpostsby
+                        Eg: showpostsby=others</code></th>
                         <td>
                             <select name="cff_show_others" id="cff_show_others" style="width: 250px;">
                                 <option value="me" <?php if($cff_show_others_val == 'me') echo 'selected="selected"' ?> ><?php _e('Only the page owner (me)'); ?></option>
@@ -212,17 +211,19 @@ function cff_settings_page() {
                     </tr>
 
                     <tr valign="top">
-                        <th scope="row"><?php _e('Number of posts to display'); ?></th>
+                        <th scope="row"><label><?php _e('Number of posts to display'); ?></label><code class="cff_shortcode"> num
+                        Eg: num=5</code></th>
                         <td>
                             <input name="cff_num_show" type="text" value="<?php esc_attr_e( $num_show_val ); ?>" size="4" />
                             <i style="color: #666; font-size: 11px;">Eg. 5</i>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row"><?php _e('Change the post limit'); ?></th>
+                        <th scope="row"><label><?php _e('Change the post limit'); ?></label><code class="cff_shortcode"> limit
+                        Eg: limit=10</code></th>
                         <td>
                             <input name="cff_post_limit" type="text" value="<?php esc_attr_e( $cff_post_limit_val ); ?>" size="4" />
-                            <i style="color: #666; font-size: 11px;">Eg. 50</i> <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this mean?'); ?></a>
+                            <i style="color: #666; font-size: 11px;">Eg. 20</i> <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this mean?'); ?></a>
                             <p class="cff-tooltip cff-more-info"><?php _e("Most users don't need to change the post lmit. The 'limit' is the number of posts retrieved from the Facebook API. By default the plugin retrieves 7 posts more from the Facebook API than you specify in the 'Number of posts to display' field above, as some posts are filtered out. You can alter how many posts are retrieved by manually setting this value. If you choose to retrieve a high number of posts then it will take longer for Facebook to return the posts when the plugin checks for new ones."); ?></p>
                         </td>
                     </tr>
@@ -241,7 +242,8 @@ function cff_settings_page() {
                     </tr>
 
                     <tr valign="top">
-                        <th scope="row"><?php _e('Localization'); ?></th>
+                        <th scope="row"><label><?php _e('Localization'); ?></label><code class="cff_shortcode"> locale
+                        Eg: locale=es_ES</code></th>
                         <td>
                             <select name="cff_locale">
                                 <option value="af_ZA" <?php if($cff_locale_val == "af_ZA") echo 'selected="selected"' ?> ><?php _e('Afrikaans'); ?></option>
@@ -408,7 +410,7 @@ function cff_settings_page() {
                                     <option value="Australia/Adelaide" <?php if($cff_timezone == "Australia/Adelaide") echo 'selected="selected"' ?> ><?php _e('(GMT+09:30) Adelaide'); ?></option>
                                     <option value="Australia/Darwin" <?php if($cff_timezone == "Australia/Darwin") echo 'selected="selected"' ?> ><?php _e('(GMT+09:30) Darwin'); ?></option>
                                     <option value="Australia/Brisbane" <?php if($cff_timezone == "Australia/Brisbane") echo 'selected="selected"' ?> ><?php _e('(GMT+10:00) Brisbane'); ?></option>
-                                    <option value="Australia/Hobart" <?php if($cff_timezone == "Australia/Hobart") echo 'selected="selected"' ?> ><?php _e('(GMT+10:00) Hobart'); ?></option>
+                                    <option value="Australia/Hobart" <?php if($cff_timezone == "Australia/Hobart") echo 'selected="selected"' ?> ><?php _e('(GMT+10:00) Sydney'); ?></option>
                                     <option value="Asia/Vladivostok" <?php if($cff_timezone == "Asia/Vladivostok") echo 'selected="selected"' ?> ><?php _e('(GMT+10:00) Vladivostok'); ?></option>
                                     <option value="Australia/Lord_Howe" <?php if($cff_timezone == "Australia/Lord_Howe") echo 'selected="selected"' ?> ><?php _e('(GMT+10:30) Lord Howe Island'); ?></option>
                                     <option value="Etc/GMT-11" <?php if($cff_timezone == "Etc/GMT-11") echo 'selected="selected"' ?> ><?php _e('(GMT+11:00) Solomon Is., New Caledonia'); ?></option>
@@ -435,7 +437,7 @@ function cff_settings_page() {
         <input type="text" value="[custom-facebook-feed]" size="22" readonly="readonly" onclick="this.focus();this.select()" title="<?php _e('To copy, click the field then press Ctrl + C (PC) or Cmd + C (Mac).'); ?>" />
         <hr />
         <h3><?php _e('Customizing your Feed'); ?></h3>
-        <p><?php _e("Use the <a href='admin.php?page=cff-style'>Customize</a> page to customize your feed. If you're displaying multiple feeds then you can override your settings and customizations by using options directly in the shortcode, like so:"); ?></p>
+        <p><?php _e("Use the <a href='admin.php?page=cff-style'>Customize</a> page to customize your feed. If you're displaying <b>multiple feeds</b> then you can override your settings and customizations by using options directly in the shortcode, like so:"); ?></p>
         <p>[custom-facebook-feed id=some-other-page-id num=3 height=500px]</p>
         <p><a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/" target="_blank"><?php _e('See a full list of shortcode options'); ?></a></p>
 
@@ -477,7 +479,7 @@ function cff_settings_page() {
     <?php } //End config tab ?>
 
 
-    <?php if( $active_tab == 'support' ) { //Start Support tab ?>
+    <?php if( $cff_active_tab == 'support' ) { //Start Support tab ?>
 
         <br />
         <h3><?php _e('FAQs and Troubleshooting'); ?></h3>
@@ -664,6 +666,7 @@ function cff_style_page() {
         'cff_hide_comments'         => '',
         //Misc
         'cff_feed_width'            => '',
+        'cff_feed_width_resp'       => false,
         'cff_feed_height'           => '',
         'cff_feed_padding'          => '',
         'cff_like_box_position'     => 'bottom',
@@ -683,6 +686,10 @@ function cff_style_page() {
         'cff_show_author'           => true,
         'cff_class'                 => '',
         'cff_open_links'            => true,
+        'cff_cron'                  => 'unset',
+        'cff_request_method'        => 'auto',
+        'cff_disable_styles'        => false,
+
         //New
         'cff_custom_css'            => '',
         'cff_custom_js'             => '',
@@ -853,6 +860,7 @@ function cff_style_page() {
     $cff_hide_comments = $options[ 'cff_hide_comments' ];
     //Misc
     $cff_feed_width = $options[ 'cff_feed_width' ];
+    $cff_feed_width_resp = $options[ 'cff_feed_width_resp' ]; 
     $cff_feed_height = $options[ 'cff_feed_height' ];
     $cff_feed_padding = $options[ 'cff_feed_padding' ];
     $cff_like_box_position = $options[ 'cff_like_box_position' ];
@@ -879,6 +887,9 @@ function cff_style_page() {
     $cff_font_source = $options[ 'cff_font_source' ];
     $cff_preserve_settings   = 'cff_preserve_settings';
     $cff_preserve_settings_val = get_option( $cff_preserve_settings );
+    $cff_cron = $options[ 'cff_cron' ];
+    $cff_request_method = $options[ 'cff_request_method' ];
+    $cff_disable_styles = $options[ 'cff_disable_styles' ];
 
     //Page Header
     $cff_show_header = $options[ 'cff_show_header' ];
@@ -925,10 +936,13 @@ function cff_style_page() {
         if( isset($_POST[ $style_general_hidden_field_name ]) && $_POST[ $style_general_hidden_field_name ] == 'Y' ) {
             //General
             if (isset($_POST[ 'cff_feed_width' ]) ) $cff_feed_width = $_POST[ 'cff_feed_width' ];
+            (isset($_POST[ 'cff_feed_width_resp' ]) ) ? $cff_feed_width_resp = $_POST[ 'cff_feed_width_resp' ] : $cff_feed_width_resp = '';
             if (isset($_POST[ 'cff_feed_height' ]) ) $cff_feed_height = $_POST[ 'cff_feed_height' ];
             if (isset($_POST[ 'cff_feed_padding' ]) ) $cff_feed_padding = $_POST[ 'cff_feed_padding' ];
             if (isset($_POST[ 'cff_bg_color' ]) ) $cff_bg_color = $_POST[ 'cff_bg_color' ];
             if (isset($_POST[ 'cff_class' ]) ) $cff_class = $_POST[ 'cff_class' ];
+            (isset($_POST[ 'cff_show_header' ])) ? $cff_show_header = $_POST[ 'cff_show_header' ] : $cff_show_header = '';
+
             //Post types
             if (isset($_POST[ 'cff_show_links_type' ]) ) $cff_show_links_type = $_POST[ 'cff_show_links_type' ];
             if (isset($_POST[ 'cff_show_event_type' ]) ) $cff_show_event_type = $_POST[ 'cff_show_event_type' ];
@@ -937,10 +951,13 @@ function cff_style_page() {
             if (isset($_POST[ 'cff_show_status_type' ]) ) $cff_show_status_type = $_POST[ 'cff_show_status_type' ];
             //General
             $options[ 'cff_feed_width' ] = $cff_feed_width;
+            $options[ 'cff_feed_width_resp' ] = $cff_feed_width_resp;
             $options[ 'cff_feed_height' ] = $cff_feed_height;
             $options[ 'cff_feed_padding' ] = $cff_feed_padding;
             $options[ 'cff_bg_color' ] = $cff_bg_color;
             $options[ 'cff_class' ] = $cff_class;
+            $options[ 'cff_show_header' ] = $cff_show_header;
+
             //Post types
             $options[ 'cff_show_links_type' ] = $cff_show_links_type;
             $options[ 'cff_show_event_type' ] = $cff_show_event_type;
@@ -996,7 +1013,6 @@ function cff_style_page() {
             if (isset($_POST[ 'cff_body_length' ]) ) $cff_body_length_val = $_POST[ $cff_body_length ];
 
             //Page Header
-            (isset($_POST[ 'cff_show_header' ])) ? $cff_show_header = $_POST[ 'cff_show_header' ] : $cff_show_header = '';
             (isset($_POST[ 'cff_header_outside' ])) ? $cff_header_outside = $_POST[ 'cff_header_outside' ] : $cff_header_outside = '';
             if (isset($_POST[ 'cff_header_text' ])) $cff_header_text = $_POST[ 'cff_header_text' ];
             if (isset($_POST[ 'cff_header_bg_color' ])) $cff_header_bg_color = $_POST[ 'cff_header_bg_color' ];
@@ -1096,7 +1112,6 @@ function cff_style_page() {
             update_option( $cff_title_length, $cff_title_length_val );
             update_option( $cff_body_length, $cff_body_length_val );
             //Page Header
-            $options[ 'cff_show_header' ] = $cff_show_header;
             $options[ 'cff_header_outside' ] = $cff_header_outside;
             $options[ 'cff_header_text' ] = $cff_header_text;
             $options[ 'cff_header_bg_color' ] = $cff_header_bg_color;
@@ -1223,6 +1238,9 @@ function cff_style_page() {
             (isset($_POST[ 'cff_show_credit' ])) ? $cff_show_credit = $_POST[ 'cff_show_credit' ] : $cff_show_credit = '';
             (isset($_POST[ 'cff_font_source' ])) ? $cff_font_source = $_POST[ 'cff_font_source' ] : $cff_font_source = '';
             (isset($_POST[ $cff_preserve_settings ])) ? $cff_preserve_settings_val = $_POST[ 'cff_preserve_settings' ] : $cff_preserve_settings_val = '';
+            if (isset($_POST[ 'cff_cron' ])) $cff_cron = $_POST[ 'cff_cron' ];
+            if (isset($_POST[ 'cff_request_method' ])) $cff_request_method = $_POST[ 'cff_request_method' ];
+            (isset($_POST[ 'cff_disable_styles' ])) ? $cff_disable_styles = $_POST[ 'cff_disable_styles' ] : $cff_disable_styles = '';
 
             //Meta
             $options[ 'cff_icon_style' ] = $cff_icon_style;
@@ -1258,6 +1276,29 @@ function cff_style_page() {
             $options[ 'cff_show_credit' ] = $cff_show_credit;
             $options[ 'cff_font_source' ] = $cff_font_source;
             update_option( $cff_preserve_settings, $cff_preserve_settings_val );
+
+            $options[ 'cff_cron' ] = $cff_cron;
+            $options[ 'cff_request_method' ] = $cff_request_method;
+            $options[ 'cff_disable_styles' ] = $cff_disable_styles;
+
+            if( $cff_cron == 'no' ) wp_clear_scheduled_hook('cff_cron_job');
+
+            //Run cron when Misc settings are saved
+            if( $cff_cron == 'yes' ){
+                //Clear the existing cron event
+                wp_clear_scheduled_hook('cff_cron_job');
+
+                $cff_cache_time = get_option( 'cff_cache_time' );
+                $cff_cache_time_unit = get_option( 'cff_cache_time_unit' );
+
+                //Set the event schedule based on what the caching time is set to
+                $cff_cron_schedule = 'hourly';
+                if( $cff_cache_time_unit == 'hours' && $cff_cache_time > 5 ) $cff_cron_schedule = 'twicedaily';
+                if( $cff_cache_time_unit == 'days' ) $cff_cron_schedule = 'daily';
+
+                wp_schedule_event(time(), $cff_cron_schedule, 'cff_cron_job');
+            }
+
         }
         //Update the Custom Text / Translate options
         if( isset($_POST[ $style_custom_text_hidden_field_name ]) && $_POST[ $style_custom_text_hidden_field_name ] == 'Y' ) {
@@ -1329,58 +1370,83 @@ function cff_style_page() {
         <form name="form1" method="post" action="">
             <input type="hidden" name="<?php echo $style_hidden_field_name; ?>" value="Y">
             <?php
-            $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general';
+            $cff_active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'general';
             ?>
             <h2 class="nav-tab-wrapper">
-                <a href="?page=cff-style&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>"><?php _e('General'); ?></a>
-                <a href="?page=cff-style&tab=post_layout" class="nav-tab <?php echo $active_tab == 'post_layout' ? 'nav-tab-active' : ''; ?>"><?php _e('Post Layout'); ?></a>
-                <a href="?page=cff-style&tab=typography" class="nav-tab <?php echo $active_tab == 'typography' ? 'nav-tab-active' : ''; ?>"><?php _e('Typography'); ?></a>
-                <a href="?page=cff-style&tab=misc" class="nav-tab <?php echo $active_tab == 'misc' ? 'nav-tab-active' : ''; ?>"><?php _e('Misc'); ?></a>
-                <a href="?page=cff-style&tab=custom_text" class="nav-tab <?php echo $active_tab == 'custom_text' ? 'nav-tab-active' : ''; ?>"><?php _e('Custom Text / Translate'); ?></a>
+                <a href="?page=cff-style&tab=general" class="nav-tab <?php echo $cff_active_tab == 'general' ? 'nav-tab-active' : ''; ?>"><?php _e('General'); ?></a>
+                <a href="?page=cff-style&tab=post_layout" class="nav-tab <?php echo $cff_active_tab == 'post_layout' ? 'nav-tab-active' : ''; ?>"><?php _e('Post Layout'); ?></a>
+                <a href="?page=cff-style&tab=typography" class="nav-tab <?php echo $cff_active_tab == 'typography' ? 'nav-tab-active' : ''; ?>"><?php _e('Typography'); ?></a>
+                <a href="?page=cff-style&tab=misc" class="nav-tab <?php echo $cff_active_tab == 'misc' ? 'nav-tab-active' : ''; ?>"><?php _e('Misc'); ?></a>
+                <a href="?page=cff-style&tab=custom_text" class="nav-tab <?php echo $cff_active_tab == 'custom_text' ? 'nav-tab-active' : ''; ?>"><?php _e('Custom Text / Translate'); ?></a>
             </h2>
-            <?php if( $active_tab == 'general' ) { //Start General tab ?>
+            <?php if( $cff_active_tab == 'general' ) { //Start General tab ?>
+
+            <p class="cff_contents_links" id="general">
+                <span>Quick links: </span>
+                <a href="#general">General</a>
+                <a href="#types">Post Types</a>
+            </p>
+
             <input type="hidden" name="<?php echo $style_general_hidden_field_name; ?>" value="Y">
             <br />
             <table class="form-table">
                 <tbody>
                     <h3><?php _e('General'); ?></h3>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Feed Width'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Feed Width'); ?></label><code class="cff_shortcode"> width
+                        Eg: width=500px</code></th>
                         <td>
-                            <input name="cff_feed_width" type="text" value="<?php esc_attr_e( $cff_feed_width ); ?>" size="6" />
+                            <input name="cff_feed_width" id="cff_feed_width" type="text" value="<?php esc_attr_e( $cff_feed_width ); ?>" size="6" />
                             <span>Eg. 500px, 50%, 10em.  <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Default is 100%'); ?></i></span>
+                            <div id="cff_width_options">
+                                <input name="cff_feed_width_resp" type="checkbox" id="cff_feed_width_resp" <?php if($cff_feed_width_resp == true) echo "checked"; ?> /><label for="cff_feed_width_resp"><?php _e('Set to be 100% width on mobile?'); ?></label>
+                                <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this mean?'); ?></a>
+                                <p class="cff-tooltip cff-more-info"><?php _e("If you set a width on the feed then this will be used on mobile as well as desktop. Check this setting to set the feed width to be 100% on mobile so that it is responsive."); ?></p>
+                            </div>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Feed Height'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Feed Height'); ?></label><code class="cff_shortcode"> height
+                        Eg: height=500px</code></th>
                         <td>
                             <input name="cff_feed_height" type="text" value="<?php esc_attr_e( $cff_feed_height ); ?>" size="6" />
                             <span>Eg. 500px, 50em. <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Leave empty to set no maximum height. If the feed exceeds this height then a scroll bar will be used.'); ?></i></span>
                         </td>
                     </tr>
-                        <th class="bump-left" scope="row"><label><?php _e('Feed Padding'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Feed Padding'); ?></label><code class="cff_shortcode"> padding
+                        Eg: padding=20px</code></th>
                         <td>
                             <input name="cff_feed_padding" type="text" value="<?php esc_attr_e( $cff_feed_padding ); ?>" size="6" />
                             <span>Eg. 20px, 5%. <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('This is the amount of padding/spacing that goes around the feed. This is particularly useful if you intend to set a background color on the feed.'); ?></i></span>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Feed Background Color'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Feed Background Color'); ?></label><code class="cff_shortcode"> bgcolor
+                        Eg: bgcolor=FF0000</code></th>
                         <td>
                             <input name="cff_bg_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_bg_color) ); ?>" class="cff-colorpicker" />
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Add CSS class to feed'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Add CSS class to feed'); ?></label><code class="cff_shortcode"> class
+                        Eg: class=myfeed</code></th>
                         <td>
                             <input name="cff_class" type="text" value="<?php esc_attr_e( $cff_class ); ?>" size="25" />
                             <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('To add multiple classes separate each with a space, Eg. classone classtwo classthree'); ?></i>
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th class="bump-left" scope="row"><label><?php _e('Show Feed Header'); ?></label><code class="cff_shortcode"> showheader
+                        Eg: showheader=true</code></th>
+                        <td>
+                            <input type="checkbox" name="cff_show_header" id="cff_show_header" <?php if($cff_show_header == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
+                            <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Display a header at the top of your feed. You can customize the header <a href="?page=cff-style&tab=typography">here</a>.'); ?></i>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             
-            <hr />
+            <hr id="types" />
             <table class="form-table">
                 <tbody>
                     <h3><?php _e('Post Types'); ?></h3>
@@ -1420,7 +1486,15 @@ function cff_style_page() {
             
             <a href="https://smashballoon.com/custom-facebook-feed/demo" target="_blank"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             <?php } //End General tab ?>
-            <?php if( $active_tab == 'post_layout' ) { //Start Post Layout tab ?>
+            <?php if( $cff_active_tab == 'post_layout' ) { //Start Post Layout tab ?>
+
+            <p class="cff_contents_links" id="layout">
+                <span>Quick links: </span>
+                <a href="#layout">Post Layout</a>
+                <a href="#showhide">Show/Hide</a>
+                <a href="#poststyle">Post Style</a>
+            </p>
+
             <input type="hidden" name="<?php echo $style_post_layout_hidden_field_name; ?>" value="Y">
             <br />
             <h3><?php _e('Post Layout'); ?></h3>
@@ -1476,6 +1550,7 @@ function cff_style_page() {
                                 <p class="cff-tooltip cff-more-info"><?php _e("When displaying posts in either a narrow column or on a mobile device the plugin will automatically default to using the 'Full-width' layout as it's better suited to narrow sizes."); ?></p>
                             </td>
                         </tr>
+                        <tr id="showhide"><!-- Quick link --></tr>
                     </tbody>
                 </table>
 
@@ -1484,8 +1559,12 @@ function cff_style_page() {
                 <table class="form-table">
                     <tbody>
                     <tr valign="top">
-                        <th scope="row"><?php _e('Include the following in posts: <i style="font-size: 11px;">(when applicable)</i>'); ?>
-                            <br /><i style="color: #666; font-size: 11px;"><a href="https://smashballoon.com/custom-facebook-feed/" target="_blank"><?php _e('Upgrade to Pro to enable all of these options'); ?></a></i></th>
+                        <th scope="row"><label><?php _e('Include the following in posts: <i style="font-size: 11px;">(when applicable)</i>'); ?></label><code class="cff_shortcode"> include  exclude
+                        Eg: include=text,date,likebox
+                        Eg: exclude=likebox
+
+                        Options: author, text, desc, sharedlinks, date, eventtitle, eventdetails, link, likebox</code>
+                        </th>
                         <td>
                             <div>
                                 <input name="cff_show_author" type="checkbox" id="cff_show_author" <?php if($cff_show_author == true) echo "checked"; ?> />
@@ -1529,6 +1608,7 @@ function cff_style_page() {
                             </div>
                         </td>
                     </tr>
+                    <tr id="poststyle"><!-- Quick link --></tr>
                 </tbody>
             </table>
 
@@ -1537,25 +1617,29 @@ function cff_style_page() {
             <table class="form-table">
                 <tbody>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><?php _e('Background Color'); ?></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Background Color'); ?></label><code class="cff_shortcode"> postbgcolor
+                        Eg: postbgcolor=ff0000</code></th>
                         <td>
                             <input name="cff_post_bg_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_post_bg_color) ); ?>" class="cff-colorpicker" />
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><?php _e('Rounded Corner Size'); ?></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Rounded Corner Size'); ?></label><code class="cff_shortcode"> postcorners
+                        Eg: postcorners=10</code></th>
                         <td>
                             <input name="cff_post_rounded" type="text" value="<?php esc_attr_e( $cff_post_rounded ); ?>" size="3" />px <span><i style="color: #666; font-size: 11px; margin-left: 5px;">Eg. 5</i></span>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Separating Line Color'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Separating Line Color'); ?></label><code class="cff_shortcode"> sepcolor
+                        Eg: sepcolor=CFCFCF</code></th>
                         <td>
                             <input name="cff_sep_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_sep_color) ); ?>" class="cff-colorpicker" /><i style="color: #666; font-size: 11px; margin-left: 5px; position: relative; top: -10px;"><?php _e("Doesn't apply if you have a background color applied to your posts"); ?></i>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Separating Line Thickness'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Separating Line Thickness'); ?></label><code class="cff_shortcode"> sepsize
+                        Eg: sepsize=3</code></th>
                         <td>
                             <input name="cff_sep_size" type="text" value="<?php esc_attr_e( $cff_sep_size ); ?>" size="1" /><span>px</span> <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Leave empty to hide'); ?></i>
                         </td>
@@ -1566,7 +1650,22 @@ function cff_style_page() {
             <?php submit_button(); ?>
             <a href="https://smashballoon.com/custom-facebook-feed/demo" target="_blank"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             <?php } //End Post Layout tab ?>
-            <?php if( $active_tab == 'typography' ) { //Start Typography tab ?>
+            <?php if( $cff_active_tab == 'typography' ) { //Start Typography tab ?>
+
+            <p class="cff_contents_links" id="header">
+                <span>Quick links: </span>
+                <a href="#header">Feed Header</a>
+                <a href="#author">Post Author</a>
+                <a href="#text">Post Text</a>
+                <a href="#description">Link, Photo and Video Description</a>
+                <a href="#date">Post Date</a>
+                <a href="#links">Shared Links</a>
+                <a href="#eventtitle">Event Title</a>
+                <a href="#eventdate">Event Date</a>
+                <a href="#eventdetails">Event Details</a>
+                <a href="#action">View on Facebook</a>
+            </p>
+
             <input type="hidden" name="<?php echo $style_typography_hidden_field_name; ?>" value="Y">
             <br />
             <p><i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('"Inherit" means that the text will inherit the styles from your theme.'); ?></i></p>
@@ -1582,41 +1681,39 @@ function cff_style_page() {
                         <table class="form-table">
                             <tbody>
                                 <tr valign="top">
-                                    <th class="bump-left" scope="row"><label><?php _e('Show Feed Header'); ?></label></th>
-                                    <td>
-                                        <input type="checkbox" name="cff_show_header" id="cff_show_header" <?php if($cff_show_header == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
-                                        <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('This will show a header at the top of your feed'); ?></i>
-                                    </td>
-                                </tr>
-                                <tr valign="top">
-                                    <th class="bump-left" scope="row"><label><?php _e('Display outside the scrollable area'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Display outside the scrollable area'); ?></label><code class="cff_shortcode"> headeroutside
+                        Eg: headeroutside=true</code></th>
                                     <td>
                                         <input type="checkbox" name="cff_header_outside" id="cff_header_outside" <?php if($cff_header_outside == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                                         <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Only applicable if you have set a height on the feed'); ?></i>
                                     </td>
                                 </tr>
                                 </tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Text'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Header Text'); ?></label><code class="cff_shortcode"> headertext
+                        Eg: headertext='Facebook Feed'</code></th>
                                     <td>
                                         <input name="cff_header_text" type="text" value="<?php esc_attr_e( $cff_header_text ); ?>" size="30" />
-                                        <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('The text to display in the feed header'); ?></i>
+                                        <span>Eg. Facebook Feed, Events, News..</span>
                                     </td>
                                 </tr>
                                 <tr valign="top">
-                                    <th class="bump-left" scope="row"><label><?php _e('Background Color'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Background Color'); ?></label><code class="cff_shortcode"> headerbg
+                        Eg: headerbg=DDD</code></th>
                                     <td>
                                         <input name="cff_header_bg_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_header_bg_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 </tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Padding'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Padding'); ?></label><code class="cff_shortcode"> headerpadding
+                        Eg: headerpadding=20px</code></th>
                                     <td>
                                         <input name="cff_header_padding" type="text" value="<?php esc_attr_e( $cff_header_padding ); ?>" size="6" />
                                         <span>Eg. 20px, 5%. <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('This is the amount of padding/spacing that goes around the header.'); ?></i></span>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Text Size'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Text Size'); ?></label><code class="cff_shortcode"> headertextsize
+                        Eg: headertextsize=28</code></th>
                                     <td>
                                         <select name="cff_header_text_size">
                                             <option value="inherit" <?php if($cff_header_text_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1640,7 +1737,8 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Text Weight'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> headertextweight
+                        Eg: headertextweight=bold</code></th>
                                     <td>
                                         <select name="cff_header_text_weight">
                                             <option value="inherit" <?php if($cff_header_text_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1650,13 +1748,15 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Text Color'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Text Color'); ?></label><code class="cff_shortcode"> headertextcolor
+                        Eg: headertextcolor=333</code></th>
                                     <td>
                                         <input name="cff_header_text_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_header_text_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Icon Type'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Icon Type'); ?></label><code class="cff_shortcode"> headericon
+                        Eg: headericon=facebook</code></th>
                                     <td>
                                         <select name="cff_header_icon" id="cff-header-icon">
                                             <option value="facebook-square" <?php if($cff_header_icon == "facebook-square") echo 'selected="selected"' ?> >Facebook 1</option>
@@ -1684,13 +1784,15 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Icon Color'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Icon Color'); ?></label><code class="cff_shortcode"> headericoncolor
+                        Eg: headericoncolor=FFF</code></th>
                                     <td>
                                         <input name="cff_header_icon_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_header_icon_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="bump-left" scope="row"><label><?php _e('Icon Size'); ?></label></th>
+                                    <th class="bump-left" scope="row"><label><?php _e('Icon Size'); ?></label><code class="cff_shortcode"> headericonsize
+                        Eg: headericonsize=28</code></th>
                                     <td>
                                         <select name="cff_header_icon_size" id="cff-header-icon-size">
                                             <option value="10" <?php if($cff_header_icon_size == "10") echo 'selected="selected"' ?> >10px</option>
@@ -1712,20 +1814,21 @@ function cff_style_page() {
                                         </select>
                                     </td>
                                 </tr>
-
+                                <tr id="author"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <div id="adminform" class="postbox" style="display: block;">
-                    <div class="handlediv" title="Click to toggle"><br></div>
+                    <div class="handlediv"><br></div>
                     <h3 class="hndle"><span><?php _e('Post Author'); ?></span></h3>
                     <div class="inside">
                         <table class="form-table">
                             <tbody>
                                 <tr>
-                                    <th><label for="cff_author_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> authorsize
+                        Eg: authorsize=20</code></th>
                                     <td>
                                         <select name="cff_author_size">
                                             <option value="inherit" <?php if($cff_author_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1749,11 +1852,13 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_author_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> authorcolor
+                        Eg: authorcolor=ff0000</code></th>
                                     <td>
                                         <input name="cff_author_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_author_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
+                                <tr id="text"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1769,13 +1874,15 @@ function cff_style_page() {
                         <table class="form-table">
                             <tbody>
                                 <tr valign="top">
-                                    <th scope="row"><label class="bump-left"><?php _e('Maximum Post Text Length'); ?></label></th>
+                                    <th scope="row"><label class="bump-left"><?php _e('Maximum Post Text Length'); ?></label><code class="cff_shortcode"> textlength
+                        Eg: textlength=200</code></th>
                                     <td>
                                         <input name="cff_title_length" type="text" value="<?php esc_attr_e( $cff_title_length_val ); ?>" size="4" /> <span><?php _e('Characters.'); ?></span> <span>Eg. 200</span> <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('If the post text exceeds this length then a "See More" button will be added. Leave empty to set no maximum length.'); ?></i>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_title_format" class="bump-left"><?php _e('Format'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Format'); ?></label><code class="cff_shortcode"> textformat
+                        Eg: textformat=h4</code></th>
                                     <td>
                                         <select name="cff_title_format">
                                             <option value="p" <?php if($cff_title_format == "p") echo 'selected="selected"' ?> >Paragraph</option>
@@ -1787,7 +1894,8 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_title_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> textsize
+                        Eg: textsize=12</code></th>
                                     <td>
                                         <select name="cff_title_size">
                                             <option value="inherit" <?php if($cff_title_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1811,7 +1919,8 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_title_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> textweight
+                        Eg: textweight=bold</code></th>
                                     <td>
                                         <select name="cff_title_weight">
                                             <option value="inherit" <?php if($cff_title_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1821,44 +1930,47 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_title_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> textcolor
+                        Eg: textcolor=333</code></th>
                                     <td>
                                         <input name="cff_title_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_title_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_posttext_link_color" class="bump-left"><?php _e('Link Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Color'); ?></label><code class="cff_shortcode"> textlinkcolor
+                        Eg: textlinkcolor=E69100</code></th>
                                     <td>
                                         <input name="cff_posttext_link_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_posttext_link_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_title_link" class="bump-left"><?php _e('Link Text to Facebook Post?'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Text to Facebook Post?'); ?></label><code class="cff_shortcode"> textlink
+                        Eg: textlink=true</code></th>
                                     <td><input type="checkbox" name="cff_title_link" id="cff_title_link" <?php if($cff_title_link == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?></td>
                                 </tr>
 
                                 <tr>
-                                    <th><label for="cff_post_tags" class="bump-left"><?php _e('Link Post Tags?'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Post Tags?'); ?></label><code class="cff_shortcode"> posttags
+                        Eg: posttags=false</code></th>
                                     <td>
                                         <input type="checkbox" name="cff_post_tags" id="cff_post_tags" <?php if($cff_post_tags == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                                         <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What are Post Tags?'); ?></a>
                                         <p class="cff-tooltip cff-more-info"><?php _e("When you tag another Facebook page or user in your post using the @ symbol it creates a post tag, which is a link to either that Facebook page or user profile."); ?></p>
                                     </td>
                                 </tr>
-                                
+
                                 <tr>
-                                    <th><label for="cff_link_hashtags" class="bump-left"><?php _e('Link Hashtags?'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Hashtags?'); ?></label><code class="cff_shortcode"> linkhashtags
+                        Eg: linkhashtags=false</code></th>
                                     <td>
                                         <input type="checkbox" name="cff_link_hashtags" id="cff_link_hashtags" <?php if($cff_link_hashtags == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                                     </td>
                                 </tr>
-                                
+                                <tr id="description"><!-- Quick link --></tr>
                                 </tbody>
                             </table>
                         </div>
                 </div>
-                
-
                 <div id="adminform" class="postbox" style="display: block;">
                     <div class="handlediv" title="Click to toggle"><br></div>
                     <h3 class="hndle"><span><?php _e('Link, Photo and Video Description'); ?></span></h3>
@@ -1866,13 +1978,15 @@ function cff_style_page() {
                         <table class="form-table">
                             <tbody>
                                 <tr valign="top">
-                                    <th scope="row"><label class="bump-left"><?php _e('Maximum Description Length'); ?></label></th>
+                                    <th scope="row"><label class="bump-left"><?php _e('Maximum Description Length'); ?></label><code class="cff_shortcode"> desclength
+                        Eg: desclength=150</code></th>
                                     <td>
                                         <input name="cff_body_length" type="text" value="<?php esc_attr_e( $cff_body_length_val ); ?>" size="4" /> <span><?php _e('Characters. Eg. 200'); ?></span> <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Leave empty to set no maximum length'); ?></i>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_body_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> descsize
+                        Eg: descsize=11</code></th>
                                     <td>
                                         <select name="cff_body_size">
                                             <option value="inherit" <?php if($cff_body_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1896,7 +2010,8 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_body_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> descweight
+                        Eg: descweight=bold</code></th>
                                     <td>
                                         <select name="cff_body_weight">
                                             <option value="inherit" <?php if($cff_body_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1906,21 +2021,22 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_body_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> desccolor
+                        Eg: desccolor=9F9F9F</code></th>
                                     
                                     <td>
                                         <input name="cff_body_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_body_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
+                                <tr id="date"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div style="margin-top: -15px;">
-                    <?php submit_button(); ?>
-                </div>
-
+            <div style="margin-top: -15px;">
+                <?php submit_button(); ?>
+            </div>
                 <div id="adminform" class="postbox" style="display: block;">
                     <div class="handlediv" title="Click to toggle"><br></div>
                     <h3 class="hndle"><span><?php _e('Post Date'); ?></span></h3>
@@ -1928,7 +2044,8 @@ function cff_style_page() {
                         <table class="form-table">
                             <tbody>
                             <tr>
-                                <th><label for="cff_date_position" class="bump-left"><?php _e('Position'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Position'); ?></label><code class="cff_shortcode"> datepos
+                        Eg: datepos=below</code></th>
                                 <td>
                                     <select name="cff_date_position" style="width: 280px;">
                                         <option value="author" <?php if($cff_date_position == "author") echo 'selected="selected"' ?> >Immediately under the post author</option>
@@ -1938,7 +2055,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_date_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> datesize
+                        Eg: datesize=14</code></th>
                                 <td>
                                     <select name="cff_date_size">
                                         <option value="inherit" <?php if($cff_date_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1962,7 +2080,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_date_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> dateweight
+                        Eg: dateweight=normal</code></th>
                                 <td>
                                     <select name="cff_date_weight">
                                         <option value="inherit" <?php if($cff_date_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -1972,14 +2091,16 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_date_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> datecolor
+                        Eg: datecolor=EAD114</code></th>
                                 <td>
                                     <input name="cff_date_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_date_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
                                     
                             <tr>
-                                <th><label for="cff_date_formatting" class="bump-left"><?php _e('Date formatting'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Date formatting'); ?></label><code class="cff_shortcode"> dateformat
+                        Eg: dateformat=3</code></th>
                                 <td>
                                     <select name="cff_date_formatting">
                                         <?php $original = strtotime('2013-07-25T17:30:00+0000'); ?>
@@ -2000,7 +2121,7 @@ function cff_style_page() {
                             </tr>
 
                             <tr>
-                                <th><label for="cff_timezone" class="bump-left"><?php _e('Timezone'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Timezone'); ?></label></th>
                                 <td>
                                     <select name="cff_timezone" style="width: 300px;">
                                         <option value="Pacific/Midway" <?php if($cff_timezone == "Pacific/Midway") echo 'selected="selected"' ?> ><?php _e('(GMT-11:00) Midway Island, Samoa'); ?></option>
@@ -2098,20 +2219,22 @@ function cff_style_page() {
                             </tr>
 
                             <tr>
-                                <th><label for="cff_date_custom" class="bump-left"><?php _e('Custom format'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Custom format'); ?></label><code class="cff_shortcode"> datecustom
+                        Eg: datecustom='D M jS, Y'</code></th>
                                 <td>
                                     <input name="cff_date_custom" type="text" value="<?php esc_attr_e( $cff_date_custom ); ?>" size="10" placeholder="Eg. F j, Y" />
-                                    <a href="https://smashballoon.com/custom-facebook-feed/docs/date/" class="cff-external-link" target="_blank"><?php _e('Examples'); ?></a>
+                                    <a href="http://smashballoon.com/custom-facebook-feed/docs/date/" class="cff-external-link" target="_blank"><?php _e('Examples'); ?></a>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_date_before" class="bump-left"><?php _e('Text before date'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text before date'); ?></label></th>
                                 <td><input name="cff_date_before" type="text" value="<?php esc_attr_e( $cff_date_before ); ?>" size="20" placeholder="Eg. Posted" /></td>
                             </tr>
                             <tr>
-                                <th><label for="cff_date_after" class="bump-left"><?php _e('Text after date'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text after date'); ?></label></th>
                                 <td><input name="cff_date_after" type="text" value="<?php esc_attr_e( $cff_date_after ); ?>" size="20" placeholder="Eg. by ___" /></td>
                             </tr>
+                            <tr id="links"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2124,9 +2247,9 @@ function cff_style_page() {
                     <div class="inside">
                         <table class="form-table">
                             <tbody>
-
                                 <tr>
-                                    <th><label for="cff_link_title_format" class="bump-left"><?php _e('Link Title Format'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Title Format'); ?></label><code class="cff_shortcode"> linktitleformat
+                        Eg: linktitleformat='h3'</code></th>
                                     <td>
                                         <select name="cff_link_title_format">
                                             <option value="p" <?php if($cff_link_title_format == "p") echo 'selected="selected"' ?> >Paragraph</option>
@@ -2138,7 +2261,8 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_link_title_size" class="bump-left"><?php _e('Link Title Size'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Title Size'); ?></label><code class="cff_shortcode"> linktitlesize
+                        Eg: linktitlesize='18'</code></th>
                                     <td>
                                         <select name="cff_link_title_size">
                                             <option value="inherit" <?php if($cff_link_title_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2162,37 +2286,42 @@ function cff_style_page() {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_link_title_color" class="bump-left"><?php _e('Link Title Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Title Color'); ?></label><code class="cff_shortcode"> linktitlecolor
+                        Eg: linktitlecolor='ff0000'</code></th>
                                     <td>
                                         <input name="cff_link_title_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_link_title_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><label for="cff_link_url_color" class="bump-left"><?php _e('Link URL Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link URL Color'); ?></label><code class="cff_shortcode"> linkurlcolor
+                        Eg: linkurlcolor='999999'</code></th>
                                     <td>
                                         <input name="cff_link_url_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_link_url_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <th><label for="cff_link_bg_color" class="bump-left"><?php _e('Link Box Background Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Box Background Color'); ?></label><code class="cff_shortcode"> linkbgcolor
+                        Eg: linkbgcolor='EEE'</code></th>
                                     <td>
                                         <input name="cff_link_bg_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_link_bg_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <th><label for="cff_link_border_color" class="bump-left"><?php _e('Link Box Border Color'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Link Box Border Color'); ?></label><code class="cff_shortcode"> linkbordercolor
+                        Eg: linkbordercolor='CCC'</code></th>
                                     <td>
                                         <input name="cff_link_border_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_link_border_color) ); ?>" class="cff-colorpicker" />
                                     </td>
                                 </tr>
 
                                 <tr>
-                                    <th><label for="cff_disable_link_box" class="bump-left"><?php _e('Remove Background/Border'); ?></label></th>
+                                    <th><label class="bump-left"><?php _e('Remove Background/Border'); ?></label><code class="cff_shortcode"> disablelinkbox
+                        Eg: disablelinkbox=true</code></th>
                                     <td><input type="checkbox" name="cff_disable_link_box" id="cff_disable_link_box" <?php if($cff_disable_link_box == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?></td>
                                 </tr>
-
+                                <tr id="eventtitle"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2210,7 +2339,8 @@ function cff_style_page() {
                             <tbody>
                             
                             <tr>
-                                <th><label for="cff_event_title_format" class="bump-left"><?php _e('Format'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Format'); ?></label><code class="cff_shortcode"> eventtitleformat
+                        Eg: eventtitleformat=h5</code></th>
                                 <td>
                                     <select name="cff_event_title_format">
                                         <option value="p" <?php if($cff_event_title_format == "p") echo 'selected="selected"' ?> >Paragraph</option>
@@ -2223,7 +2353,8 @@ function cff_style_page() {
                             </tr>
                             
                             <tr>
-                                <th><label for="cff_event_title_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> eventtitlesize
+                        Eg: eventtitlesize=12</code></th>
                                 <td>
                                     <select name="cff_event_title_size">
                                         <option value="inherit" <?php if($cff_event_title_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2247,7 +2378,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_title_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> eventtitleweight
+                        Eg: eventtitleweight=bold</code></th>
                                 <td>
                                     <select name="cff_event_title_weight">
                                         <option value="inherit" <?php if($cff_event_title_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2257,15 +2389,18 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_title_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> eventtitlecolor
+                        Eg: eventtitlecolor=666</code></th>
                                 <td>
                                     <input name="cff_event_title_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_event_title_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_title_link" class="bump-left"><?php _e('Link title to Facebook event page?'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Link title to Facebook event page?'); ?></label><code class="cff_shortcode"> eventtitlelink
+                        Eg: eventtitlelink=true</code></th>
                                 <td><input type="checkbox" name="cff_event_title_link" id="cff_event_title_link" <?php if($cff_event_title_link == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?></td>
                             </tr>
+                            <tr id="eventdate"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2279,7 +2414,8 @@ function cff_style_page() {
                             <tbody>
                             
                             <tr>
-                                <th><label for="cff_event_date_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> eventdatesize
+                        Eg: eventdatesize=18</code></th>
                                 <td>
                                     <select name="cff_event_date_size">
                                         <option value="inherit" <?php if($cff_event_date_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2303,7 +2439,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_date_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> eventdateweight
+                        Eg: eventdateweight=bold</code></th>
                                 <td>
                                     <select name="cff_event_date_weight">
                                         <option value="inherit" <?php if($cff_event_date_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2313,13 +2450,15 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_date_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> eventdatecolor
+                        Eg: eventdatecolor=EB6A00</code></th>
                                 <td>
                                     <input name="cff_event_date_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_event_date_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
                             <tr valign="top">
-                                <th scope="row"><label class="bump-left"><?php _e('Date Position'); ?></label></th>
+                                <th scope="row"><label class="bump-left"><?php _e('Date Position'); ?></label><code class="cff_shortcode"> eventdatepos
+                        Eg: eventdatepos=below</code></th>
                                 <td>
                                     <select name="cff_event_date_position">
                                         <option value="below" <?php if($cff_event_date_position == "below") echo 'selected="selected"' ?> ><?php _e('Below event title'); ?></option>
@@ -2328,10 +2467,13 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_date_formatting" class="bump-left"><?php _e('Event date formatting'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Event date formatting'); ?></label><code class="cff_shortcode"> eventdateformat
+                        Eg: eventdateformat=12</code></th>
                                 <td>
                                     <select name="cff_event_date_formatting">
                                         <?php $original = strtotime('2013-07-25T17:30:00+0000'); ?>
+                                        <option value="14" <?php if($cff_event_date_formatting == "14") echo 'selected="selected"' ?> ><?php echo date('M j, g:ia', $original); ?></option>
+                                        <option value="15" <?php if($cff_event_date_formatting == "15") echo 'selected="selected"' ?> ><?php echo date('M j, G:i', $original); ?></option>
                                         <option value="1" <?php if($cff_event_date_formatting == "1") echo 'selected="selected"' ?> ><?php echo date('F j, Y, g:ia', $original); ?></option>
                                         <option value="2" <?php if($cff_event_date_formatting == "2") echo 'selected="selected"' ?> ><?php echo date('F jS, g:ia', $original); ?></option>
                                         <option value="3" <?php if($cff_event_date_formatting == "3") echo 'selected="selected"' ?> ><?php echo date('g:ia - F jS', $original); ?></option>
@@ -2349,12 +2491,14 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_date_custom" class="bump-left"><?php _e('Custom event date format'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Custom event date format'); ?></label><code class="cff_shortcode"> eventdatecustom
+                        Eg: eventdatecustom='D M jS, Y'</code></th>
                                 <td>
                                     <input name="cff_event_date_custom" type="text" value="<?php esc_attr_e( $cff_event_date_custom ); ?>" size="10" placeholder="Eg. F j, Y - g:ia" />
-                                    <a href="https://smashballoon.com/custom-facebook-feed/docs/date/" class="cff-external-link" target="_blank"><?php _e('Examples'); ?></a>
+                                    <a href="http://smashballoon.com/custom-facebook-feed/docs/date/" class="cff-external-link" target="_blank"><?php _e('Examples'); ?></a>
                                 </td>
                             </tr>
+                            <tr id="eventdetails"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2367,7 +2511,8 @@ function cff_style_page() {
                             <tbody>
                             
                             <tr>
-                                <th><label for="cff_event_details_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> eventdetailssize
+                        Eg: eventdetailssize=13</code></th>
                                 <td>
                                     <select name="cff_event_details_size">
                                         <option value="inherit" <?php if($cff_event_details_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2391,7 +2536,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_details_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> eventdetailsweight
+                        Eg: eventdetailsweight=bold</code></th>
                                 <td>
                                     <select name="cff_event_details_weight">
                                         <option value="inherit" <?php if($cff_event_details_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2401,18 +2547,20 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_details_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> eventdetailscolor
+                        Eg: eventdetailscolor=FFF000</code></th>
                                 <td>
                                     <input name="cff_event_details_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_event_details_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_event_link_color" class="bump-left"><?php _e('Link Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Link Color'); ?></label><code class="cff_shortcode"> eventlinkcolor
+                        Eg: eventlinkcolor=333</code></th>
                                 <td>
                                     <input name="cff_event_link_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_event_link_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
-                           
+                            <tr id="action"><!-- Quick link --></tr>
                             </tbody>
                         </table>
                     </div>
@@ -2425,7 +2573,8 @@ function cff_style_page() {
                             <tbody>
                                 
                             <tr>
-                                <th><label for="cff_link_size" class="bump-left"><?php _e('Text Size'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> linksize
+                        Eg: linksize=13</code></th>
                                 <td>
                                     <select name="cff_link_size">
                                         <option value="inherit" <?php if($cff_link_size == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2449,7 +2598,8 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_link_weight" class="bump-left"><?php _e('Text Weight'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Weight'); ?></label><code class="cff_shortcode"> linkweight
+                        Eg: linkweight=bold</code></th>
                                 <td>
                                     <select name="cff_link_weight">
                                         <option value="inherit" <?php if($cff_link_weight == "inherit") echo 'selected="selected"' ?> >Inherit</option>
@@ -2459,34 +2609,39 @@ function cff_style_page() {
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_link_color" class="bump-left"><?php _e('Text Color'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> linkcolor
+                        Eg: linkcolor=E01B5D</code></th>
                                 <td>
                                     <input name="cff_link_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_link_color) ); ?>" class="cff-colorpicker" />
                                 </td>
                             </tr>
                             <tr>
-                                <th><label for="cff_facebook_link_text" class="bump-left"><?php _e('Text'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('"View on Facebook" Text'); ?></label><code class="cff_shortcode"> facebooklinktext
+                        Eg: facebooklinktext='Read more...'</code></th>
                                 <td>
                                     <input name="cff_facebook_link_text" type="text" value="<?php echo stripslashes( esc_attr( $cff_facebook_link_text ) ); ?>" size="25" />
                                 </td>
                             </tr>
 
                             <tr>
-                                <th><label for="cff_facebook_share_text" class="bump-left"><?php _e('"Share" Text'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('"Share" Text'); ?></label><code class="cff_shortcode"> sharelinktext
+                        Eg: sharelinktext='Share this post'</code></th>
                                 <td>
                                     <input name="cff_facebook_share_text" type="text" value="<?php echo stripslashes( esc_attr( $cff_facebook_share_text ) ); ?>" size="25" />
                                 </td>
                             </tr>
 
                             <tr>
-                                <th><label for="cff_show_facebook_link" class="bump-left"><?php _e('Show "View on Facebook" link'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Show "View on Facebook" link'); ?></label><code class="cff_shortcode"> showfacebooklink
+                        Eg: showfacebooklink=true</code></th>
                                 <td>
                                     <input type="checkbox" name="cff_show_facebook_link" id="cff_show_facebook_link" <?php if($cff_show_facebook_link == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                                 </td>
                             </tr>
 
                             <tr>
-                                <th><label for="cff_show_facebook_share" class="bump-left"><?php _e('Show "Share" link'); ?></label></th>
+                                <th><label class="bump-left"><?php _e('Show "Share" link'); ?></label><code class="cff_shortcode"> showsharelink
+                        Eg: showsharelink=true</code></th>
                                 <td>
                                     <input type="checkbox" name="cff_show_facebook_share" id="cff_show_facebook_share" <?php if($cff_show_facebook_share == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                                 </td>
@@ -2505,23 +2660,35 @@ function cff_style_page() {
             <a href="https://smashballoon.com/custom-facebook-feed/demo" target="_blank"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             
             <?php } //End Typography tab ?>
-            <?php if( $active_tab == 'misc' ) { //Start Misc tab ?>
+            <?php if( $cff_active_tab == 'misc' ) { //Start Misc tab ?>
+
+            <p class="cff_contents_links" id="comments">
+                <span>Quick links: </span>
+                <a href="#comments">Likes, Shares and Comments</a>
+                <a href="#likebox">Like Box / Page Plugin</a>
+                <a href="#css">Custom CSS</a>
+                <a href="#js">Custom JavaScript</a>
+                <a href="#misc">Misc Settings</a>
+            </p>
+
             <input type="hidden" name="<?php echo $style_misc_hidden_field_name; ?>" value="Y">
             <br />
             <h3><?php _e('Likes, Shares and Comments'); ?></h3><i style="color: #666; font-size: 11px;"><a href="https://smashballoon.com/custom-facebook-feed/" target="_blank"><?php _e('Upgrade to Pro to enable likes, shares and comments'); ?></a></i>
             
-            <hr />
+            <hr id="likebox" /><!-- Quick link -->
             <h3><?php _e('Like Box / Page Plugin'); ?></h3>
             <table class="form-table">
                 <tbody>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Show the Like Box'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Show the Like Box'); ?></label><code class="cff_shortcode"> include  exclude
+                        Eg: include/exclude=likebox</code></th>
                         <td>
                             <input type="checkbox" name="cff_show_like_box" id="cff_show_like_box" <?php if($cff_show_like_box == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Position'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Position'); ?></label><code class="cff_shortcode"> likeboxpos
+                        Eg: likeboxpos=top</code></th>
                         <td>
                             <select name="cff_like_box_position">
                                 <option value="bottom" <?php if($cff_like_box_position == "bottom") echo 'selected="selected"' ?> ><?php _e('Bottom'); ?></option>
@@ -2530,7 +2697,8 @@ function cff_style_page() {
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Display outside the scrollable area'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Display outside the scrollable area'); ?></label><code class="cff_shortcode"> likeboxoutside
+                        Eg: likeboxoutside=true</code></th>
                         <td>
                             <input type="checkbox" name="cff_like_box_outside" id="cff_like_box_outside" <?php if($cff_like_box_outside == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                             <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Only applicable if you have set a height on the feed'); ?></i>
@@ -2538,52 +2706,47 @@ function cff_style_page() {
                     </tr>
                 
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Show faces of fans'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Show faces of fans'); ?></label><code class="cff_shortcode"> likeboxfaces
+                        Eg: likeboxfaces=true</code></th>
                         <td>
                             <input type="checkbox" name="cff_like_box_faces" id="cff_like_box_faces" <?php if($cff_like_box_faces == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                             <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Show thumbnail photos of fans who like your page'); ?></i>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Include the Cover Photo'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Include the Cover Photo'); ?></label><code class="cff_shortcode"> likeboxcover
+                        Eg: likeboxcover=true</code></th>
                         <td>
                             <input type="checkbox" name="cff_like_box_cover" id="cff_like_box_cover" <?php if($cff_like_box_cover == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Use a small header'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Use a small header'); ?></label><code class="cff_shortcode"> likeboxsmallheader
+                        Eg: likeboxsmallheader=true</code></th>
                         <td>
                             <input type="checkbox" name="cff_like_box_small_header" id="cff_like_box_small_header" <?php if($cff_like_box_small_header == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th class="bump-left" scope="row"><label><?php _e('Hide the call to action button (if available)'); ?></label></th>
+                        <th class="bump-left" scope="row"><label><?php _e('Hide the call to action button (if available)'); ?></label><code class="cff_shortcode"> likeboxhidebtn
+                        Eg: likeboxhidebtn=true</code></th>
                         <td>
                             <input type="checkbox" name="cff_like_box_hide_cta" id="cff_like_box_hide_cta" <?php if($cff_like_box_hide_cta == true) echo 'checked="checked"' ?> />&nbsp;<?php _e('Yes'); ?>
                         </td>
                     </tr>
-
-
                     <tr valign="top">
-                        <th class="bump-left" for="cff_likebox_width" scope="row"><label><?php _e('Custom Like Box Width'); ?></label></th>
+                        <th class="bump-left" for="cff_likebox_width" scope="row"><label><?php _e('Custom Like Box Width'); ?></label><code class="cff_shortcode"> likeboxwidth
+                        Eg: likeboxwidth=500</code></th>
                         <td>
                             <input name="cff_likebox_width" type="text" value="<?php esc_attr_e( $cff_likebox_width ); ?>" size="3" />
                             <span>px <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Default: 340, Min: 280, Max: 500'); ?></i></span>
                         </td>
                     </tr>
-                    <!-- <tr valign="top">
-                        <th class="bump-left" for="cff_likebox_height" scope="row"><label><?php _e('Custom Like Box Height'); ?></label></th>
-                        <td>
-                            <input name="cff_likebox_height" type="text" value="<?php esc_attr_e( $cff_likebox_height ); ?>" size="3" />
-                            <span>px <i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('Default: 500, Min: 130'); ?></i></span>
-                        </td>
-                    </tr> -->
-
                 </tbody>
             </table>
 
             <?php submit_button(); ?>
-
+            <span id="css"><!-- Quick link --></span>
             <hr />
             <h3><?php _e('Custom CSS'); ?></h3>
             <table class="form-table">
@@ -2594,7 +2757,7 @@ function cff_style_page() {
                         <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/custom-facebook-feed/docs/snippets/" target="_blank"><?php _e('See some examples'); ?></a></i>
                         </td>
                     </tr>
-                    <tr valign="top">
+                    <tr valign="top" id="js"><!-- Quick link -->
                         <td>
                             <textarea name="cff_custom_css" id="cff_custom_css" style="width: 70%;" rows="7"><?php esc_attr_e( $cff_custom_css ); ?></textarea>
                         </td>
@@ -2615,6 +2778,7 @@ function cff_style_page() {
                             <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php esc_attr_e( stripslashes($cff_custom_js) ); ?></textarea>
                         </td>
                     </tr>
+                    <tr id="misc"><!-- Quick link --></tr>
                 </tbody>
             </table>
 
@@ -2624,7 +2788,8 @@ function cff_style_page() {
             <table class="form-table">
                 <tbody>
                     <tr>
-                        <th class="bump-left"><label for="cff_ajax" class="bump-left"><?php _e('Is your theme loading the Facebook feed via Ajax?'); ?></label></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e('Is your theme loading the feed via Ajax?'); ?></label><code class="cff_shortcode"> ajax
+                        Eg: ajax=true</code></th>
                         <td>
                             <input name="cff_ajax" type="checkbox" id="cff_ajax" <?php if($cff_ajax_val == true) echo "checked"; ?> />
                             <label for="cff_ajax"><?php _e('Yes'); ?></label>
@@ -2633,7 +2798,7 @@ function cff_style_page() {
                         </td>
                     </tr>
                     <tr>
-                        <th class="bump-left"><label for="cff_app_id" class="bump-left"><?php _e('Facebook App ID'); ?></label></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e('Facebook App ID'); ?></label></th>
                         <td>
                             <input name="cff_app_id" type="text" value="<?php esc_attr_e( $cff_app_id ); ?>" size="18" />
                             <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What is this?'); ?></a>
@@ -2641,7 +2806,7 @@ function cff_style_page() {
                         </td>
                     </tr>
                     <tr>
-                        <th class="bump-left"><label for="cff_preserve_settings" class="bump-left"><?php _e("Preserve settings when plugin is removed"); ?></label></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e("Preserve settings when plugin is removed"); ?></label></th>
                         <td>
                             <input name="cff_preserve_settings" type="checkbox" id="cff_preserve_settings" <?php if($cff_preserve_settings_val == true) echo "checked"; ?> />
                             <label for="cff_preserve_settings"><?php _e('Yes'); ?></label>
@@ -2650,7 +2815,8 @@ function cff_style_page() {
                         </td>
                     </tr>
                     <tr>
-                        <th class="bump-left"><label for="cff_show_credit" class="bump-left"><?php _e("Display credit link"); ?></label></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e("Display credit link"); ?></label><code class="cff_shortcode"> credit
+                        Eg: credit=true</code></th>
                         <td>
                             <input name="cff_show_credit" type="checkbox" id="cff_show_credit" <?php if($cff_show_credit == true) echo "checked"; ?> />
                             <label for="cff_show_credit"><?php _e('Yes'); ?></label>
@@ -2659,7 +2825,7 @@ function cff_style_page() {
                     </tr>
 
                     <tr>
-                        <th class="bump-left"><label for="cff_font_source" class="bump-left"><?php _e("Icon font source"); ?></label></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e("Icon font source"); ?></label></th>
                         <td>
                             <select name="cff_font_source">
                                 <option value="cdn" <?php if($cff_font_source == "cdn") echo 'selected="selected"' ?> ><?php _e('CDN'); ?></option>
@@ -2668,6 +2834,45 @@ function cff_style_page() {
                             </select>
                         </td>
                     </tr>
+
+                    <tr>
+                        <th class="bump-left">
+                            <label class="bump-left"><?php _e("Force cache to clear on interval"); ?></label>
+                        </th>
+                        <td>
+                            <select name="cff_cron">
+                                <option value="unset" <?php if($cff_cron == "unset") echo 'selected="selected"' ?> ><?php _e(' - '); ?></option>
+                                <option value="yes" <?php if($cff_cron == "yes") echo 'selected="selected"' ?> ><?php _e('Yes'); ?></option>
+                                <option value="no" <?php if($cff_cron == "no") echo 'selected="selected"' ?> ><?php _e('No'); ?></option>
+                            </select>
+
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this mean?'); ?></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("If you're experiencing an issue with the plugin not auto-updating then you can set this to 'Yes' to run a scheduled event behind the scenes which forces the plugin cache to clear on a regular basis and retrieve new data from Facebook."); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="bump-left"><label class="bump-left"><?php _e("Request method"); ?></label></th>
+                        <td>
+                            <select name="cff_request_method">
+                                <option value="auto" <?php if($cff_request_method == "auto") echo 'selected="selected"' ?> ><?php _e('Auto'); ?></option>
+                                <option value="1" <?php if($cff_request_method == "1") echo 'selected="selected"' ?> ><?php _e('cURL'); ?></option>
+                                <option value="2" <?php if($cff_request_method == "2") echo 'selected="selected"' ?> ><?php _e('file_get_contents'); ?></option>
+                                <option value="3" <?php if($cff_request_method == "3") echo 'selected="selected"' ?> ><?php _e("WP_Http"); ?></option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="bump-left"><label for="cff_disable_styles" class="bump-left"><?php _e("Disable default styles"); ?></label></th>
+                        <td>
+                            <input name="cff_disable_styles" type="checkbox" id="cff_disable_styles" <?php if($cff_disable_styles == true) echo "checked"; ?> />
+                            <label for="cff_disable_styles"><?php _e('Yes'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this do?'); ?></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("The plugin includes some basic text and link styles which can be disabled by enabling this setting. Note that the styles used for the layout of the posts will still be applied."); ?></p>
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
 
@@ -2676,7 +2881,15 @@ function cff_style_page() {
             <?php } //End Misc tab ?>
 
 
-            <?php if( $active_tab == 'custom_text' ) { //Start Custom Text tab ?>
+            <?php if( $cff_active_tab == 'custom_text' ) { //Start Custom Text tab ?>
+
+            <p class="cff_contents_links">
+                <span>Quick links: </span>
+                <a href="#text">Post Text</a>
+                <a href="#action">Post Action Links</a>
+                <a href="#date">Date</a>
+            </p>
+
             <input type="hidden" name="<?php echo $style_custom_text_hidden_field_name; ?>" value="Y">
             <br />
             <h3><?php _e('Custom Text / Translate'); ?></h3>
@@ -2684,7 +2897,7 @@ function cff_style_page() {
             <table class="form-table cff-translate-table" style="width: 100%; max-width: 940px;">
                 <tbody>
 
-                    <thead>
+                    <thead id="text">
                         <tr>
                             <th><?php _e('Original Text'); ?></th>
                             <th><?php _e('Custom Text / Translation'); ?></th>
@@ -2699,7 +2912,7 @@ function cff_style_page() {
                         <td class="cff-context"><?php _e('Used when truncating the post text'); ?></td>
                     </tr>
 
-                    <tr>
+                    <tr id="action"><!-- Quick link -->
                         <td><label for="cff_see_less_text" class="bump-left"><?php _e('See Less'); ?></label></td>
                         <td><input name="cff_see_less_text" type="text" value="<?php echo stripslashes( esc_attr( $cff_see_less_text ) ); ?>" /></td>
                         <td class="cff-context"><?php _e('Used when truncating the post text'); ?></td>
@@ -2717,7 +2930,7 @@ function cff_style_page() {
                         <td class="cff-context"><?php _e('Used for sharing the Facebook post via Social Media'); ?></td>
                     </tr>
 
-                    <tr>
+                    <tr id="date"><!-- Quick link -->
                         <td><label for="cff_translate_photos_text" class="bump-left"><?php _e('photos'); ?></label></td>
                         <td><input name="cff_translate_photos_text" type="text" value="<?php echo stripslashes( esc_attr( $cff_translate_photos_text ) ); ?>" /></td>
                         <td class="cff-context"><?php _e('Added to the end of an album name. Eg. (6 photos)'); ?></td>
@@ -2821,15 +3034,15 @@ function cff_style_page() {
 } //End Style_Page
 //Enqueue admin styles
 function cff_admin_style() {
-        wp_register_style( 'custom_wp_admin_css', plugin_dir_url( __FILE__ ) . 'css/cff-admin-style.css?7', false, '1.0.0' );
+        wp_register_style( 'custom_wp_admin_css', plugin_dir_url( __FILE__ ) . 'css/cff-admin-style.css', false, CFFVER );
         wp_enqueue_style( 'custom_wp_admin_css' );
-        wp_enqueue_style( 'cff-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', array(), '4.0.3' );
+        wp_enqueue_style( 'cff-font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', array(), '4.5.0' );
         wp_enqueue_style( 'wp-color-picker' );
 }
 add_action( 'admin_enqueue_scripts', 'cff_admin_style' );
 //Enqueue admin scripts
 function cff_admin_scripts() {
-    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js?7' );
+    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', false, CFFVER );
     if( !wp_script_is('jquery-ui-draggable') ) { 
         wp_enqueue_script(
             array(
@@ -2859,4 +3072,29 @@ function cff_add_settings_link( $links, $file ) {
  
     return $links;
 }
+
+
+//Cron job to clear transients
+add_action('cff_cron_job', 'cff_cron_clear_cache');
+function cff_cron_clear_cache() {
+    //Delete all transients
+    global $wpdb;
+    $table_name = $wpdb->prefix . "options";
+    $wpdb->query( "
+        DELETE
+        FROM $table_name
+        WHERE `option_name` LIKE ('%\_transient\_cff\_%')
+        " );
+    $wpdb->query( "
+        DELETE
+        FROM $table_name
+        WHERE `option_name` LIKE ('%\_transient\_cff\_tle\_%')
+        " );
+    $wpdb->query( "
+        DELETE
+        FROM $table_name
+        WHERE `option_name` LIKE ('%\_transient\_timeout\_cff\_%')
+        " );
+}
+
 ?>

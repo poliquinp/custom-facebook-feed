@@ -908,7 +908,7 @@ function display_cff($atts) {
             //ONLY show posts by others
             if ( $cff_show_only_others ) {
                 //Get the numeric ID of the page
-                $page_object = cff_fetchUrl('https://graph.facebook.com/v2.5/' . $page_id . '?fields=name,id&access_token=' . $access_token);
+                $page_object = cff_fetchUrl('https://graph.facebook.com/' . $page_id . '?fields=name,id&access_token=' . $access_token);
                 $page_object = json_decode($page_object);
                 $numeric_page_id = $page_object->id;
 

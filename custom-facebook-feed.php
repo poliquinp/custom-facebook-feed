@@ -3,7 +3,7 @@
 Plugin Name: Custom Facebook Feed
 Plugin URI: http://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.4.1
+Version: 2.4.1.2
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //Include admin
 include dirname( __FILE__ ) .'/custom-facebook-feed-admin.php';
 
-define('CFFVER', '2.4.1');
+define('CFFVER', '2.4.1.2');
 
 // Add shortcodes
 add_shortcode('custom-facebook-feed', 'display_cff');
@@ -632,21 +632,23 @@ function display_cff($atts) {
 
     //If there's no Access Token then use a default
     $access_token_array = array(
-        '1489500477999288|KFys5ppNi3sreihdreqPkU2ChIE',
-        '859332767418162|BR-YU8zjzvonNrszlll_1a4y_xE',
-        '360558880785446|4jyruti_VkxxK7gS7JeyX-EuSXs',
-        '1487072591579718|0KQzP-O2E4mvFCPxTLWP1b87I4Q',
-        '640861236031365|2rENQzxtWtG12DtlZwqfZ6Vu6BE',
-        '334487440086538|hI_NNy1NvxQiQxm-TtXsrmoCVaE',
-        '755471677869105|Jxv8xVDad7vUUTauk8K2o71wG2w',
-        '518353204973067|dA7YTe-k8eSvgZ8lqa51xSm16DA',
-        '444286039063163|5qkYu2qxpERWO3gcs2f3nxeqhpg',
-        '944793728885704|XJ6QqKK8Ldsssr4n5Qrs2tVr7rs',
-        '1444667452511509|wU7tzWiuj6NadfpHfgkIGLGO86o',
-        '1574171666165548|ZL9tXNXxpnCdAvdUjCX5HtRnsR8'
+        '772762049525257|UksMy-gYmk78WNHVEsimaf8uar4',
+        '1611234219197161|PenH1iYmf3CShpuWiLMrP6_0mro',
+        '842457575860455|MA2WQAK6MO22mYlD1vAfQmY-jNQ',
+        '1598576770461963|t3KRNHf1490G8qEopdGoUiMPJ7I',
+        '1774415812787078|3yGpMpgbH-Nte9YHCfVIQ59RIt8',
+        '762305090538008|KmVsImjHmaJIPTpII9HyOif3yD0',
+        '1741187749472232|b1ZfgQ2OSQZzsQN1lqLn4vjrQV4',
+        '1748310315388907|AMSWRHgAoChtXepfsWU0OxKfVbQ',
+        '1721409114785415|4dIAXp4_utfqkAJS-9X4OXB6GR4',
+        '1609030662756868|nCKsZPN4cI-GsIJsi0DESGGtSgw',
+        '1590773627916704|EbgBWG45AVQZdNrwsAnTl_-CW_A',
+        '227652200958404|AzHtmm3B080elswwLKJrRCKYpGg',
+        '1176842909001332|YIQehZhGPWxqkvmiFn4Klt1PA4U',
+        '217933725249790|h4YSEYX71EO_2el93hiT47uyf5g',
+        '823681761071502|0oAyJYz-MO-jgr8rI3ftrEcBRiQ'
     );
-    if ($access_token == '' || !$cff_show_access_token) $access_token = $access_token_array[rand(0, 11)];
-
+    if ($access_token == '' || !$cff_show_access_token) $access_token = $access_token_array[rand(0, 14)];
 
     //Check whether a Page ID has been defined
     if ($page_id == '') {
@@ -803,8 +805,6 @@ function display_cff($atts) {
     
     //ALL POSTS
     if (!$cff_events_only){
-
-        // $cff_posts_json_url = 'https://graph.facebook.com/' . $page_id . '/' . $graph_query . '?access_token=' . $access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
 
         $cff_posts_json_url = 'https://graph.facebook.com/' . $page_id . '/' . $graph_query . '?fields=id,from,message,message_tags,story,story_tags,link,source,name,caption,description,type,status_type,object_id,created_time&access_token=' . $access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
 

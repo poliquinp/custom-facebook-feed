@@ -3,7 +3,7 @@ Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook events, Facebook page, Facebook group, Facebook groups, Facebook fans, Facebook likes, Facebook followers, Facebooks, Face book, posts, Facebook postings, Facebook feeds, Facebook pages, Facebook Like Box, Facebook plugin, Facebook plug-in, Facebook walls, Facebook hashtag, Facebook embed, Customizable Facebook Feed, custom, customizable, seo, responsive, mobile, social media
 Requires at least: 3.0
 Tested up to: 4.5
-Stable tag: 2.4.1
+Stable tag: 2.4.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -361,6 +361,12 @@ Credit iMarketing Factory - "The Importance of Facebook for Small Businesses"
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.4.1.2 =
+* Updated to be compatible with Facebook API version 2.6
+
+= 2.4.1.1 =
+* Fix: Fixed a JavaScript error in the admin area when using WordPress 4.5
+
 = 2.4.1 =
 * New: If a post contains either a photo or video then an icon and link are now added to view it on Facebook. You can disable this by unchecking the "Media Link" option in the following location: Customize > Post Layout > Show/Hide. You can also remove it by using the "exclude" shortcode option: exclude="medialink". You can translate or change the text for this link on the "Custom Text / Translate" settings page.
 * Tweak: Tested with WordPress 4.5

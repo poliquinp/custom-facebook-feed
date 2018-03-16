@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 	
 	//Tooltips
 	jQuery('#cff-admin .cff-tooltip-link').click(function(){
-		jQuery(this).closest('tr').find('.cff-tooltip').slideToggle();
+		jQuery(this).closest('tr, h3, div').find('.cff-tooltip').slideToggle();
 	});
 
 	//Toggle Access Token field
@@ -37,6 +37,31 @@ jQuery(document).ready(function($) {
 		} else {
 			$cff_page_type_options.fadeIn();
 			$cff_profile_error.fadeOut();
+		}
+	});
+
+
+	//Post limit manual setting
+	var cff_limit_setting = jQuery('#cff_limit_setting').val(),
+			cff_post_limit = jQuery('#cff_post_limit').val(),
+			$cff_limit_manual_settings = jQuery('#cff_limit_manual_settings');
+	if( typeof cff_post_limit === 'undefined' ) cff_post_limit = '';
+
+	//Should we show anything initially?
+	if(cff_limit_setting == 'auto') $cff_limit_manual_settings.hide();
+	if(cff_post_limit.length > 0){
+		$cff_limit_manual_settings.show();
+		jQuery('#cff_limit_setting').val('manual');
+	}
+
+	jQuery('#cff_limit_setting').change(function(){
+		cff_limit_setting = jQuery('#cff_limit_setting').val();
+
+		if(cff_limit_setting == 'auto'){
+			$cff_limit_manual_settings.hide();
+			jQuery('#cff_post_limit').val('');
+		} else {
+			$cff_limit_manual_settings.show();
 		}
 	});
 
@@ -112,34 +137,47 @@ jQuery(document).ready(function($) {
 	}
 
 	//Scroll to hash for quick links
-  jQuery('#cff-admin a').click(function() {
-    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-      var target = jQuery(this.hash);
-      target = target.length ? target : this.hash.slice(1);
-      if (target.length) {
-        jQuery('html,body').animate({
-          scrollTop: target.offset().top
-        }, 500);
-        return false;
-      }
-    }
-  });
+	jQuery('#cff-admin a').click(function() {
+	if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+	  var target = jQuery(this.hash);
+	  target = target.length ? target : this.hash.slice(1);
+	  if (target.length) {
+	    jQuery('html,body').animate({
+	      scrollTop: target.offset().top
+	    }, 500);
+	    return false;
+	  }
+	}
+	});
 
-  //Shortcode tooltips
-  jQuery('#cff-admin label').click(function(){
-    var $sbi_shortcode = jQuery(this).siblings('.cff_shortcode');
-    if($sbi_shortcode.is(':visible')){
-      jQuery(this).siblings('.cff_shortcode').css('display','none');
-    } else {
-      jQuery(this).siblings('.cff_shortcode').css('display','block');
-    }  
-  });
-  jQuery('#cff-admin label').hover(function(){
-    if( jQuery(this).siblings('.cff_shortcode').length > 0 ){
-      jQuery(this).attr('title', 'Click for shortcode option').append('<code class="cff_shortcode_symbol">[]</code>');
-    }
-  }, function(){
-    jQuery(this).find('.cff_shortcode_symbol').remove();
-  });
+	//Shortcode tooltips
+	jQuery('#cff-admin label').click(function(){
+	var $sbi_shortcode = jQuery(this).siblings('.cff_shortcode');
+	if($sbi_shortcode.is(':visible')){
+		jQuery(this).siblings('.cff_shortcode').css('display','none');
+	} else {
+		jQuery(this).siblings('.cff_shortcode').css('display','block');
+	}  
+	});
+	jQuery('#cff-admin label').hover(function(){
+	if( jQuery(this).siblings('.cff_shortcode').length > 0 ){
+		jQuery(this).attr('title', 'Click for shortcode option').append('<code class="cff_shortcode_symbol">[]</code>');
+	}
+	}, function(){
+		jQuery(this).find('.cff_shortcode_symbol').remove();
+	});
+
+	//Open/close the expandable option sections
+	jQuery('.cff-expandable-options').hide();
+	jQuery('.cff-expand-button a').on('click', function(e){
+		e.preventDefault();
+		var $self = jQuery(this);
+		$self.parent().next('.cff-expandable-options').toggle();
+		if( $self.text().indexOf('Show') !== -1 ){
+			$self.text( $self.text().replace('Show', 'Hide') );
+		} else {
+			$self.text( $self.text().replace('Hide', 'Show') );
+		}
+	});
 
 });

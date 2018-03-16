@@ -270,6 +270,7 @@ function display_cff($atts) {
     $cff_show_video_type = true;
     $cff_show_photos_type = true;
     $cff_show_status_type = true;
+    $cff_show_albums_type = true;
     $cff_events_only = false;
     //Are we showing ONLY events?
     if ($cff_show_event_type && !$cff_show_links_type && !$cff_show_video_type && !$cff_show_photos_type && !$cff_show_status_type) $cff_events_only = true;
@@ -2252,9 +2253,6 @@ function cff_to_slug($string){
     return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
 }
 
-// remove_filter( 'the_content', 'wpautop' );
-// add_filter( 'the_content', 'wpautop', 99 );
-
 
 //Allows shortcodes in theme
 add_filter('widget_text', 'do_shortcode');
@@ -2307,26 +2305,34 @@ function cff_scripts_method() {
 
 function cff_activate() {
     $options = get_option('cff_style_settings');
+
+    //Show all post types
     $options[ 'cff_show_links_type' ] = true;
     $options[ 'cff_show_event_type' ] = true;
     $options[ 'cff_show_video_type' ] = true;
     $options[ 'cff_show_photos_type' ] = true;
     $options[ 'cff_show_status_type' ] = true;
-    $options[ 'cff_show_author' ] = true;
-    $options[ 'cff_show_text' ] = true;
-    $options[ 'cff_show_desc' ] = true;
-    $options[ 'cff_show_shared_links' ] = true;
-    $options[ 'cff_show_date' ] = true;
-    $options[ 'cff_show_media' ] = true;
-    $options[ 'cff_show_media_link' ] = true;
-    $options[ 'cff_show_event_title' ] = true;
-    $options[ 'cff_show_event_details' ] = true;
-    $options[ 'cff_show_meta' ] = true;
-    $options[ 'cff_show_link' ] = true;
-    $options[ 'cff_show_like_box' ] = true;
-    $options[ 'cff_show_facebook_link' ] = true;
-    $options[ 'cff_show_facebook_share' ] = true;
-    $options[ 'cff_event_title_link' ] = true;
+    $options[ 'cff_show_albums_type' ] = true;
+
+    //Show all parts of the feed by default on activation if they're all unset
+    if( $options[ 'cff_show_author' ] !== true && $options[ 'cff_show_text' ] !== true && $options[ 'cff_show_desc' ] !== true && $options[ 'cff_show_shared_links' ] !== true && $options[ 'cff_show_date' ] !== true && $options[ 'cff_show_media' ] !== true && $options[ 'cff_show_media_link' ] !== true && $options[ 'cff_show_event_title' ] !== true && $options[ 'cff_show_event_details' ] !== true && $options[ 'cff_show_meta' ] !== true && $options[ 'cff_show_link' ] !== true && $options[ 'cff_show_like_box' ] !== true && $options[ 'cff_show_facebook_link' ] !== true && $options[ 'cff_show_facebook_share' ] !== true && $options[ 'cff_event_title_link' ] !== true ){
+        $options[ 'cff_show_author' ] = true;
+        $options[ 'cff_show_text' ] = true;
+        $options[ 'cff_show_desc' ] = true;
+        $options[ 'cff_show_shared_links' ] = true;
+        $options[ 'cff_show_date' ] = true;
+        $options[ 'cff_show_media' ] = true;
+        $options[ 'cff_show_media_link' ] = true;
+        $options[ 'cff_show_event_title' ] = true;
+        $options[ 'cff_show_event_details' ] = true;
+        $options[ 'cff_show_meta' ] = true;
+        $options[ 'cff_show_link' ] = true;
+        $options[ 'cff_show_like_box' ] = true;
+        $options[ 'cff_show_facebook_link' ] = true;
+        $options[ 'cff_show_facebook_share' ] = true;
+        $options[ 'cff_event_title_link' ] = true;
+    }
+
     update_option( 'cff_style_settings', $options );
 
     get_option('cff_show_access_token');

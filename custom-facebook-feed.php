@@ -2313,25 +2313,21 @@ function cff_activate() {
     $options[ 'cff_show_photos_type' ] = true;
     $options[ 'cff_show_status_type' ] = true;
     $options[ 'cff_show_albums_type' ] = true;
-
-    //Show all parts of the feed by default on activation if they're all unset
-    if( $options[ 'cff_show_author' ] !== true && $options[ 'cff_show_text' ] !== true && $options[ 'cff_show_desc' ] !== true && $options[ 'cff_show_shared_links' ] !== true && $options[ 'cff_show_date' ] !== true && $options[ 'cff_show_media' ] !== true && $options[ 'cff_show_media_link' ] !== true && $options[ 'cff_show_event_title' ] !== true && $options[ 'cff_show_event_details' ] !== true && $options[ 'cff_show_meta' ] !== true && $options[ 'cff_show_link' ] !== true && $options[ 'cff_show_like_box' ] !== true && $options[ 'cff_show_facebook_link' ] !== true && $options[ 'cff_show_facebook_share' ] !== true && $options[ 'cff_event_title_link' ] !== true ){
-        $options[ 'cff_show_author' ] = true;
-        $options[ 'cff_show_text' ] = true;
-        $options[ 'cff_show_desc' ] = true;
-        $options[ 'cff_show_shared_links' ] = true;
-        $options[ 'cff_show_date' ] = true;
-        $options[ 'cff_show_media' ] = true;
-        $options[ 'cff_show_media_link' ] = true;
-        $options[ 'cff_show_event_title' ] = true;
-        $options[ 'cff_show_event_details' ] = true;
-        $options[ 'cff_show_meta' ] = true;
-        $options[ 'cff_show_link' ] = true;
-        $options[ 'cff_show_like_box' ] = true;
-        $options[ 'cff_show_facebook_link' ] = true;
-        $options[ 'cff_show_facebook_share' ] = true;
-        $options[ 'cff_event_title_link' ] = true;
-    }
+    $options[ 'cff_show_author' ] = true;
+    $options[ 'cff_show_text' ] = true;
+    $options[ 'cff_show_desc' ] = true;
+    $options[ 'cff_show_shared_links' ] = true;
+    $options[ 'cff_show_date' ] = true;
+    $options[ 'cff_show_media' ] = true;
+    $options[ 'cff_show_media_link' ] = true;
+    $options[ 'cff_show_event_title' ] = true;
+    $options[ 'cff_show_event_details' ] = true;
+    $options[ 'cff_show_meta' ] = true;
+    $options[ 'cff_show_link' ] = true;
+    $options[ 'cff_show_like_box' ] = true;
+    $options[ 'cff_show_facebook_link' ] = true;
+    $options[ 'cff_show_facebook_share' ] = true;
+    $options[ 'cff_event_title_link' ] = true;
 
     update_option( 'cff_style_settings', $options );
 

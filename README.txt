@@ -3,7 +3,7 @@ Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook group
 Requires at least: 3.0
 Tested up to: 4.9
-Stable tag: 2.5
+Stable tag: 2.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -264,6 +264,10 @@ You no longer need your own Access Token to use the Custom Facebook Feed Plugin,
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+
+= 2.5.1 =
+* Fix: Prevented a PHP notice which would be displayed under rare circumstances
+* Fix: Replaced a function due to a deprecation in PHP 7.2
 
 = 2.5 =
 * New: Added the post story as part of the page/author name at the top of the post

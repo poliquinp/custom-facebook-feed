@@ -598,8 +598,8 @@ cff_preserve_settings => <?php echo get_option('cff_preserve_settings') ."\n"; ?
 cff_title_length => <?php echo get_option('cff_title_length') ."\n"; ?>
 cff_body_length => <?php echo get_option('cff_body_length') ."\n"; ?>
 <?php 
-while (list($key, $val) = each($options)) {
-    echo "$key => $val\n";
+foreach ( $options as $option => $value ) {
+    echo "$option => $value\n";
 }
 ?>
 

@@ -15,28 +15,35 @@ jQuery(document).ready(function($) {
 	//Is this a page, group or profile?
 	var cff_page_type = jQuery('.cff-page-type select').val(),
 		$cff_page_type_options = jQuery('.cff-page-options'),
-		$cff_profile_error = jQuery('.cff-profile-error.cff-page-type');
+		$cff_profile_error = jQuery('.cff-profile-error.cff-page-type'),
+		$cff_group_error = jQuery('.cff-group-error.cff-page-type');
 
 	//Should we show anything initially?
 	if(cff_page_type !== 'page') $cff_page_type_options.hide();
 	if(cff_page_type == 'profile') $cff_profile_error.show();
+	if(cff_page_type == 'group') $cff_group_error.show();
 
 	//When page type is changed show the relevant item
 	jQuery('.cff-page-type').change(function(){
 		cff_page_type = jQuery('.cff-page-type select').val();
 
 		if( cff_page_type !== 'page' ) {
-			$cff_page_type_options.fadeOut(function(){
-				if( cff_page_type == 'profile' ) {
-					$cff_profile_error.fadeIn();
+			$cff_page_type_options.hide();
+			if( cff_page_type == 'profile' ) {
+					$cff_profile_error.show();
+					$cff_group_error.hide();
+				} else if( cff_page_type == 'group' ) {
+					$cff_group_error.show();
+					$cff_profile_error.hide();
 				} else {
-					$cff_profile_error.fadeOut();
+					$cff_group_error.hide();
+					$cff_profile_error.hide();
 				}
-			});
 			
 		} else {
-			$cff_page_type_options.fadeIn();
-			$cff_profile_error.fadeOut();
+			$cff_page_type_options.show();
+			$cff_profile_error.hide();
+			$cff_group_error.hide();
 		}
 	});
 
@@ -152,20 +159,26 @@ jQuery(document).ready(function($) {
 
 	//Shortcode tooltips
 	jQuery('#cff-admin label').click(function(){
-	var $sbi_shortcode = jQuery(this).siblings('.cff_shortcode');
-	if($sbi_shortcode.is(':visible')){
-		jQuery(this).siblings('.cff_shortcode').css('display','none');
-	} else {
-		jQuery(this).siblings('.cff_shortcode').css('display','block');
-	}  
+	  	var $el = jQuery(this);
+	    var $cff_shortcode = $el.siblings('.cff_shortcode');
+	    if($cff_shortcode.is(':visible')){
+	      $el.siblings('.cff_shortcode').css('display','none');
+	    } else {
+	      $el.siblings('.cff_shortcode').css('display','block');
+	    }  
 	});
-	jQuery('#cff-admin label').hover(function(){
-	if( jQuery(this).siblings('.cff_shortcode').length > 0 ){
-		jQuery(this).attr('title', 'Click for shortcode option').append('<code class="cff_shortcode_symbol">[]</code>');
-	}
+	jQuery('#cff-admin th').hover(function(){
+		if( jQuery(this).find('.cff_shortcode').length > 0 ){
+		  jQuery(this).find('label').append('<code class="cff_shortcode_symbol">[]</code>');
+		}
 	}, function(){
 		jQuery(this).find('.cff_shortcode_symbol').remove();
 	});
+	jQuery('#cff-admin label').hover(function(){
+		if( jQuery(this).siblings('.cff_shortcode').length > 0 ){
+		  jQuery(this).attr('title', 'Click for shortcode option');
+		}
+	}, function(){});
 
 	//Open/close the expandable option sections
 	jQuery('.cff-expandable-options').hide();
@@ -179,5 +192,49 @@ jQuery(document).ready(function($) {
 			$self.text( $self.text().replace('Hide', 'Show') );
 		}
 	});
+
+	//Facebook login
+	$('#cff_fb_login').on('click', function(){
+		$('#cff_fb_login_modal').show();
+	});
+	$('#cff_admin_cancel_btn').on('click', function(){
+		$('#cff_fb_login_modal').hide();
+	});
+
+	//Select a page for token
+	$('.cff-managed-page').on('click', function(){
+		$('#cff_access_token, #cff_page_access_token').val( $(this).attr('data-token') ).addClass('cff-success');
+		if( $('#cff_page_id').val().trim() == '' ) $('#cff_page_id').val( $(this).attr('data-page-id') );
+		$(this).siblings().removeClass('cff-page-selected');
+		$(this).addClass('cff-page-selected');
+		// $('.cff-save-page-token').show();
+		//Check the own access token setting so it reveals token field
+		if( $('#cff_show_access_token:checked').length < 1 ){
+			$("#cff_show_access_token").trigger("change").prop( "checked", true );
+		}
+	});
+
+	// Clear avatar cache
+    var $cffClearAvatarsBtn = $('#cff-admin #cff_clear_avatars');
+    $cffClearAvatarsBtn.click(function(event) {
+        event.preventDefault();
+        $('#cff-clear-avatars-success').remove();
+        $(this).prop("disabled",true);
+        $.ajax({
+            url : ajaxurl,
+            type : 'post',
+            data : {
+                action : 'cff_clear_avatar_cache'
+            },
+            success : function(data) {
+                $cffClearAvatarsBtn.prop('disabled',false);
+                if(!data===false) {
+                    $cffClearAvatarsBtn.after('<i id="cff-clear-avatars-success" class="fa fa-check-circle cff-success-check"></i>');
+                } else {
+                    $cffClearAvatarsBtn.after('<span>error</span>');
+                }
+            }
+        });
+    });
 
 });

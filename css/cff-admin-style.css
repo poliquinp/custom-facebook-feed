@@ -74,7 +74,8 @@
 #cff-admin .cff-notice a:focus{
 	color: #a34100;
 }
-#cff-admin .cff-profile-error{
+#cff-admin .cff-profile-error,
+#cff-admin .cff-group-error{
 	display: none;
 
 	margin-top: 5px;
@@ -126,8 +127,8 @@
 	color: #592626;
 }
 #cff-admin .cff-success{
-	background: #f7faf1;
-	border: 1px solid #5c783e;
+	background: #dceada;
+	border: 1px solid #6ca365;
 	color: #3e5f1c;
 }
 /* Loader */
@@ -431,7 +432,7 @@
 }
 #cff-admin .cff-save-settings-btn #submit:active{
 	vertical-align: middle;
-	margin-top: -3px;
+	margin-top: -4px;
 }
 #cff-admin .cff-save-settings-btn .cff-tooltip-link{
   display: inline-block;
@@ -796,4 +797,188 @@
 	margin-top: 10px;
 	border: 1px solid #ddd;
 	display: none;
+}
+
+/* FB login button */
+#cff-admin .cff_admin_btn,
+#cff-admin .cff-admin-cancel-btn{
+	display: inline-block;
+	clear: both;
+	padding: 0 21px 0 20px;
+	height: 45px;
+    line-height: 44px;
+	background: #386793;
+	color: #e9eef3;
+	text-decoration: none;
+	font-size: 14px;
+
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+
+	-moz-transition: all 0.5s ease-in-out;
+	-webkit-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
+	transition: all 0.5s ease-in-out;
+}
+#cff-admin .cff_admin_btn:hover,
+#cff-admin .cff-admin-cancel-btn:hover{
+	background-color: #3880c4;
+	color: #fff;
+
+	-moz-transition: all 0.1s ease-in-out;
+	-webkit-transition: all 0.1s ease-in-out;
+	-o-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
+}
+#cff-admin .cff_admin_btn .fa {
+    margin-right: 5px;
+    font-size: 18px;
+    position: relative;
+    top: 1px;
+}
+
+#cff-admin .cff-managed-pages{
+    margin: 10px 0 0 0;
+}
+#cff-admin .cff-managed-page{
+    width: 100%;
+    border: 1px solid transparent;
+    padding: 0;
+    background: #fff;
+    box-sizing: border-box;
+}
+#cff-admin .cff-managed-page:hover{
+    background: rgba(255,255,255,0.8);
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+#cff-admin .cff-managed-page .cff-page-avatar{
+    float: left;
+    margin-right: 10px;
+}
+#cff-admin .cff-managed-page p{
+    padding: 0;
+    margin: 0;
+    height: 50px;
+    line-height: 50px;
+}
+#cff-admin .cff-managed-page.cff-page-selected{
+	background: #dceada;
+	border: 1px solid #6ca365;
+}
+#cff-admin .cff-save-page-token{
+	display: none;
+}
+
+#cff-admin #cff-enter-manual-id{
+	/*display: none;*/
+}
+#cff-admin .cff-reviews-access-token{
+	/*display: none !important;*/
+}
+#cff-admin #cff_fb_login_modal{
+	display: none;
+	position: fixed;
+    z-index: 999;
+    width: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(0,0,0,0.3);
+}
+#cff-admin .cff_modal_box{
+	position: absolute;
+    top: 180px;
+    left: 50%;
+    width: 380px;
+    margin: 0 0 0 -195px;
+    padding: 20px 40px;
+    background: #fff;
+    text-align: center;
+    -webkit-box-shadow: 0 1px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 20px rgba(0,0,0,0.2);
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+#cff-admin .cff_modal_box .cff_admin_btn{
+	margin-top: 10px;
+}
+#cff-admin .cff-admin-cancel-btn{
+	margin-right: 5px;
+    background: #ddd;
+    color: #555;
+}
+#cff-admin .cff-admin-cancel-btn:hover{
+	background: #ccc;
+	color: #333;
+}
+#cff-admin .cff_srlogo{
+	display: inline-block;
+	height: 16px;
+}
+#cff-admin .cff_srlogo {
+    display: inline-block;
+    height: 16px;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: -5px;
+}
+#cff-admin .cff_srlogo img {
+    height: 16px;
+    position: relative;
+    top: 2px;
+    left: -2px;
+}
+#cff-admin .cff_modal_box p{
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+/* Choose token */
+#cff-admin #cff-own, #cff-admin #cff-public{
+	display: none;
+}
+#cff-admin .cff-token-radios{
+	width: 265px;
+    text-align: left;
+    margin-left: 110px;
+}
+#cff-admin .cff-token-radios input{
+	position: relative;
+    top: 2px;
+}
+#cff-admin .cff_modal_box .cff-disabled{
+	background: #EEE;
+    color: #aaa;
+    cursor: default;
+}
+#cff-admin .cff-token-question-own,
+#cff-admin .cff-token-question-public{
+	position: relative;
+    top: 2px;
+    left: 3px;
+    font-size: 15px;
+    opacity: 0.8;
+    margin: 0;
+}
+#cff-admin .cff-token-question-own:hover,
+#cff-admin .cff-token-question-public:hover{
+    opacity: 1;
+    color: #005e8c;
+}
+#cff-admin #cff-token-intro .cff-tooltip{
+	font-size: 13px;
+    background: #f0f0f0;
+    padding: 10px 15px;
+}
+
+#cff-admin .cff-success-check {
+    color: #75cd32;
+    font-size: 16px;
+    position: relative;
+    top: 6px;
+    left: 7px;
 }

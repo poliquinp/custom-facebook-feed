@@ -129,6 +129,9 @@ if(!cff_js_exists){
 					}
 				}
 
+				//If it's not defined in the source code then set it to be true
+				if (typeof cfflinkhashtags == 'undefined') cfflinkhashtags = 'true';
+
 				if(cfflinkhashtags == 'true'){
 					//Replace hashtags in text
 					var $cffText = $self.find('.cff-text');

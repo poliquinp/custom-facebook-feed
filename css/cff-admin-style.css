@@ -253,6 +253,80 @@
     border: 1px solid #ddd;
 }
 
+/* Post style selection */
+#cff-admin .cff-post-style{
+	width: 184px;
+	background: none;
+	border: 1px solid transparent;
+}
+#cff-admin .cff-post-style.cff-layout-selected{
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #7ad03a;
+}
+#cff-admin .cff-post-style img{
+	width: auto;
+	padding-bottom: 6px;
+    margin-bottom: 3px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+#cff-admin .cff-post-style.cff-boxed{
+	/*width: 236px;*/
+	width: 197px;
+}
+#cff-admin .cff-post-style.cff-boxed img{
+	/*width: 94%;*/
+    padding: 3%;
+    margin: 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.1);
+}
+#cff-admin .cff-post-style:hover,
+#cff-admin .cff-post-style:focus{
+    /*background: rgba(255,255,255,0.5);*/
+}
+@media all and (max-width: 1040px){
+  #cff-admin .cff-layout{
+	width: 29%;
+    padding: 1%;
+    margin-right: 1%;
+  }
+  #cff-admin .cff-post-style,
+  #cff-admin .cff-post-style.cff-boxed{
+  	width: 46%;
+  }
+  #cff-admin .cff-post-style img{
+  	width: 100%;
+  	padding: 0;
+  }
+}
+
+/* Post style settings */
+#cff-admin .cff-post-style-settings {
+	display: none;
+    float: left;
+    clear: both;
+    width: 96%;
+    padding: 20px 2%;
+    margin: 10px 0;
+    font-size: 13px;
+    background: #f9f9f9;
+    background: rgba(255,255,255,0.8);
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+}
+#cff-admin .cff-post-style-settings label{
+	display: inline-block;
+    font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+}
+
 /* Disabled */
 #cff-admin .cff-disabled{
 	zoom: 1;
@@ -363,6 +437,7 @@
 
 /* Quick start */
 #cff-admin .cff_quickstart{
+	float: left;
     display: inline-block;
     margin: 15px 0 0 0;
     padding: 15px 20px;
@@ -844,13 +919,12 @@
 #cff-admin .cff-managed-page{
     width: 100%;
     border: 1px solid transparent;
-    padding: 0;
+    padding: 5px;
     background: #fff;
     box-sizing: border-box;
 }
 #cff-admin .cff-managed-page:hover{
-    background: rgba(255,255,255,0.8);
-    border: 1px solid #ccc;
+    background: #eee;
     cursor: pointer;
 }
 #cff-admin .cff-managed-page .cff-page-avatar{
@@ -865,20 +939,13 @@
 }
 #cff-admin .cff-managed-page.cff-page-selected{
 	background: #dceada;
-	border: 1px solid #6ca365;
 }
 #cff-admin .cff-save-page-token{
 	display: none;
 }
-
-#cff-admin #cff-enter-manual-id{
-	/*display: none;*/
-}
-#cff-admin .cff-reviews-access-token{
-	/*display: none !important;*/
-}
 #cff-admin #cff_fb_login_modal{
 	display: none;
+	/*display: block;*/
 	position: fixed;
     z-index: 999;
     width: 100%;
@@ -890,15 +957,17 @@
 }
 #cff-admin .cff_modal_box{
 	position: absolute;
-    top: 180px;
+    top: 140px;
     left: 50%;
-    width: 380px;
-    margin: 0 0 0 -195px;
-    padding: 20px 40px;
+    width: 480px;
+    margin: 0 0 0 -245px;
+    padding: 25px 35px;
     background: #fff;
     text-align: center;
+
     -webkit-box-shadow: 0 1px 20px rgba(0,0,0,0.2);
     box-shadow: 0 1px 20px rgba(0,0,0,0.2);
+
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
@@ -915,26 +984,93 @@
 	background: #ccc;
 	color: #333;
 }
-#cff-admin .cff_srlogo{
-	display: inline-block;
-	height: 16px;
-}
-#cff-admin .cff_srlogo {
-    display: inline-block;
-    height: 16px;
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: -5px;
-}
-#cff-admin .cff_srlogo img {
-    height: 16px;
-    position: relative;
-    top: 2px;
-    left: -2px;
-}
 #cff-admin .cff_modal_box p{
 	font-size: 14px;
 	line-height: 1.6;
+}
+
+/* Tokens modal */
+#cff-admin #cff_fb_login_modal.cff_modal_tokens{
+	display: block;
+}
+#cff-admin .cff-pages-wrap{
+	max-height: 310px;
+    overflow-y: auto;
+}
+#cff-admin .cff_modal_tokens .cff_modal_box p{
+	text-align: left;
+}
+#cff-admin .cff_modal_tokens .cff-managed-page .cff-page-avatar {
+    margin-right: 18px;
+    border-radius: 3px;
+}
+#cff-admin .cff_modal_box .cff-tokens-note{
+	background: #dceada;
+	border: 1px solid #6ca365;
+	padding: 10px 15px;
+	margin: 0 0 20px 0;
+	border-radius: 5px;
+	line-height: 1.3;
+}
+#cff-admin .cff_modal_box .cff-page-info-name{
+	display: block;
+	font-size: 15px;
+	line-height: 1;
+    padding: 5px 0 2px 0;
+}
+#cff-admin .cff_modal_box .cff-page-info{
+	display: block;
+	font-size: 13px;
+}
+#cff-admin #cff-insert-token,
+#cff-admin .cff-insert-reviews-token,
+#cff-admin .cff-insert-both-tokens{
+	margin-top: 25px;
+	float: left;
+	clear: both;
+}
+#cff-admin .cff-insert-reviews-token,
+#cff-admin .cff-insert-both-tokens{
+	clear: none;
+	margin-left: 10px;
+}
+#cff-admin .cff-insert-reviews-token{
+	color: #fff;
+    border-color: #666;
+    background: #888;
+    box-shadow: 0 1px 0 #555;
+    text-shadow: 0 -1px 0px #555;
+}
+#cff-admin .cff-insert-reviews-token:hover{
+	background: #999;
+}
+#cff-admin .cff-insert-reviews-token:active{
+	background: #777;
+    border-color: #555;
+    box-shadow: inset 0 2px 0 #666;
+    vertical-align: top;
+}
+#cff-admin .cff-modal-close{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    font-size: 14px;
+    color: #ccc;
+    margin: 0;
+}
+#cff-admin .cff-modal-close:hover,
+#cff-admin .cff-modal-close:focus{
+	color: #333;
+}
+/* Display retrieved pages button */
+#cff-admin #cff_fb_show_tokens {
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    margin-left: 10px;
+}
+#cff-admin #cff_fb_show_tokens:hover{
+    background-color: rgba(0,0,0,0.35);
 }
 
 /* Choose token */
@@ -974,6 +1110,20 @@
     background: #f0f0f0;
     padding: 10px 15px;
 }
+#cff-admin .cff-test-license-error{
+	margin-top: 10px;
+	max-height: 380px;
+	overflow-y: scroll;
+	width: 99%;
+    border: 1px solid #ddd;
+    background: rgba(255,255,255,0.3);
+    padding: 2px;
+}
+
+/*Hide modal when saving settings */
+#cff-admin #cff_fb_login_modal.cffnomodal{
+	display: none;
+}
 
 #cff-admin .cff-success-check {
     color: #75cd32;
@@ -981,4 +1131,22 @@
     position: relative;
     top: 6px;
     left: 7px;
+}
+
+/* Admin footer share icons */
+#cff-admin #cff-admin-share-links{
+	opacity: 0;
+	display: inline-block;
+    padding: 5px;
+    border: 1px solid #ccc;
+    background: rgba(255,255,255,0.5);
+    border-radius: 3px;
+    transition: opacity 0.5s;
+}
+#cff-admin #cff-admin-share-links.cff-show{
+	transition: opacity 0.5s;
+	opacity: 1;
+}
+#cff-admin #twitter-widget-0 {
+    width: 65px !important;
 }

@@ -2,6 +2,20 @@ var cff_js_exists = (typeof cff_js_exists !== 'undefined') ? true : false;
 if(!cff_js_exists){
 
 	function cff_init(){
+
+		//Set likebox width
+		jQuery('.cff-likebox iframe').each(function(){
+			var $likebox = jQuery(this),
+				likeboxWidth = $likebox.attr('data-likebox-width'),
+				cffFeedWidth = $likebox.parent().width();
+
+			//Default width is 340
+			if( likeboxWidth == '' ) likeboxWidth = 340;
+			//Change the width dynamically so it's responsive
+			if( cffFeedWidth < likeboxWidth ) likeboxWidth = cffFeedWidth;
+
+			$likebox.attr('src', 'https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F'+$likebox.attr('data-likebox-id')+'%2F&tabs&width='+likeboxWidth+'&small_header='+$likebox.attr('data-likebox-header')+'&adapt_container_width=true&hide_cover='+$likebox.attr('data-hide-cover')+'&hide_cta='+$likebox.attr('data-hide-cta')+'&show_facepile='+$likebox.attr('data-likebox-faces')+'&locale='+$likebox.attr('data-locale'));
+		});
 		
 		jQuery('#cff .cff-item').each(function(){
 			var $self = jQuery(this);
@@ -153,11 +167,27 @@ if(!cff_js_exists){
 				'rel' : 'nofollow'
 			});
 
+	        //Share tooltip function
+			$self.find('.cff-share-link').unbind().bind('click', function(){
+				var $cffShareTooltip = $self.find('.cff-share-tooltip')
 
-			//Share toolip function
-	        $self.find('.cff-share-link').unbind().bind('click', function(){
-	            $self.find('.cff-share-tooltip').toggle();
-	        });
+				//Hide tooltip
+				if( $cffShareTooltip.is(':visible') ){
+					$cffShareTooltip.hide().find('a').removeClass('cff-show');
+				} else {
+				//Show tooltip
+					$cffShareTooltip.show();
+
+					var time = 0;
+		        	$cffShareTooltip.find('a').each(function() {
+					    var $cffShareIcon = jQuery(this);
+					    setTimeout( function(){
+					        $cffShareIcon.addClass('cff-show');
+					    }, time);
+					    time += 20;
+					});
+				}
+	      	});
 
 			
 		}); //End .cff-item each

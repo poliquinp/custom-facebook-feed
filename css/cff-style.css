@@ -32,11 +32,23 @@
 #cff .cff-item.cff-box,
 #cff .cff-item.cff-box:first-child{
   padding: 15px;
-  margin: 5px 0;
+  margin: 8px 0;
+  background: rgba(255,255,255,0.5);
   border: none;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+#cff .cff-item.cff-box:first-child{
+  margin-top: 0;
+}
+#cff .cff-item.cff-box:last-child{
+  margin-bottom: 0;
+}
+#cff .cff-item.cff-shadow{
+  box-shadow: 0 0 10px 0 rgba(0,0,0,0.15);
+  -moz-box-shadow: 0 0 10px 0 rgba(0,0,0,0.15);
+  -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,0.15);
 }
 /* Feed Header */
 .cff-header{
@@ -123,6 +135,7 @@
   background: #eee;
 
   background: url('../img/cff-avatar.png') no-repeat;
+  border-radius: 50%;
 }
 #cff .cff-author img{
   float: left;
@@ -130,6 +143,7 @@
   padding: 0 !important;
   border: none !important;
   font-size: 0;
+  border-radius: 50%;
 }
 #cff .cff-author .cff-author-text span.cff-page-name{
   display: table-cell;
@@ -149,7 +163,7 @@
   text-decoration: none;
 }
 #cff .cff-author.cff-no-author-info .cff-date{
-  margin-top: 14px !important;
+  margin-top: 12px !important;
 }
 #cff .cff-author.cff-no-author-info .cff-author-img{
   width: 40px;
@@ -191,6 +205,32 @@
 /*************/
 /*** MEDIA ***/
 /*************/
+.cff-media-link .fa,
+/*#cff .cff-media-link a,*/
+#cff .cff-cta-link a {
+  display: inline-block;
+  width: auto;
+  padding: 5px 7px 5px 6px;
+  /*padding: 5px 10px;*/
+  margin-right: 6px;
+  border: 1px solid #eee;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 3px;
+  background: rgba(0,0,0,0.02);
+}
+.cff-media-link .fa:hover,
+/*#cff .cff-media-link a:hover,*/
+#cff .cff-cta-link a:hover {
+  background: #f9f9f9;
+  background: rgba(0,0,0,0.03);
+  text-decoration: none;
+}
+/* Call to action button */
+#cff .cff-cta-link a {
+  padding: 5px 15px;
+}
+
+
 #cff .cff-break-word{
   word-break: break-all;
 }
@@ -349,14 +389,18 @@
   position: absolute;
   z-index: 1000;
   bottom: 22px;
-  right: -54px;
-  width: 140px;
+  right: -40px;
+  width: 110px;
   padding: 5px 5px 4px 5px;
   margin: 0;
   background: #333;
   color: #eee;
   font-size: 12px;
   line-height: 1.3;
+
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -382,20 +426,26 @@
   margin: 0 !important;
   padding: 0 !important;
   color: #eee !important;
+  opacity: 0;
 
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   border-radius: 4px;
 }
 #cff .cff-share-tooltip a:hover{
-  color: #fff;
+  color: #fff !important;
 }
 #cff .cff-share-tooltip .cff-facebook-icon:hover{ background: #3b5998; }
 #cff .cff-share-tooltip .cff-twitter-icon:hover{ background: #00aced; }
 #cff .cff-share-tooltip .cff-google-icon:hover{ background: #dd4b39; }
 #cff .cff-share-tooltip .cff-linkedin-icon:hover{ background: #007bb6; }
 #cff .cff-share-tooltip .cff-pinterest-icon:hover{ background: #cb2027; }
-#cff .cff-share-tooltip .cff-email-icon:hover{ background: #666; }
+#cff .cff-share-tooltip .cff-email-icon:hover{ background: #dd4b39; }
+/* Fade in icons */
+#cff .cff-share-tooltip a.cff-show{
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
 
 /* Like box */
 .cff-likebox{
@@ -425,20 +475,6 @@
 .cff-likebox.cff-bottom.cff-outside{
   margin-top: 10px;
 }
-
-/* Clear fix */
-/*.cff-clear:after {
-    clear: both;
-    content: ".";
-    display: block;
-    height: 0;
-    visibility: hidden;
-}
-.cff-clear {
-    display: inline-block;
-    display: block;
-    position: static;
-}*/
 /*********************/
 /*** STYLE OPTIONS ***/
 /*********************/
@@ -479,6 +515,15 @@
   font-size: 13px;
 }
 
+/* Accessibility */
+.cff-screenreader{
+  text-indent: -9999px !important;
+  display: block !important;
+  width: 0 !important;
+  height: 0 !important;
+  line-height: 0 !important;
+}
+
 /* On mobile make the min-width 100% */
 @media all and (max-width: 640px){
   #cff.cff-width-resp{
@@ -497,18 +542,4 @@
 #cff .cff-linebreak{
   display: block;
   height: 5px;
-}
-
-/* Call to action button */
-#cff .cff-cta-link a {
-  display: inline-block;
-  padding: 5px 15px;
-  border: 1px solid #ddd;
-  border: 1px solid rgba(0,0,0,0.15);
-  border-radius: 3px;
-}
-#cff .cff-cta-link a:hover {
-  background: #f9f9f9;
-  background: rgba(0,0,0,0.05);
-  text-decoration: none;
 }

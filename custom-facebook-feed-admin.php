@@ -138,19 +138,32 @@ function cff_settings_page() {
 
                     <p>Log into your Facebook account using the button below and approve the plugin to connect your account.</p>
 
-                    <p><a href="javascript:void(0);" id="cff_admin_cancel_btn" class="cff-admin-cancel-btn">Cancel</a>
 
-                    <?php
-                    $admin_url_state = admin_url('admin.php?page=cff-top');
-                    //If the admin_url isn't returned correctly then use a fallback
-                    if( $admin_url_state == '/wp-admin/admin.php?page=cff-top' || $admin_url_state == '/wp-admin/admin.php?page=cff-top&tab=configuration' ){
-                        $admin_url_state = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-                    }
-                    ?>
+                    <div class="cff-login-options">
+                        <label for="cff_login_type">Would you like to display a Facebook Page or Group?</label>
+                        <select id="cff_login_type">
+                            <option value="page">Facebook Page</option>
+                            <option value="group">Facebook Group</option>
+                        </select>
 
-                    <a href="https://api.smashballoon.com/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a></p>                    
+                        <p>
+                            <a href="javascript:void(0);" id="cff_admin_cancel_btn" class="cff-admin-cancel-btn">Cancel</a>
 
-                    <p style="font-size: 11px; margin-top: 25px;"><b>Please note:</b> this does not give us permission to manage your Facebook pages, it simply allows the plugin to see a list of the pages you manage and retrieve an Access Token.</p>
+                            <?php
+                            $admin_url_state = admin_url('admin.php?page=cff-top');
+                            //If the admin_url isn't returned correctly then use a fallback
+                            if( $admin_url_state == '/wp-admin/admin.php?page=cff-top' || $admin_url_state == '/wp-admin/admin.php?page=cff-top&tab=configuration' ){
+                                $admin_url_state = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+                            }
+                            ?>
+                            <a href="https://api.smashballoon.com/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_page_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
+
+                            <a href="https://api.smashballoon.com/facebook-group-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_group_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
+
+                        </p>
+                    </div>
+
+                    <p style="font-size: 11px; margin-top: 25px;"><b>Please note:</b> this does not give us permission to manage your Facebook pages or groups, it simply allows the plugin to see a list that you manage and retrieve an Access Token.</p>
 
                 </div>
             </div>
@@ -164,45 +177,162 @@ function cff_settings_page() {
                 if( $_GET['final_response'] == 'true' ){
 
                     $access_token = $_GET['access_token'];
-                    $url = 'https://graph.facebook.com/me/accounts?limit=500&access_token='.$access_token;
-                    $pages_data = @file_get_contents($url);
-                    $pages_data_arr = json_decode($pages_data);
+                    $cff_is_groups = false;
+                    $pages_data_arr = '';
+                    $groups_data_arr = '';
 
-                    if( empty($pages_data_arr->data) ){
-                    //If they don't manage any pages then just use the user token instead
-                    ?>
-                        <script type='text/javascript'>
-                        jQuery(document).ready(function($) {
-                            $('#cff_access_token').val('<?php echo $access_token ?>').addClass('cff-success');
-                            //Check the own access token setting so it reveals token field
-                            if( $('#cff_show_access_token:checked').length < 1 ){
-                                $("#cff_show_access_token").trigger("change").prop( "checked", true );
-                            }
-                        });
-                        </script>
+                    if( isset($_GET['group']) ){
+                        //Get Groups
 
-                    <?php
+                        $cff_is_groups = true;
+                        $groups_data_arr = '';
+
+                        //Extend the user token by making a call to /me/accounts. User must be an admin of a page for this to work as won't work if the response is empty.
+                        $url = 'https://graph.facebook.com/me/accounts?limit=500&access_token='.$access_token;
+
+                        $accounts_data = cff_fetchUrl($url);
+                        $accounts_data_arr = json_decode($accounts_data);
+                        $cff_token_expiration = 'never';
+                        if( empty($accounts_data_arr->data) ){
+                            $cff_token_expiration = '60 days';
+                        }
+
+                        //Get User ID
+                        $user_url = 'https://graph.facebook.com/me?fields=id&access_token='.$access_token;
+                        $user_id_data = cff_fetchUrl($user_url);
+
+                        if( !empty($user_id_data) ){
+                            $user_id_data_arr = json_decode($user_id_data);
+                            $user_id = $user_id_data_arr->id;
+
+                            //Get groups they're admin of
+                            $groups_admin_url = 'https://graph.facebook.com/'.$user_id.'/groups?admin_only=true&fields=name,id,picture&access_token='.$access_token;
+                            $groups_admin_data = cff_fetchUrl($groups_admin_url);
+                            $groups_admin_data_arr = json_decode($groups_admin_data);
+
+                            //Get member groups
+                            $groups_url = 'https://graph.facebook.com/'.$user_id.'/groups?admin_only=false&fields=name,id,picture&access_token='.$access_token;
+                            $groups_data = cff_fetchUrl($groups_url);
+                            $groups_data_arr = json_decode($groups_data);
+
+                            // $pages_data_arr = $groups_data_arr;
+                        }
                     } else {
+                        //Get Pages
+
+                        $url = 'https://graph.facebook.com/me/accounts?limit=500&access_token='.$access_token;
+                        $pages_data = cff_fetchUrl($url);
+                        $pages_data_arr = json_decode($pages_data);
+
+                        if( empty($pages_data_arr->data) ){
+                        //If they don't manage any pages then just use the user token instead
+                        ?>
+                            <script type='text/javascript'>
+                            jQuery(document).ready(function($) {
+                                $('#cff_access_token').val('<?php echo $access_token ?>').addClass('cff-success');
+                                //Check the own access token setting so it reveals token field
+                                if( $('#cff_show_access_token:checked').length < 1 ){
+                                    $("#cff_show_access_token").trigger("change").prop( "checked", true );
+                                }
+                            });
+                            </script>
+                        <?php
+                        }
+
+                    }
+
+
+                    if( !empty($pages_data_arr->data) || $cff_is_groups ){
                     //Show the pages they manage
                         echo '<div id="cff_fb_login_modal" class="cff_modal_tokens cffnomodal">';
                         echo '<div class="cff_modal_box">';
                         echo '<div class="cff-managed-pages">';
 
-                        echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook page below to get an Access Token.</p>';
-                        echo '<p class="cff-tokens-note">Note: This Access Token will allow you to display posts from <b style="font-weight: 900;">any</b> public Facebook page, not just the one selected.</p>';
+                        if( $cff_is_groups ){
+                            //GROUPS
 
-                        echo '<div class="cff-pages-wrap">';
-                        foreach ( $pages_data_arr->data as $page => $page_data ) {
-                            echo '<div class="cff-managed-page ';
-                            if( $page_data->id == $page_id_val ) echo 'cff-page-selected';
-                            echo '" data-token="'.$page_data->access_token.'" data-page-id="'.$page_data->id.'">';
-                            echo '<p><img class="cff-page-avatar" border="0" height="50" width="50" src="https://graph.facebook.com/'.$page_data->id.'/picture"><b class="cff-page-info-name">'.$page_data->name.'</b><span class="cff-page-info">(Page ID: '.$page_data->id.')</span></p>';
+                            if( empty($groups_data_arr->data) && empty($groups_admin_data_arr->data) ){
+                                echo '<h3>No Groups Returned</h3>';
+                                echo "<p>Facebook has not returned any groups for your user. It is only possible to display a feed from a group which you are either an admin or a member. Please note, if you are not an admin of the group then it is required that an admin add our app in the group settings in order to display a feed.</p><p>Please either create or join a Facebook group and then follow the directions when connecting your account on this page.</p>";
+                                echo '<a href="JavaScript:void(0);" class="button button-primary" id="cff-close-modal-primary-button">Close</a>';
+                            } else {
+
+                                echo '<div class="cff-groups-list">';
+                                    echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook group below to get an Access Token.</p>';
+
+                                    echo '<div class="cff-pages-wrap">';
+                                    //Admin groups
+                                    foreach ( $groups_admin_data_arr->data as $page => $group_data ) {
+                                        echo '<div class="cff-managed-page cff-group-admin';
+                                        if( $group_data->id == $page_id_val ) echo ' cff-page-selected';
+                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'">';
+                                        echo '<p>';
+                                        if( isset( $group_data->picture->data->url ) ) echo '<img class="cff-page-avatar" border="0" height="50" width="50" src="'.$group_data->picture->data->url.'">';
+                                        echo '<b class="cff-page-info-name">'.$group_data->name.'</b><span class="cff-page-info">(Group ID: '.$group_data->id.')</span></p>';
+                                        echo '<div class="cff-group-admin-icon"><i class="fa fa-user" aria-hidden="true"></i> Admin</div>';
+                                        echo '</div>';
+                                    }
+                                    //Member groups
+                                    foreach ( $groups_data_arr->data as $page => $group_data ) {
+                                        echo '<div class="cff-managed-page';
+                                        if( $group_data->id == $page_id_val ) echo ' cff-page-selected';
+                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'">';
+                                        echo '<p>';
+                                        if( isset( $group_data->picture->data->url ) ) echo '<img class="cff-page-avatar" border="0" height="50" width="50" src="'.$group_data->picture->data->url.'">';
+                                        echo '<b class="cff-page-info-name">'.$group_data->name.'</b><span class="cff-page-info">(Group ID: '.$group_data->id.')</span></p>';
+                                        echo '</div>';
+                                    }
+                                    echo '</div>';
+                                    echo '<a href="JavaScript:void(0);" class="button button-primary cff-group-btn" id="cff-insert-token" disabled="disabled">Use token for this Group</a>';
+                                    if( $cff_token_expiration == "60 days" ) echo '<div id="cff_token_expiration_note" class="cff-error"><b>Important:</b> This token will expire in 60 days.<br /><a href="https://smashballoon.com/extending-a-group-access-token-so-it-never-expires/" target="_blank">Extend token so it never expires</a></div>';
+                                echo '</div>';
+
+                                echo '<div id="cff-group-installation">';
+                                    echo '<h3>Important</h3>';
+
+                                    echo '<div id="cff-group-admin-directions">';
+                                        echo '<p>To display a feed from your group you need to add our app in your Facebook group settings:</p>';
+                                        echo '<ul>';
+                                        echo '<li><b>1)</b> Go to your group settings page by clicking <a id="cff-group-edit" href="https://www.facebook.com/groups/" target="_blank">here<i class="fa fa-external-link" aria-hidden="true" style="font-size: 13px; position: relative; top: 2px; margin-left: 5px;"></i></a></li>';
+                                        echo '<li><b>2)</b> In the "Apps" section click "Add Apps".</li>';
+                                        echo '<li><b>3)</b> Search for "Smash Balloon" and select our app (<a id="cff-group-app-tooltip">screenshot</a>).<img id="cff-group-app-screenshot" src="'. plugins_url( "img/group-app.png" , __FILE__ ) .'" alt="Thumbnail Layout" /></li>';
+                                        echo '<li><b>4</b>) Click "Add".</li>';
+                                        echo '</ul>';
+
+                                        echo '<p style="margin-bottom: 10px;">You can now use the plugin to display a feed from your group.</p>';
+                                    echo '</div>';
+
+                                    echo '<div id="cff-group-member-directions">';
+                                        echo '<p>To display a feed from this group an admin needs to first add our app in the group settings. Please ask an admin to follow the directions <a href="https://smashballoon.com/adding-our-app-to-a-facebook-group/" target="_blank">here</a> to add our app.</p>';
+                                        echo '<p>Once this is done you will then be able to display a feed from this group.</p>';
+                                    echo '</div>';
+
+                                    echo '<a href="JavaScript:void(0);" class="button button-primary" id="cff-close-modal-primary-button">Done</a>';
+                                    echo '<a href="https://smashballoon.com/display-facebook-group-feed/" target="_blank" class="button button-secondary"><i class="fa fa-life-ring"></i> Help</a>';
+                                echo '</div>';
+
+                            }
+
+                        } else {
+                            //PAGES
+
+                            echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook page below to get an Access Token.</p>';
+                            echo '<p class="cff-tokens-note">Note: This Access Token will allow you to display posts from <b style="font-weight: 900;">any</b> public Facebook page, not just the one selected.</p>';
+
+                            echo '<div class="cff-pages-wrap">';
+                            foreach ( $pages_data_arr->data as $page => $page_data ) {
+                                echo '<div class="cff-managed-page ';
+                                if( $page_data->id == $page_id_val ) echo 'cff-page-selected';
+                                echo '" data-token="'.$page_data->access_token.'" data-page-id="'.$page_data->id.'">';
+                                echo '<p><img class="cff-page-avatar" border="0" height="50" width="50" src="https://graph.facebook.com/'.$page_data->id.'/picture"><b class="cff-page-info-name">'.$page_data->name.'</b><span class="cff-page-info">(Page ID: '.$page_data->id.')</span></p>';
+                                echo '</div>';
+                            }
                             echo '</div>';
-                        }
-                        echo '</div>';
 
-                        $cff_use_token_text = 'Use token for this page';
-                        echo '<a href="JavaScript:void(0);" id="cff-insert-token" class="button button-primary" disabled="disabled">'.$cff_use_token_text.'</a>';
+                            $cff_use_token_text = 'Use token for this page';
+                            echo '<a href="JavaScript:void(0);" id="cff-insert-token" class="button button-primary" disabled="disabled">'.$cff_use_token_text.'</a>';
+
+                        }
 
                         echo '</div>';
                         echo '<a href="JavaScript:void(0);" class="cff-modal-close"><i class="fa fa-times"></i></a>';
@@ -210,7 +340,7 @@ function cff_settings_page() {
                         echo '</div>';
 
                         echo '<a href="JavaScript:void(0);" class="cff_admin_btn" id="cff_fb_show_tokens"><i class="fa fa-th-list" aria-hidden="true" style="font-size: 14px; margin-right: 8px;"></i>';
-                        _e( "Show Available Pages", "custom-facebook-feed" );
+                        $cff_is_groups ? _e( "Show Available Groups", "custom-facebook-feed" ) : _e( "Show Available Pages", "custom-facebook-feed" );
                         echo '</a>';
 
                     }
@@ -222,8 +352,8 @@ function cff_settings_page() {
             <table class="form-table">
                 <tbody>
                     <tr valign="top">
-                        <th scope="row"><label><?php _e('Facebook Page ID<br /><i style="font-weight: normal; font-size: 12px;">ID of your Facebook Page</i>', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> id
-                        Eg: id="YOUR_PAGE_ID"</code></th>
+                        <th scope="row"><label><?php _e('Facebook Page ID<br /><i style="font-weight: normal; font-size: 12px;">ID of your Facebook Page or Group</i>', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> id
+                        Eg: id="YOUR_PAGE_OR_GROUP_ID"</code></th>
                         <td>
                             <input name="cff_page_id" id="cff_page_id" type="text" value="<?php esc_attr_e( $page_id_val, 'custom-facebook-feed' ); ?>" size="45" />
                             &nbsp;<a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What\'s my Page ID?', 'custom-facebook-feed'); ?></a>
@@ -239,8 +369,7 @@ function cff_settings_page() {
                                     URL Format 3: <code>https://www.facebook.com/pages/your_page_name/<span class="cff-highlight">1234567890</span></code>
                                     '); ?>
                                     </li>
-                                    <li><?php _e('<b>Facebook Group</b><br />Due to <a href="https://smashballoon.com/facebook-api-changes-april-4-2018/" target="_blank">recent changes</a> to the Facebook API it is unfortunately no longer possible to display a feed from a Facebook Group.'); ?></li>
-                                    <li><?php _e('To test that your ID is correct, you can copy and paste it into our <a href="http://smashballoondemo.com/" target="_blank">Pro demo</a>.'); ?></li>
+                                    <li><?php _e('<b>Facebook Group</b><br />You can find the ID of your Facebook <b>Group</b> from the URL, like so: <code>https://www.facebook.com/groups/<span class="cff-highlight">1234567890</span></code>'); ?></li>
                                 </ul>
                             </div>
                         </td>
@@ -264,6 +393,21 @@ function cff_settings_page() {
                 <tbody>
                     <h3><?php _e('Settings', 'custom-facebook-feed'); ?></h3>
 
+                    <tr valign="top" class="cff-page-type">
+                        <th scope="row"><label><?php _e('Is it a page or group?'); ?></label><code class="cff_shortcode"> pagetype
+                        Eg: pagetype=group</code></th>
+                        <td>
+                            <select name="cff_page_type" id="cff_page_type" style="width: 100px;">
+                                <option value="page" <?php if($cff_page_type_val == "page") echo 'selected="selected"' ?> ><?php _e('Page'); ?></option>
+                                <option value="group" <?php if($cff_page_type_val == "group") echo 'selected="selected"' ?> ><?php _e('Group'); ?></option>
+                                <option value="profile" <?php if($cff_page_type_val == "profile") echo 'selected="selected"' ?> ><?php _e('Profile'); ?></option>
+                            </select>
+                            <div class="cff-notice cff-profile-error cff-page-type">
+                                <?php _e("<p>Due to Facebook's privacy policy you're not able to display posts from a personal profile, only from a public Facebook Page.</p><p>If you're using a profile to represent a business, organization, product, public figure or the like, then Facebook recommends <a href='http://www.facebook.com/help/175644189234902/' target='_blank'>converting your profile to a page</a>. There are many advantages to using pages over profiles, and once you've converted then the plugin will be able to successfully retrieve and display all of your posts.</p>", 'custom-facebook-feed'); ?>
+                            </div>
+                        </td>
+                    </tr>
+
                     <tr valign="top">
                         <th scope="row"><label><?php _e('Show posts on my page by:', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> showpostsby
                         Eg: showpostsby=others</code></th>
@@ -273,9 +417,6 @@ function cff_settings_page() {
                                 <option value="others" <?php if($cff_show_others_val == 'others' || $cff_show_others_val == 'on') echo 'selected="selected"' ?> ><?php _e('Page owner + other people', 'custom-facebook-feed'); ?></option>
                                 <option value="onlyothers" <?php if($cff_show_others_val == 'onlyothers') echo 'selected="selected"' ?> ><?php _e('Only other people', 'custom-facebook-feed'); ?></option>
                             </select>
-
-                            <p id="cff-others-only" style="font-size: 12px;"><b>Note:</b> Only displaying posts by other people works by retrieving your posts from Facebook and then filtering out the posts by the page owner. If this option doesn't display many posts then you can retrieve more by setting the post limit option (below) to a higher number (a number 15-20 greater than the number of posts you want to display).</p>
-
                         </td>
                     </tr>
 
@@ -590,10 +731,8 @@ function cff_settings_page() {
         <?php
         $cff_use_own_token = get_option( 'cff_show_access_token' );
         $access_token = get_option( $access_token );
-        if ( $access_token == '' || empty($access_token) || ( !isset($cff_use_own_token) || empty($cff_use_own_token) ) ) $access_token = '297576260660946|iCDRJNnG9EAJplgB-vkMR2q2ob0';
+        $posts_json = cff_fetchUrl("https://graph.facebook.com/".get_option( trim($page_id) )."/feed?access_token=". trim($access_token) ."&limit=1");
         ?>
-        <?php $posts_json = cff_fetchUrl("https://graph.facebook.com/".get_option( trim($page_id) )."/feed?access_token=". trim($access_token) ."&limit=1"); ?>
-
 
         <textarea readonly="readonly" onclick="this.focus();this.select()" title="To copy, click the field then press Ctrl + C (PC) or Cmd + C (Mac)." style="width: 70%; height: 500px; white-space: pre; font-family: Menlo,Monaco,monospace;">
 ## SITE/SERVER INFO: ##
@@ -3972,5 +4111,7 @@ $notice_status = get_option( $option, false );
 if ( get_transient( $transient ) !== 'waiting' && $notice_status !== 'dismissed' ) {
     add_action( 'admin_notices', 'cff_rating_notice_html' );
 }
+//Uncomment below to show notice
+// add_action( 'admin_notices', 'cff_rating_notice_html' );
 
 ?>

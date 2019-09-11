@@ -91,21 +91,7 @@ jQuery(document).ready(function($) {
 		//Show the JSON
 		jQuery('#cff-api-test-result textarea').css('display', 'block');
 	});
-
-
-	//If 'Others only' is selected then show a note
-	var $cffOthersOnly = jQuery('#cff-others-only');
-
-	if ( jQuery("#cff_show_others option:selected").val() == 'onlyothers' ) $cffOthersOnly.show();
 	
-	jQuery("#cff_show_others").change(function() {
-		if ( jQuery("#cff_show_others option:selected").val() == 'onlyothers' ) {
-			$cffOthersOnly.show();
-		} else {
-			$cffOthersOnly.hide();
-		}
-	});
-
 
 	//If '__ days ago' date is selected then show 'Translate this'
 	var $cffTranslateDate = jQuery('#cff-translate-date');
@@ -216,16 +202,19 @@ jQuery(document).ready(function($) {
 	$('#cff_admin_cancel_btn').on('click', function(){
 		$('#cff_fb_login_modal').hide();
 	});
-	$('.cff-modal-close').on('click', function(){
+	$('.cff-modal-close, #cff-close-modal-primary-button').on('click', function(){
 		$('.cff_modal_tokens').hide();
 	});
 	$('#cff_fb_show_tokens').on('click', function(){
-		$('.cff_modal_tokens').show();
+		$('.cff_modal_tokens, .cff-groups-list').show();
+		$('#cff-group-installation').hide();
 	});
 
 	//Select a page for token
 	$('.cff-managed-page').on('click', function(){
 		$('#cff-insert-token, .cff-insert-reviews-token, .cff-insert-both-tokens').removeAttr('disabled');
+
+		$('#cff_token_expiration_note').show();
 
 		$(this).siblings().removeClass('cff-page-selected');
 		$(this).addClass('cff-page-selected');
@@ -235,7 +224,30 @@ jQuery(document).ready(function($) {
 	$('#cff-insert-token').on('click', function(){
 		$('#cff_access_token').val( $('.cff-page-selected').attr('data-token') ).addClass('cff-success');
 		if( $('#cff_page_id').val().trim() == '' ) $('#cff_page_id').val( $('.cff-page-selected').attr('data-page-id') );
-		$('.cff_modal_tokens').hide();
+
+		if( $(this).hasClass('cff-group-btn') ){
+			$('.cff-groups-list').hide();
+			$('#cff-group-installation').show();
+
+			//Show directions for either group admin or member
+			if( $('.cff-page-selected').hasClass('cff-group-admin') ){
+				$('#cff-group-admin-directions').show();
+				$('#cff-group-member-directions').hide();
+			} else {
+				$('#cff-group-admin-directions').hide();
+				$('#cff-group-member-directions').show();
+			}
+
+			//Change page type to be group
+			$('#cff_page_type').val('group');
+			$('.cff-page-options').hide();
+
+			//Dynamically create group edit link
+			var cffGroupEditLink = 'https://facebook.com/groups/'+$('.cff-page-selected').attr('data-page-id')+'/edit';
+			$('#cff-group-installation #cff-group-edit').attr('href', cffGroupEditLink);
+		} else {
+			$('.cff_modal_tokens').hide();
+		}
 
 		location.hash = "cffnomodal";
 	});
@@ -244,6 +256,17 @@ jQuery(document).ready(function($) {
 	if( location.hash !== '#cffnomodal' ){
 		$('.cff_modal_tokens').removeClass('cffnomodal');
 	}
+
+	//Switch Page/Group app button in modal
+	jQuery("#cff_login_type").change(function() {
+		if ( jQuery("#cff_login_type option:selected").val() == 'group' ) {
+			jQuery('#cff_page_app').hide();
+			jQuery('#cff_group_app').css('display', 'inline-block');
+		} else {
+			jQuery('#cff_page_app').css('display', 'inline-block');
+			jQuery('#cff_group_app').hide();
+		}
+	});
 
     //Load the admin share widgets
     $('#cff-admin-show-share-links').on('click', function(){
@@ -254,5 +277,17 @@ jQuery(document).ready(function($) {
         	$('#cff-admin-share-links').addClass('cff-show');
         }, 500);
     });
+
+    //Group app setup screenshot
+	jQuery('#cff-group-app-tooltip').hover(function(){
+	    jQuery('#cff-group-app-screenshot').fadeIn(100);
+	}, function(){
+		jQuery('#cff-group-app-screenshot').fadeOut(100);
+	});
+
+	//Remove any duplicate groups
+	jQuery('.cff-group-admin').each(function(){
+		jQuery('.cff-groups-list #' + jQuery(this).attr('id') ).eq(1).hide();
+	});
 
 });

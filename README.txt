@@ -1,23 +1,22 @@
-=== Custom Facebook Feed ===
+=== Smash Balloon Social Post Feed ===
 Contributors: smashballoon
-Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
+Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page, facebook likebox, facebook feed, facebook plugin
 Requires at least: 3.0
+Requires PHP: 5.2
 Tested up to: 5.2
-Stable tag: 2.9.1
+Stable tag: 2.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Custom Facebook Feed allows you to display completely customizable Facebook feeds of any public Facebook page on your website
+Formerly "Custom Facebook Feed". Display completely customizable Facebook feeds of any public Facebook page on your website.
 
 == Description ==
 
-Display **completely customizable**, **responsive** and **search engine crawlable** Facebook feeds on your website. Display **multiple feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of customization options!
+Display Facebook posts on your website. **Completely customizable**, **responsive** and **search engine crawlable**. Display **multiple Facebook feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of customization options!
 
-*"The perfect plugin with amazing support! What else do you want? Get it!"* - [JoeJeffries](http://wordpress.org/support/topic/you-dont-already-have-this)
+*"The perfect Facebook plugin with amazing support! What else do you want? Get it!"* - [JoeJeffries](http://wordpress.org/support/topic/you-dont-already-have-this?facebook)
 
-*"I honestly cannot recommend this plugin enough. The plugin itself is gorgeous and super customizable, and if you run into trouble...support will get you out of it. Five Stars across the board."* - [pamsavoybarnett](http://wordpress.org/support/topic/love-this-plugin-w-awesome-support?replies=2)
-
-*"The positive reviews here say it all. John and SmashBalloon are delivering top-notch products and service -- something us website developers value greatly. If I could give them 10 Stars across the board I wouldn't hesitate. Cheers!"* - [AME Network](http://wordpress.org/support/topic/excellent-plugin-superior-support?replies=1)
+*"I honestly cannot recommend this plugin enough. The plugin itself is gorgeous and super customizable, and if you run into trouble...support will get you out of it. Five Stars across the board."* - [pamsavoybarnett](http://wordpress.org/support/topic/love-this-plugin-w-awesome-support?facebook)
 
 = Features =
 
@@ -264,6 +263,11 @@ You no longer need your own Access Token to use the Custom Facebook Feed Plugin,
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.10 =
+* New: Facebook Groups are making their long-awaited return to the plugin! Just click the 'Log in and get my Access Token' button on the plugin's Settings page and select 'Facebook Group'. Follow the prompts to connect your Group and display your feed.
+* Fix: Fixed an issue where a lists of groups or pages wouldn't be displayed when retrieving an Access Token due to a server configuration issue
+* Fix: Photo icons weren't showing for album posts
+* Tweak: Now uses the `visitor_posts` endpoint to display visitor post feeds
 
 = 2.9.1 =
 * New: Added support for v3.3 of the Facebook API.

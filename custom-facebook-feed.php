@@ -1,9 +1,9 @@
 <?php 
 /*
 Plugin Name: Custom Facebook Feed
-Plugin URI: http://smashballoon.com/custom-facebook-feed
+Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.9.1
+Version: 2.10
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.9.1');
+define('CFFVER', '2.10');
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 //Include admin
@@ -696,9 +696,6 @@ function display_cff($atts) {
     //If the 'Enter my own Access Token' box is unchecked then don't use the user's access token, even if there's one in the field
     get_option('cff_show_access_token') ? $cff_show_access_token = true : $cff_show_access_token = false;
 
-    //If there's no Access Token then use a default
-    if ($access_token == '' || !$cff_show_access_token) $access_token = '198080700214649|natEgdD5R82UoiLXL5UsUK82-O8';
-
     //Check whether a Page ID has been defined
     if ($page_id == '') {
         echo "Please enter the Page ID of the Facebook feed you'd like to display. You can do this in either the Custom Facebook Feed plugin settings or in the shortcode itself. For example, [custom-facebook-feed id=YOUR_PAGE_ID_HERE].<br /><br />";
@@ -739,12 +736,10 @@ function display_cff($atts) {
 
         //Show posts ONLY by others
         if ( $show_posts_by == 'onlyothers' && !$cff_is_group ) {
-            $graph_query = 'feed';
+            $graph_query = 'visitor_posts';
             $cff_show_only_others = true;
         }
-
     }
-
 
     $cff_post_limit = $atts['limit'];
 
@@ -886,7 +881,7 @@ function display_cff($atts) {
     //ALL POSTS
     if (!$cff_events_only){
 
-        $cff_posts_json_url = 'https://graph.facebook.com/v3.3/' . $page_id . '/' . $graph_query . '?fields=id,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title,description,media_type,unshimmed_url,target{id},media{source}}&access_token=' . $access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
+        $cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $page_id . '/' . $graph_query . '?fields=id,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title,description,media_type,unshimmed_url,target{id},media{source}}&access_token=' . $access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
 
         if( $cff_show_access_token && strlen($access_token) > 130 ){
             //If using a Page Access Token then set caching time to be minimum of 5 minutes
@@ -944,29 +939,20 @@ function display_cff($atts) {
             $cff_content .= '<div class="cff-error-msg"><p>Unable to display Facebook posts.<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()">Show error</a>';
             $cff_content .= '<script type="text/javascript">function cffShowError() { document.getElementById("cff-error-reason").style.display = "block"; document.getElementById("cff-show-error").style.display = "none"; }</script>';
             $cff_content .= '</p><div id="cff-error-reason">';
-
-            if( $cff_page_type == 'group' ){
-
-                $cff_content .= 'Due to recent changes in the Facebook API it is unfortunately no longer possible to display posts from Facebook Groups. Please see <a href="https://smashballoon.com/facebook-api-changes-april-4-2018/" target="_blank">this page</a> for more information.';
-
-            } else {
-
-                if( isset($FBdata->error->message) ) $cff_content .= 'Error: ' . $FBdata->error->message;
-                if( isset($FBdata->error->type) ) $cff_content .= '<br />Type: ' . $FBdata->error->type;
-                if( isset($FBdata->error->code) ) $cff_content .= '<br />Code: ' . $FBdata->error->code;
-                if( isset($FBdata->error->error_subcode) ) $cff_content .= '<br />Subcode: ' . $FBdata->error->error_subcode;
-
-                if( isset($FBdata->error_msg) ) $cff_content .= 'Error: ' . $FBdata->error_msg;
-                if( isset($FBdata->error_code) ) $cff_content .= '<br />Code: ' . $FBdata->error_code;
-                
-                if($FBdata == null) $cff_content .= 'Error: Server configuration issue';
-
-                if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= 'Error: No posts available for this Facebook ID';
-
-                $cff_content .= '<br />Please refer to our <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">Error Message Reference</a>.';
-
-            }
             
+            if( isset($FBdata->error->message) ) $cff_content .= 'Error: ' . $FBdata->error->message;
+            if( isset($FBdata->error->type) ) $cff_content .= '<br />Type: ' . $FBdata->error->type;
+            if( isset($FBdata->error->code) ) $cff_content .= '<br />Code: ' . $FBdata->error->code;
+            if( isset($FBdata->error->error_subcode) ) $cff_content .= '<br />Subcode: ' . $FBdata->error->error_subcode;
+
+            if( isset($FBdata->error_msg) ) $cff_content .= 'Error: ' . $FBdata->error_msg;
+            if( isset($FBdata->error_code) ) $cff_content .= '<br />Code: ' . $FBdata->error_code;
+            
+            if($FBdata == null) $cff_content .= 'Error: Server configuration issue';
+
+            if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= 'Error: No posts available for this Facebook ID';
+
+            $cff_content .= '<br />Please refer to our <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">Error Message Reference</a>.';
             
             $cff_content .= '</div></div>'; //End .cff-error-msg and #cff-error-reason
             //Only display errors to admins
@@ -1056,14 +1042,6 @@ function display_cff($atts) {
                     break;
             }
 
-            //ONLY show posts by others
-            if ( $cff_show_only_others ) {
-                //If the post author's ID is the same as the page ID then don't show the post
-                if( isset($news->from) ){
-                    if ( $numeric_page_id == $news->from->id ) $cff_show_post = false;
-                }                        
-            }
-
             //Is it a duplicate post?
             if (!isset($prev_post_message)) $prev_post_message = '';
             if (!isset($prev_post_link)) $prev_post_link = '';
@@ -1127,44 +1105,10 @@ function display_cff($atts) {
 
                 //Is it an album?
                 $cff_album = false;
-                $num_photos = 0;
-
                 if( isset($news->status_type) ){
                     if( $news->status_type == 'added_photos' ){
-                        //Check 'story' to see whether it contains a number
-                        (isset($news->story)) ? $str = $news->story : $str = '';
-                        
-                        //Only matches number with a space after them
-                        preg_match('!\d+ !', $str, $matches);
-
-
-                        (isset($matches[0])) ? $num_photos = $matches[0] : $num_photos = 0;
-
-                        //If the story contains a number...
-                        if ( $num_photos > 1 ) {
-
-                            //... and the link is to an album then it most likely has photo attachments
-                            $albumLinkArr1 = explode('photos/a.', $link);
-                            if( isset($albumLinkArr1[1]) ) $albumLinkArr2 = explode('.', $albumLinkArr1[1]);
-
-                            //If it has an album link then set the post type to be album
-                            if( isset($albumLinkArr1[1]) ){
-
-                                $cff_album = true;
-
-                                //Change the Post ID to be to the post about adding photos to the album
-                                $cff_post_id = $PostID[0] . '_' . $albumLinkArr2[0];
-
-                                //Link to the album instead of the photo
-                                $album_link = str_replace('photo.php?','media/set/?',$link);
-                                $link = "https://www.facebook.com/" . $page_id . "/posts/" . $PostID[1];
-
-                                //If the album link is a new format then link it to the post
-                                $album_link_check = 'media/set/?';
-                                if( stripos($album_link, $album_link_check) !== true ) $album_link = $link;
-
-                            }
-                            
+                        if( isset($news->attachments) ){
+                            if( $news->attachments->data[0]->media_type == 'album' ) $cff_album = true;
                         }
                     }
                 }
@@ -1879,9 +1823,9 @@ function display_cff($atts) {
 
                 $cff_media_link = '';
 
-                if( $cff_show_media_link && ($cff_post_type == 'photo' || $cff_post_type == 'video') ){
+                if( $cff_show_media_link && ($cff_post_type == 'photo' || $cff_post_type == 'video' || $cff_album) ){
                     $cff_media_link .= '<p class="cff-media-link"><a href="'.$link.'" '.$target.' style="color: #'.$cff_posttext_link_color.';"><span style="padding-right: 5px;" class="fa fas fa-';
-                    if($cff_post_type == 'photo') $cff_media_link .=  'picture-o fa-image" aria-hidden="true"></span>'. $cff_translate_photo_text;
+                    if($cff_post_type == 'photo' || $cff_album) $cff_media_link .=  'picture-o fa-image" aria-hidden="true"></span>'. $cff_translate_photo_text;
                     // if($cff_post_type == 'video') $cff_media_link .=  'file-video-o';
                     if($cff_post_type == 'video') $cff_media_link .=  'video-camera fa-video" aria-hidden="true"></span>'. $cff_translate_video_text;
                     $cff_media_link .= '</a></p>';

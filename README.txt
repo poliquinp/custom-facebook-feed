@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page, fac
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.2
-Stable tag: 2.10
+Stable tag: 2.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,6 +263,10 @@ You no longer need your own Access Token to use the Custom Facebook Feed Plugin,
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.11 =
+* New: Added a "Feed Columns" setting to allow you to display your feed in multiple columns. This can be found under the "General" tab on the "Customize" page, or by using the `cols` and `colsmobile` shortcode settings.
+* New: Updated to use v4.0 of the Facebook API
+
 = 2.10 =
 * New: Facebook Groups are making their long-awaited return to the plugin! Just click the 'Log in and get my Access Token' button on the plugin's Settings page and select 'Facebook Group'. Follow the prompts to connect your Group and display your feed.
 * Fix: Fixed an issue where a lists of groups or pages wouldn't be displayed when retrieving an Access Token due to a server configuration issue

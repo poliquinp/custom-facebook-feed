@@ -290,4 +290,26 @@ jQuery(document).ready(function($) {
 		jQuery('.cff-groups-list #' + jQuery(this).attr('id') ).eq(1).hide();
 	});
 
+
+	//Show/hide mobile column setting
+    var cff_masonry_desktop_col = jQuery('#cff_cols').val(),
+		$cff_mobile_col_settings = jQuery('.cff-mobile-col-settings');
+	if( typeof cff_post_limit === 'undefined' ) cff_masonry_desktop_col = '1';
+
+	//Should we show anything initially?
+	if( cff_masonry_desktop_col == '1' ) $cff_mobile_col_settings.hide();
+	if( parseInt(cff_masonry_desktop_col) > 1 ){
+		$cff_mobile_col_settings.show();
+	}
+
+	jQuery('#cff_cols').change(function(){
+		cff_cols_num = parseInt( jQuery('#cff_cols').val() );
+
+		if(cff_cols_num > 1){
+			$cff_mobile_col_settings.slideDown(200);
+		} else {
+			$cff_mobile_col_settings.slideUp(200);
+		}
+	});
+
 });

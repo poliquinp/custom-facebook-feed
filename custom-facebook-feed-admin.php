@@ -111,7 +111,7 @@ function cff_settings_page() {
  
     <div id="cff-admin" class="wrap">
         <div id="header">
-            <h2><?php _e('Custom Facebook Feed Settings', 'custom-facebook-feed'); ?></h2>
+            <h1><?php _e('Custom Facebook Feed', 'custom-facebook-feed'); ?></h1>
         </div>
 
         <?php
@@ -671,7 +671,9 @@ function cff_settings_page() {
             <p>Find out how to display <a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><b>multiple feeds</b></a>.</p>
         </div>
 
-        <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+        <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
+
+        <p class="cff_plugins_promo dashicons-before dashicons-admin-plugins"> <?php _e('Check out our other free plugins: <a href="https://wordpress.org/plugins/instagram-feed/" target="_blank">Instagram</a> and <a href="https://wordpress.org/plugins/custom-twitter-feeds/" target="_blank">Twitter</a>.', 'instagram-feed' ); ?></p>
 
         <div class="cff-share-plugin">
             <h3><?php _e('Like the plugin? Help spread the word!', 'custom-facebook-feed'); ?></h3>
@@ -779,6 +781,8 @@ Feed Height => <?php echo $options[ 'cff_feed_height' ] ."\n"; ?>
 Feed Padding => <?php echo $options[ 'cff_feed_padding' ] ."\n"; ?>
 Feed BG Color => <?php echo $options[ 'cff_bg_color' ] ."\n"; ?>
 CSS Class => <?php echo $options[ 'cff_class' ] ."\n"; ?>
+Feed Columns => <?php echo $options['cff_cols'] ."\n"; ?>
+Mobile Columns => <?php echo $options['cff_cols_mobile'] ."\n"; ?>
 
 ## HEADER: ##
 Show Header => <?php echo $options[ 'cff_show_header' ] ."\n"; ?>
@@ -1098,6 +1102,8 @@ function cff_style_page() {
         'cff_disable_styles'        => false,
         'cff_format_issue'          => false,
         'cff_restricted_page'       => false,
+        'cff_cols'                  => 1,
+        'cff_cols_mobile'           => 1,
 
         //New
         'cff_custom_css'            => '',
@@ -1321,6 +1327,8 @@ function cff_style_page() {
     $cff_format_issue = $options[ 'cff_format_issue' ];
     $cff_restricted_page = $options[ 'cff_restricted_page' ];
     $cff_minify = $options[ 'cff_minify' ];
+    $cff_cols = $options[ 'cff_cols' ];
+    $cff_cols_mobile = $options[ 'cff_cols_mobile' ];
 
     //Page Header
     $cff_show_header = $options[ 'cff_show_header' ];
@@ -1377,6 +1385,8 @@ function cff_style_page() {
                 if (isset($_POST[ 'cff_feed_padding' ]) ) $cff_feed_padding = sanitize_text_field( $_POST[ 'cff_feed_padding' ] );
                 if (isset($_POST[ 'cff_bg_color' ]) ) $cff_bg_color = sanitize_text_field( $_POST[ 'cff_bg_color' ] );
                 if (isset($_POST[ 'cff_class' ]) ) $cff_class = sanitize_text_field( $_POST[ 'cff_class' ] );
+                if (isset($_POST[ 'cff_cols' ])) $cff_cols = sanitize_text_field( $_POST[ 'cff_cols' ] );
+                if (isset($_POST[ 'cff_cols_mobile' ])) $cff_cols_mobile = sanitize_text_field( $_POST[ 'cff_cols_mobile' ] );
 
                 //Page Header
                 (isset($_POST[ 'cff_show_header' ])) ? $cff_show_header = sanitize_text_field( $_POST[ 'cff_show_header' ] ) : $cff_show_header = '';
@@ -1418,6 +1428,8 @@ function cff_style_page() {
                 $options[ 'cff_feed_padding' ] = $cff_feed_padding;
                 $options[ 'cff_bg_color' ] = $cff_bg_color;
                 $options[ 'cff_class' ] = $cff_class;
+                $options[ 'cff_cols' ] = $cff_cols;
+                $options[ 'cff_cols_mobile' ] = $cff_cols_mobile;
 
                 //Page Header
                 $options[ 'cff_show_header' ] = $cff_show_header;
@@ -1838,7 +1850,7 @@ function cff_style_page() {
  
     <div id="cff-admin" class="wrap">
         <div id="header">
-            <h2><?php _e('Custom Facebook Feed Settings', 'custom-facebook-feed'); ?></h2>
+            <h1><?php _e('Custom Facebook Feed', 'custom-facebook-feed'); ?></h1>
         </div>
 
         <form name="form1" method="post" action="">
@@ -1924,6 +1936,35 @@ function cff_style_page() {
                             <p class="cff-tooltip cff-more-info"><?php _e("You can add your own CSS classes to the feed here. To add multiple classes separate each with a space, Eg. classone classtwo classthree"); ?></p>
                         </td>
                     </tr>
+
+                    <tr valign="top">
+                        <th class="bump-left" scope="row"><label for="cff_cols">Feed Columns</label><code class="cff_shortcode"> cols
+                                Eg: cols=3</code></th>
+                        <td class="cff-short">
+                            <select name="cff_cols" id="cff_cols">
+                                <option value="1" <?php if( $cff_cols == 1 ) { echo 'selected'; } ?>>1</option>
+                                <option value="2" <?php if( $cff_cols == 2 ) { echo 'selected'; } ?>>2</option>
+                                <option value="3" <?php if( $cff_cols == 3 ) { echo 'selected'; } ?>>3</option>
+                                <option value="4" <?php if( $cff_cols == 4 ) { echo 'selected'; } ?>>4</option>
+                                <option value="5" <?php if( $cff_cols == 5 ) { echo 'selected'; } ?>>5</option>
+                                <option value="6" <?php if( $cff_cols == 6 ) { echo 'selected'; } ?>>6</option>
+                            </select>
+                        
+                            <br />
+                            <div class="cff-mobile-col-settings" <?php if( intval($cff_cols) > 1 ) echo 'style="display:block;"' ?>>
+                                <div class="cff-row">
+                                    <label title="Click for shortcode option">Mobile Columns:</label><code class="cff_shortcode"> colsmobile
+                                    Eg: colsmobile=2</code>
+                                    <select name="cff_cols_mobile" id="cff_cols_mobile">
+                                        <option value="1" <?php if( $cff_cols_mobile == 1 ) { echo 'selected'; } ?>>1</option>
+                                        <option value="2" <?php if( $cff_cols_mobile == 2 ) { echo 'selected'; } ?>>2</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
 
@@ -2336,7 +2377,7 @@ function cff_style_page() {
             </div>
 
             
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
 
             <?php } //End General tab ?>
             <?php if( $cff_active_tab == 'post_layout' ) { //Start Post Layout tab ?>

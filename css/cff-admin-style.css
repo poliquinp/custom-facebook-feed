@@ -441,6 +441,7 @@
     display: inline-block;
     margin: 15px 0 0 0;
     padding: 15px 20px;
+    min-width: 808px;
 
     border: 1px solid #ddd;
     background: #eee;
@@ -1233,4 +1234,35 @@
 }
 #cff-admin #twitter-widget-0 {
     width: 65px !important;
+}
+
+#cff-admin #header{
+	padding: 0 0 10px 0;
+}
+
+#cff-admin .cff_plugins_promo{
+	width: 100%;
+	float: left;
+	clear: both;
+}
+#cff-admin .cff_plugins_promo a{
+	color: #e34f0e;
+}
+#cff-admin .cff-share-plugin h3 {
+    padding: 15px 0 0 0;
+}
+#cff-admin .cff-mobile-col-settings .cff-row {
+    width: auto;
+    padding: 10px 15px;
+    margin: 10px 0;
+    font-size: 13px;
+    background: #f9f9f9;
+    background: rgba(255,255,255,0.8);
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+}
+#cff-admin .cff-mobile-col-settings label {
+    font-weight: 600;
+    margin: 0 5px 0 0;
 }

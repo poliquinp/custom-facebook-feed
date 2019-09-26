@@ -52,11 +52,11 @@ function cff_check_for_db_updates() {
             if ( $cff_rating_notice_option === 'dismissed' ) {
                 $cff_statuses_option['rating_notice_dismissed'] = time();
             }
-            $cff_rating_notice_waiting = get_transient( 'custom_facebook_feed_rating_notice_waiting' );
+            $cff_rating_notice_waiting = get_transient( 'custom_facebook_rating_notice_waiting' );
             if ( $cff_rating_notice_waiting === false
                  && $cff_rating_notice_option === false ) {
                 $time = 2 * WEEK_IN_SECONDS;
-                set_transient( 'custom_facebook_feed_rating_notice_waiting', 'waiting', $time );
+                set_transient( 'custom_facebook_rating_notice_waiting', 'waiting', $time );
                 update_option( 'cff_rating_notice', 'pending', false );
             }
             update_option( 'cff_statuses', $cff_statuses_option, false );

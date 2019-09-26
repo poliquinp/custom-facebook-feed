@@ -4083,7 +4083,7 @@ function cff_get_current_time() {
     $current_time = time();
 
     // where to do tests
-    // $current_time = strtotime( 'November 25, 2019' );
+    // $current_time = strtotime( 'November 25, 2020' );
 
     return $current_time;
 }
@@ -4116,10 +4116,10 @@ function cff_notices_html() {
 
         //update_option( 'cff_statuses', $cff_statuses_option, false );
         //delete_option( 'cff_rating_notice');
-        //delete_transient( 'custom_facebook_feed_rating_notice_waiting' );
+        //delete_transient( 'custom_facebook_rating_notice_waiting' );
 
-        // set_transient( 'custom_facebook_feed_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
-        delete_transient('custom_facebook_feed_rating_notice_waiting');
+        // set_transient( 'custom_facebook_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
+        delete_transient('custom_facebook_rating_notice_waiting');
         update_option( 'cff_rating_notice', 'pending', false );
     }
 
@@ -4127,7 +4127,7 @@ function cff_notices_html() {
     //update_option( 'cff_statuses', $cff_statuses_option, false );
     // rating notice logic
     $cff_rating_notice_option = get_option( 'cff_rating_notice', false );
-    $cff_rating_notice_waiting = get_transient( 'custom_facebook_feed_rating_notice_waiting' );
+    $cff_rating_notice_waiting = get_transient( 'custom_facebook_rating_notice_waiting' );
     $should_show_rating_notice = ($cff_rating_notice_waiting !== 'waiting' && $cff_rating_notice_option !== 'dismissed');
 
     // black friday cyber monday logic
@@ -4251,9 +4251,9 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_new_user_sale_notice'>
             <img src='" . plugins_url( 'img/cff-icon-offer.png' , __FILE__ ) . "' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Thank you!</b> We appreciate you using the Smash Balloon Custom Facebook Feed plugin and wanted to say thank you by offering you a limited time <b>20% discount</b> on the Pro version.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Exclusive offer!</b>  We don\'t run promotions very often, but for a limited time we\'re offering <b style="font-weight: 700;">20% off</b> our Pro version to all users of our free Smash Balloon Custom Facebook Feed plugin.', 'custom-facebook-feed' ) . "</p>
                 <p class='links'>
-                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=facebookthankyou' target='_blank'>" . __( 'Yes please!', 'custom-facebook-feed' ) . "</a>
+                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=facebookthankyou' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" . esc_url( add_query_arg( 'cff_ignore_new_user_sale_notice', 'always' ) ) . "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>
 
                 </p>
@@ -4269,9 +4269,9 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_bfcm_sale_notice'>
             <img src='". plugins_url( 'img/cff-icon-offer.png' , __FILE__ ) ."' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using our free Custom Facebook Feed plugin. For a limited time, we\'re offering <b>20% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using the free Smash Balloon Custom Facebook Feed plugin. For a limited time, we\'re offering <b style="font-weight: 700;">20% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
                 <p class='links'>
-                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=".$cff_bfcm_discount_code."' target='_blank'>" . __( 'Get this offer!', 'custom-facebook-feed' ) . "</a>
+                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=".$cff_bfcm_discount_code."' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" .esc_url( add_query_arg( 'cff_ignore_bfcm_sale_notice', date( 'Y', $current_time ) ) ). "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>
                 </p>
             </div>
@@ -4297,7 +4297,7 @@ function cff_process_nags() {
             update_option( 'cff_statuses', $cff_statuses_option, false );
 
         } elseif ( $_GET['cff_ignore_rating_notice_nag'] === 'later' ) {
-            set_transient( 'custom_facebook_feed_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
+            set_transient( 'custom_facebook_rating_notice_waiting', 'waiting', 2 * WEEK_IN_SECONDS );
             update_option( 'cff_rating_notice', 'pending', false );
         }
     }

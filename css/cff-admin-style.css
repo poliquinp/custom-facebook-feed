@@ -815,7 +815,9 @@
     margin: 0 0 0 92px !important;
     padding: 4px 0 0 0;
 }
-.cff_review_notice .cff_notice_close{
+.cff_review_notice .cff_notice_close,
+.cff_review_notice .cff_bfcm_sale_notice_close,
+.cff_review_notice .cff_new_user_sale_notice_close {
     position: absolute;
     top: 0;
     right: 0;
@@ -827,6 +829,26 @@
     color: #a34100;
 }
 
+/* Notice CTA btn */
+.cff_review_notice .cff_offer_btn{
+	padding: 4px 12px 6px 12px;
+    background: green;
+    color: #fff;
+    border-radius: 4px;
+    display: inline-block;
+    text-decoration: none;
+    margin-left: 0;
+}
+.cff_review_notice .cff_offer_btn:hover,
+.cff_review_notice .cff_offer_btn:focus{
+	background: #049404;
+	color: #fff;
+}
+.cff_review_notice .cff_other_notice{
+	font-size: 13px;
+	font-style: italic;
+	margin-top: 5px !important;
+}
 
 /* Support page */
 #cff-admin .cff_support{

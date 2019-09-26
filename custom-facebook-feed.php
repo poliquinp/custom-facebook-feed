@@ -26,9 +26,46 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 define('CFFVER', '2.11');
 
+// Db version.
+if ( ! defined( 'CFF_DBVERSION' ) ) {
+    define( 'CFF_DBVERSION', '1.0' );
+}
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 //Include admin
 include dirname( __FILE__ ) .'/custom-facebook-feed-admin.php';
+
+function cff_check_for_db_updates() {
+    $db_ver = get_option( 'cff_db_version', 0 );
+    if ( (float) $db_ver < 1.0 ) {
+        global $wp_roles;
+        $wp_roles->add_cap( 'administrator', 'manage_custom_facebook_feed_options' );
+        $cff_statuses_option = get_option( 'cff_statuses', array() );
+        if ( ! isset( $cff_statuses_option['first_install'] ) ) {
+            $options_set = get_option( 'cff_page_id', false );
+            if ( $options_set ) {
+                $cff_statuses_option['first_install'] = 'from_update';
+            } else {
+                $cff_statuses_option['first_install'] = time();
+            }
+            $cff_rating_notice_option = get_option( 'cff_rating_notice', false );
+            if ( $cff_rating_notice_option === 'dismissed' ) {
+                $cff_statuses_option['rating_notice_dismissed'] = time();
+            }
+            $cff_rating_notice_waiting = get_transient( 'custom_facebook_feed_rating_notice_waiting' );
+            if ( $cff_rating_notice_waiting === false
+                 && $cff_rating_notice_option === false ) {
+                $time = 2 * WEEK_IN_SECONDS;
+                set_transient( 'custom_facebook_feed_rating_notice_waiting', 'waiting', $time );
+                update_option( 'cff_rating_notice', 'pending', false );
+            }
+            update_option( 'cff_statuses', $cff_statuses_option, false );
+        }
+        update_option( 'cff_db_version', CFF_DBVERSION );
+    }
+}
+add_action( 'wp_loaded', 'cff_check_for_db_updates' );
+
 
 // Add shortcodes
 add_shortcode('custom-facebook-feed', 'display_cff');

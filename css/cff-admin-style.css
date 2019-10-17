@@ -781,8 +781,12 @@
     border: 1px solid #6AB074;
     color: #214F28;
 }
+.cff_bfcm_sale_notice,
+.cff_new_user_sale_notice {
+    max-width: 700px;
+}
 .cff_review_notice img{
-    width: 84px;
+    width: 74px;
     margin: 0 0 0 -100% !important;
 
     -moz-border-radius: 4px;
@@ -793,14 +797,15 @@
     float: left;
     clear: none;
     width: 100%;
-    padding: 4px 0;
+    padding: 0;
 }
 .cff_review_notice p{
     float: left;
     clear: both;
     width: auto;
-    margin: 0 0 0 100px !important;
-    padding: 4px 40px 4px 0;
+    margin: 0 0 0 90px !important;
+    padding: 2px 40px 2px 0;
+    line-height: 1.4;
 }
 .cff_review_notice a{
     display: inline-block;
@@ -812,8 +817,12 @@
     color: #0c7abf;
 }
 .cff_review_notice .cff-links{
-    margin: 0 0 0 92px !important;
+    margin: 0 0 0 90px !important;
+    margin-top: 4px !important;
+}
+.cff_review_notice .links{
     padding: 4px 0 0 0;
+	margin-top: 6px !important;
 }
 .cff_review_notice .cff_notice_close,
 .cff_review_notice .cff_bfcm_sale_notice_close,
@@ -845,10 +854,14 @@
 	color: #fff;
 }
 .cff_review_notice .cff_other_notice{
-	font-size: 13px;
-	font-style: italic;
-	margin-top: 5px !important;
+	padding-top: 10px;
+    font-style: italic;
+    font-size: 12px;
 }
+.cff_review_notice .cff_other_notice a{
+	padding: 0;
+}
+
 
 /* Support page */
 #cff-admin .cff_support{

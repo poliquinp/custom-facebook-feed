@@ -244,7 +244,8 @@ if(!cff_js_exists){
 			});
 
 	        //Share tooltip function
-			$self.find('.cff-share-link').unbind().bind('click', function(){
+			$self.find('.cff-share-link').unbind().bind('click', function(e){
+				e.preventDefault();
 				var $cffShareTooltip = $self.find('.cff-share-tooltip')
 
 				//Hide tooltip

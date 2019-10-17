@@ -1,10 +1,10 @@
 === Smash Balloon Social Post Feed ===
 Contributors: smashballoon
-Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page, facebook likebox, facebook feed, facebook plugin
+Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.2
-Stable tag: 2.11
+Stable tag: 2.11.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,7 +18,9 @@ Display Facebook posts on your website. **Completely customizable**, **responsiv
 
 *"I honestly cannot recommend this plugin enough. The plugin itself is gorgeous and super customizable, and if you run into trouble...support will get you out of it. Five Stars across the board."* - [pamsavoybarnett](http://wordpress.org/support/topic/love-this-plugin-w-awesome-support?facebook)
 
-= Features =
+**Please note:** This free plugin allows you to display text and links from Facebook posts. To display **photos, videos, comments,** and more, we offer a Pro version of the plugin.  See the Pro Version section below for more information.
+
+### Facebook Feed Features
 
 * **Super simple to set up** - 1 minute quick setup with no Facebook Developer App required
 * **Display feeds from ANY Facebook page** - even ones you aren't an admin of
@@ -44,14 +46,14 @@ Display Facebook posts on your website. **Completely customizable**, **responsiv
 * Create a customizable header with a range of icons for your Custom Facebook Feed
 * Localization/i18n support to allow every part of the feed to be displayed in your language
 
-= Pro Version =
+### Pro Version (Custom Facebook Feed Pro)
 
 In order to maintain the free version of the plugin on an ongoing basis, and to provide quick and effective support for free, we offer a Pro version of the plugin. The Pro version allows you to display photos, videos, the number of likes, shares, reactions and comments for each Facebook post, choose from multiple layout options, filter posts by type or #hashtag/string, load more posts into your feed, and more. [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the free version and Pro version.
 
 * [Find out more about the Pro version](https://smashballoon.com/custom-facebook-feed/ "Custom Facebook Feed Pro")
 * [Try out the Pro demo](https://smashballoon.com/custom-facebook-feed/demo "Custom Facebook Feed Pro Demo").
 
-= Benefits of the Custom Facebook Feed plugin =
+### Benefits
 
 * **Increase social engagement** between you and your users, customers, or fans
 * **Save time** by using the Custom Facebook Feed to generate dynamic, search engine crawlable content on your website
@@ -62,6 +64,30 @@ In order to maintain the free version of the plugin on an ongoing basis, and to 
 * The plugin is **updated regularly** with new features, bug-fixes and Facebook API changes
 * Support is quick and effective
 * We're dedicated to providing the **most customizable**, **robust** and **well supported** Facebook feed plugin in the world!
+
+### How to use the plugin
+
+One of our main priorities has always been to make our plugins as easy as possible to setup and use. Once you've installed the plugin there are only a few steps to get up and running:
+
+* 1) Click the "Log in and get my Access Token" button on the plugin settings page. This will prompt you to log into your Facebook account to authorize the plugin.
+* 2) Once you've connected your account, save the plugin settings.
+* 3) Then simply copy and paste the `[custom-facebook-feed]` shortcode onto any page, post, or widget where you want the feed to be displayed.
+
+That's it!  You can then customize the feed as needed using the settings on the plugin "Customize" page.
+
+For full step-by-step setup directions with screenshots, see [here](https://smashballoon.com/custom-facebook-feed/docs/free/ "Custom Facebook Feed Free Setup Doc").
+
+### Requesting support
+
+Customer support is a huge deal to us. We pride ourselves on always providing quick, effective, and courteous support to all of our users. If you're having an issue then just let us know and we'll be there to help as soon as possible.  You can either open a ticket on the support forum on [WordPress.org](https://wordpress.org/support/plugin/custom-facebook-feed/ "Custom Facebook Feed Free support forum"), or directly on [our website](https://smashballoon.com/custom-facebook-feed/support/ "Custom Facebook Feed website support form").  We also have a large collection of help documentation and FAQs [on our website](https://smashballoon.com/custom-facebook-feed/faq/ "Custom Facebook Feed support FAQs") for all common issues.
+
+### Who's behind this plugin?
+
+We're Smash Balloon; a fun-loving WordPress plugin development company birthed into existence in early 2013. We specialize in creating plugins that are not only intuitive and simple to use, but also designed to integrate seamlessly into your website and allow you to display your social media content in powerful and unique ways. Over 1 million awesome people have decided to actively use our free plugins, which is an incredible honor that we don't take lightly. This compels us to try to provide the quickest and most effective customer support that we can, blowing users away with the best customer service they've ever experienced.
+
+To find out more about the team, see [here](https://smashballoon.com/about/ "Team Smash Balloon").
+
+Check out our other free plugins for both [Instagram](https://wordpress.org/plugins/instagram-feed "Instagram Feed free plugin") and [Twitter](https://wordpress.org/plugins/custom-twitter-feeds/ "Custom Twitter Feeds free plugin").
 
 == Installation ==
 
@@ -209,40 +235,6 @@ Ensure that there aren't any spelling errors in the shortcode options that you'r
 
 The most common reason for this is that an add-on or extension you have installed in your web browser is blocking the pictures being loaded from Facebook. Try checking to see whether you have any add-ons or extensions installed in your browser and, if so, try disabling them to see whether that solves the problem and displays the pictures from Facebook.
 
-= How to get a Facebook Access Token =
-
-**For step-by-step instructions and screenshots on how to get a Facebook Access Token just follow the [Facebook Access Token instructions](https://smashballoon.com/custom-facebook-feed/access-token/ "Facebook Access Token instructions") on the Smash Balloon website.**
-
-You no longer need your own Access Token to use the Custom Facebook Feed Plugin, but if you'd like to use your own then you will need to obtain one from Facebook.  Don't worry though, this is really easy to do.  Just follow the steps below:
-
-**1)** Go to [developers.facebook.com](http://developers.facebook.com "Facebook developers website") and click on Log In in the top right.  Log in using your personal Facebook credentials.
-
-**Note:** The personal Facebook account that you use to register as a Facebook developer does not need to be associated in any way with the Facebook page whose posts you want to display. You can use the Facebook Access Token you receive to display the Facebook posts from any public Facebook page.
-
-**Note:** You cannot log in to the Facebook Developer site using a Facebook Page or Facebook Business account. You must use the username and password from your personal Facebook profile. Facebook doesn't allow businesses to register as Facebook developers, only individuals.
-
-**2)** If this is your first time signing in to the Facebook Developer portal then click on Register Now. Registering is a quick an easy process which will take less than a couple of minutes.  If you're already registered as a Facebook developer then you can skip ahead to step 9.
-
-**3)** Accept the Facebook terms and click Continue.
-
-**4)** Enter your phone number to confirm your account.
-
-**5)** Facebook will send you an automated text message containing a confirmation code. Enter it in the box and click Confirm.
-
-**6)** Choose to share your phone number with Only Me (unless you wish to share it with publicly or with Facebook friends).
-
-**7)** You can skip the next step by clicking Skip.
-
-**8)** Click Done.
- 
-**9)** Now click on Create New App.
-
-**10)** Enter your Facebook App Name. This can be anything you like. Click Continue.
-
-**11)** Fill in Facebook's Security Check and click Continue.
-
-**12)** Your Facebook App should now be set up. Copy and paste your Facebook App ID and Facebook App Secret into the fields in the last step of the [Access Token instructions](https://smashballoon.com/custom-facebook-feed/access-token/ "How to get a Facebook Access Token") to retrieve your Facebook Access Token.
-
 == Other Notes ==
 
 = At Smash Balloon we have two goals: =
@@ -263,6 +255,11 @@ You no longer need your own Access Token to use the Custom Facebook Feed Plugin,
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.11.1 =
+* Tweak: Added the link source URL below the title for shared link posts
+* Fix: Some themes would prevent the "Share" link from working successfully
+* Fix: Fixed an issue with the "Feed Columns" setting not working if the minified versions of the plugin CSS/JavaScript files were being used
+
 = 2.11 =
 * New: Added a "Feed Columns" setting to allow you to display your feed in multiple columns. This can be found under the "General" tab on the "Customize" page, or by using the `cols` and `colsmobile` shortcode settings.
 * New: Updated to use v4.0 of the Facebook API

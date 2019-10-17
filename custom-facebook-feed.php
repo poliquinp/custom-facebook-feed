@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.11
+Version: 2.11.1
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.11');
+define('CFFVER', '2.11.1');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -1749,7 +1749,13 @@ function display_cff($atts) {
                     //The link title:
                     if( isset($news->name) ) $cff_shared_link .= '"><'.$cff_link_title_format.' class="cff-link-title" '.$cff_link_title_styles.'><a href="'.$link.'" '.$target.$cff_nofollow.' style="color:#' . $cff_link_title_color . ';">'. $news->name . '</a></'.$cff_link_title_format.'>';
                     //The link source:
-                    (!empty($news->caption)) ? $cff_link_caption = $news->caption : $cff_link_caption = '';
+                    if( !empty($news->link) ){
+                        $cff_link_caption = htmlentities($news->link, ENT_QUOTES, 'UTF-8');
+                        $cff_link_caption_parts = explode('/', $cff_link_caption);
+                        if( isset($cff_link_caption_parts[2]) ) $cff_link_caption = $cff_link_caption_parts[2];
+                    } else {
+                        $cff_link_caption = '';
+                    }
 
                     //Shared link styles
                     $cff_link_url_color_html = '';
@@ -1763,7 +1769,7 @@ function display_cff($atts) {
                     if( strlen($cff_link_url_size_html) > 1 ) $cff_link_styles_html .= $cff_link_url_size_html;
                     if( strlen($cff_link_url_color_html) > 1 || strlen($cff_link_url_size_html) > 1 ) $cff_link_styles_html .= '"';
                     
-                    // if(!empty($cff_link_caption)) $cff_shared_link .= '<p class="cff-link-caption" '.$cff_link_styles_html.'>'.$cff_link_caption.'</p>';
+                    if(!empty($cff_link_caption)) $cff_shared_link .= '<p class="cff-link-caption" '.$cff_link_styles_html.'>'.$cff_link_caption.'</p>';
                     if ($cff_show_desc) {
                         //Truncate desc
                         if (!empty($body_limit)) {
@@ -1887,7 +1893,7 @@ function display_cff($atts) {
                         $cff_link .= '<div class="cff-share-container">';
                         //Only show separating dot if both links are enabled
                         if($cff_show_facebook_link) $cff_link .= '<span class="cff-dot" ' . $cff_link_styles . '>&middot;</span>';
-                        $cff_link .= '<a class="cff-share-link" href="javascript:void(0);" title="' . $cff_facebook_share_text . '" ' . $cff_link_styles . '>' . $cff_facebook_share_text . '</a>';
+                        $cff_link .= '<a class="cff-share-link" href="'.$cff_share_facebook.'" title="' . $cff_facebook_share_text . '" ' . $cff_link_styles . '>' . $cff_facebook_share_text . '</a>';
                         $cff_link .= "<p class='cff-share-tooltip'><a href='".$cff_share_facebook."' target='_blank' class='cff-facebook-icon'><span class='fa fab fa-facebook-square' aria-hidden='true'></span><span class='cff-screenreader'>Share on Facebook</span></a><a href='".$cff_share_twitter."' target='_blank' class='cff-twitter-icon'><span class='fa fab fa-twitter' aria-hidden='true'></span><span class='cff-screenreader'>Share on Twitter</span></a><a href='".$cff_share_linkedin."' target='_blank' class='cff-linkedin-icon'><span class='fa fab fa-linkedin' aria-hidden='true'></span><span class='cff-screenreader'>Share on Linked In</span></a><a href='".$cff_share_email."' target='_blank' class='cff-email-icon'><span class='fa fa-envelope' aria-hidden='true'></span><span class='cff-screenreader'>Share by Email</span></a><span class='fa fa-play fa-rotate-90' aria-hidden='true'></span></p></div>";
                     }
                     

@@ -1060,13 +1060,15 @@
 #cff-admin #cff-insert-token,
 #cff-admin .cff-insert-reviews-token,
 #cff-admin .cff-insert-both-tokens,
-#cff-admin #cff-close-modal-primary-button{
+#cff-admin #cff-close-modal-primary-button,
+#cff-admin #cff-insert-all-tokens{
 	margin-top: 25px;
 	float: left;
 	clear: both;
 }
 #cff-admin .cff-insert-reviews-token,
-#cff-admin .cff-insert-both-tokens{
+#cff-admin .cff-insert-both-tokens,
+#cff-admin #cff-insert-all-tokens{
 	clear: none;
 	margin-left: 10px;
 }
@@ -1300,4 +1302,375 @@
 #cff-admin .cff-mobile-col-settings label {
     font-weight: 600;
     margin: 0 5px 0 0;
+}
+
+
+/* Connected Accounts */
+#cff-admin #cff_accounts_section{
+	width: 100%;
+	overflow: hidden;
+}
+#cff-admin #cff_connected_accounts_wrap{
+	clear: both;
+	max-height: 600px;
+    overflow-y: auto;
+}
+#cff-admin #cff_accounts_section h3{
+	float: left;
+	clear: both;
+    font-size: 14px;
+    padding: 0;
+    margin: 10px 0 5px 0;
+}
+#cff-admin .cff_connected_account {
+	position: relative;
+	box-sizing: border-box;
+	padding: 7px 35px 7px 7px;
+	border-radius: 5px;
+	background: #fff;
+	margin-bottom: 5px;
+	overflow: hidden;
+	clear: both;
+	border: 1px solid #ddd;
+}
+#cff-admin .cff_ca_username {
+	line-height: 1.4;
+	margin-left: 15px;
+	float: left;
+	font-size: 18px;
+}
+#cff-admin .cff_connected_account .cff_ca_avatar{
+	margin-right: 15px;
+}
+#cff-admin .cff_connected_account .cff_ca_username {
+	margin-left: 0;
+	margin-right: 25px;
+}
+#cff-admin .cff_connected_account .cff_ca_username strong{
+	float: left;
+}
+#cff-admin .cff_connected_account .cff_ca_username .cff_ca_pagetype{
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	padding: 0;
+	margin: 0;
+	display: block;
+}
+
+#cff-admin .cff_ca_actions {
+	display: inline-block;
+}
+#cff-admin .cff_ca_actions .fa{
+	margin-right: 5px;
+}
+#cff-admin .cff_ca_actions a.button-primary,
+#cff-admin .cff_ca_actions a.button-secondary,
+#cff-admin .cff_ca_accesstoken a.cff_ca_token_shortcode {
+	font-size: 12px;
+	padding: 6px;
+	height: auto;
+	line-height: 1;
+	margin: 7px 5px 0 0;
+	vertical-align: top;
+}
+#cff-admin .cff_ca_at_is_valid {
+	margin-top: 10px;
+	display: none;
+}
+#cff-admin #cff_primary_account_label{
+	padding: 0 0 0 1px;
+	margin: 0;
+	font-size: 12px;
+}
+#cff-admin #cff_primary_account_label span{
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+	position: relative;
+    top: -4px;
+}
+#cff-admin #cff_primary_account_label img{
+	width: 18px;
+	height: 18px;
+	border-radius: 3px;
+	padding: 0;
+	margin: 0 5px 0 0;
+}
+
+@-webkit-keyframes cff_flash {
+	0% {
+		background-color: #cae2a5;
+		opacity:1;
+		border: 1px solid #b2ce88;
+	}
+	100% {
+		background-color: #fff;
+	}
+}
+#cff-admin .cff_account_updated{
+	border: 1px solid #ddd;
+	background: #fff;
+
+	-webkit-animation-name: cff_flash;
+	-webkit-animation-duration: 700ms;
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-timing-function: linear;
+	-moz-animation-name: cff_flash;
+	-moz-animation-duration: 700ms;
+	-moz-animation-iteration-count: 1;
+	-moz-animation-timing-function: linear;
+}
+
+#cff-admin .cff_account_active{
+	border: 1px solid #b2ce88;
+	background: #ecf2e3;
+}
+
+#cff-admin .cff_ca_alert {
+	display: none;
+}
+#cff-admin .cff_account_invalid .cff_ca_alert {
+	display: block;
+}
+#cff-admin .cff_ca_avatar{
+	float: left;
+	width: 40px;
+	height: 40px;
+	border-radius: 5px;
+}
+#cff-admin .cff_ca_accesstoken{
+	display: none;
+	width: 100%;
+	float: left;
+	clear: both;
+	margin-top: 10px;
+}
+#cff-admin .cff_ca_token_label{
+	display: inline-block;
+	position: relative;
+	background: #f9f9f9;
+	color: #555;
+	padding: 3px 5px;
+	font-size: 12px;
+	border: 1px solid #d6d6d6;
+	height: 16px;
+	line-height: 15px;
+	border-radius: 4px 0 0 4px;
+}
+#cff-admin .cff_ca_token{
+	position: relative;
+	top: 1px;
+	padding: 3px 10px;
+	border: 1px solid #d6d6d6;
+	border-left: none;
+	font-size: 12px;
+	border-radius: 0 4px 4px 0;
+	background: rgba(255,255,255,0.8);
+	width: 80%;
+	display: inline-block;
+	margin-left: 0;
+}
+#cff-admin a.cff_ca_token_shortcode,
+#cff-admin .cff_make_primary,
+#cff-admin .cff_ca_show_token a,
+#cff-admin .cff_make_reviews {
+	padding: 4px 8px;
+    display: inline-block;
+    color: #555;
+    border-radius: 3px;
+    margin: 7px 0 0 0;
+    font-size: 12px;
+    text-decoration: none;
+
+    background: #fff;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #ccc;
+}
+#cff-admin .cff_make_primary,
+#cff-admin .cff_make_reviews{
+	margin-right: 5px;
+	background: #fff;
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #ccc;
+}
+#cff-admin a.cff_ca_token_shortcode:hover,
+#cff-admin .cff_make_primary:hover,
+#cff-admin .cff_ca_show_token a:hover,
+#cff-admin .cff_make_reviews:hover{
+	border: 1px solid #aaa;
+    background: rgba(0,0,0,0.03);
+}
+#cff-admin a.cff_ca_token_shortcode:active,
+#cff-admin .cff_make_primary:active,
+#cff-admin .cff_ca_show_token a:active,
+#cff-admin .cff_make_reviews:active{
+	background: rgba(255,255,255,0.9);
+    border: 1px solid #ccc;
+}
+
+
+#cff-admin .cff_delete_account{
+	position: absolute;
+	right: 10px;
+	top: 10px;
+
+	padding: 5px 10px;
+	background: rgba(0,0,0,0.05);
+	color: #666;
+	border-radius: 50px;
+	text-decoration: none;
+	font-size: 12px;
+}
+#cff-admin .cff_delete_account:hover,
+#cff-admin .cff_delete_account:focus{
+	background: #333;
+	color: #ddd;
+}
+#cff-admin .cff_delete_account .cff_remove_text{
+	display: none;
+	margin-left: 5px;
+}
+#cff-admin .cff_delete_account:hover .cff_remove_text{
+	display: inline-block;
+}
+
+.cff_connected_accounts_wrap{
+	vertical-align: top;
+}
+.cff_connected_actions{
+	display: none;
+}
+#cff_export_accounts{
+	font-size: 12px;
+	color: #999 !important;
+	text-decoration: underline;
+	margin-left: 2px;
+}
+#cff_export_accounts_wrap{
+	display: none;
+}
+#cff-admin .cff_no_accounts{
+	display: inline-block;
+	padding: 4px 15px;
+	border-radius: 8px;
+	background: rgba(255,255,255,0.8);
+	margin-bottom: 3px;
+}
+#cff-admin #cff_manual_submit:active{
+	vertical-align: unset;
+}
+#cff-admin .cff_manually_connect_wrap{
+	padding-top: 5px;
+}
+#cff-admin .cff_user_feed_account_wrap:first-child{
+	padding-top: 5px;
+}
+#cff-admin .cff_user_feed_account_wrap:last-child{
+	padding-bottom: 6px;
+}
+#cff-admin .cff_user_feed_account_wrap{
+	padding-bottom: 5px;
+	padding-left: 2px;
+}
+#cff-admin .cff_user_feed_account_wrap span{
+	font-size: 13px;
+}
+#cff-admin .cff_manual_account_id_toggle label{
+	display: block;
+	margin: 10px 0 0 0;
+	font-size: 13px;
+}
+#cff-admin .cff_business_profile_tag{
+	display: none;
+	padding: 8px 10px;
+	background: rgba(0,0,0,0.05);
+	border-radius: 0 5px 5px 0;
+	margin: 0 0 0 -2px;
+	font-size: 13px;
+	height: 15px;
+	line-height: 15px;
+	box-shadow: inset 0 0 1px rgba(0,0,0,.5);
+}
+#cff-admin .cff_ca_info{
+	overflow: hidden;
+}
+#cff-admin .cff_ca_show_token{
+	display: inline-block;
+	padding: 0;
+	margin: 0 0 0 5px;
+	font-size: 12px;
+	vertical-align: top;
+}
+#cff-admin .cff_ca_shortcode{
+	display: none;
+	padding: 0;
+	width: 100%;
+	float: left;
+	clear: both;
+	margin: 10px 0 0 0;
+}
+#cff-admin .cff_ca_shortcode p{
+	margin: 0;
+	padding: 15px 0 0 0;
+	font-size: 13px;
+}
+#cff-admin .cff_ca_shortcode code{
+	margin-top: 5px;
+	display: inline-block;
+}
+#cff-admin .cff_user_feed_ids_wrap .cff_ca_avatar{
+	width: 20px;
+	height: 20px;
+	position: relative;
+	top: 5px;
+	margin-right: 8px;
+	border-radius: 4px;
+}
+
+#cff-admin #cff_manual_account_step_2{
+	display: none;
+}
+#cff-admin #cff_manual_account_button{
+	float: left;
+	clear: both;
+	margin-bottom: 10px;
+}
+#cff-admin #cff_manual_account{
+	float: left;
+	clear: both;
+	display: none;
+	margin: 0 0 20px 0;
+	padding: 15px 20px 20px 20px;
+	background: rgba(255,255,255,0.5);
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+#cff-admin #cff_manual_account p.submit{
+	padding: 0;
+	margin: 20px 0 0 0;
+}
+#cff-admin .cff_account_type_page .cff_group,
+#cff-admin .cff_account_type_group .cff_page{
+	display: none;
+}
+#cff-admin #cff_manual_account_step_2 label {
+    width: 165px;
+    display: inline-block;
+}
+#cff-admin #cff_manual_account_step_2 input[type=text] {
+    width: 300px;
+}
+
+@media all and (max-width: 1200px){
+	#cff-admin .cff_delete_account .cff_remove_text{
+		display: none;
+	}
+	#cff-admin .cff_ca_token_label{
+		display: none;
+	}
+	#cff-admin .cff_ca_token{
+		border-left: 1px solid #d6d6d6;
+		border-radius: 4px;
+	}
 }

@@ -3,8 +3,8 @@ Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
-Tested up to: 5.2
-Stable tag: 2.11.1
+Tested up to: 5.3
+Stable tag: 2.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,6 +255,14 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.12 =
+* New: Added a backup cache so the feed will still display even if there's an error from the Facebook API.
+* New: You can now easily manage multiple page or group accounts on the plugin settings page allowing you to easily add them to other feeds on your site. When you connect a page or group you will now see it listed in the "Connected Accounts" section. You can add it to the primary feed or to another feed by using the new `account` shortcode option.
+* Tweak: Added a filter which can be used to filter the API data when returned; `cff_filter_api_data`.
+* Tweak: Updated API error messages
+* Fix: Fixed an issue with some @tag links in post text due to a Facebook API change
+* Fix: Fixed a rare issue with ellipsis chracter symbols in shared link descriptions causing the entire link description not to be displayed
+
 = 2.11.1 =
 * Tweak: Added the link source URL below the title for shared link posts
 * Fix: Some themes would prevent the "Share" link from working successfully

@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.11.1
+Version: 2.12
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.11.1');
+define('CFFVER', '2.12');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -106,6 +106,7 @@ function display_cff($atts) {
         'locale' => get_option('cff_locale'),
         'ajax' => get_option('cff_ajax'),
         'offset' => '',
+        'account' => '',
 
         //General
         'width' => isset($options[ 'cff_feed_width' ]) ? $options[ 'cff_feed_width' ] : '',
@@ -710,9 +711,31 @@ function display_cff($atts) {
     $title_limit = $atts['textlength'];
     if (!isset($title_limit)) $title_limit = 9999;
     $body_limit = $atts['desclength'];
+
     //Assign the Access Token and Page ID variables
     $access_token = $atts['accesstoken'];
     $page_id = trim( $atts['id'] );
+
+
+
+    //If an 'account' is specified then use that instead of the Page ID/token from the settings
+    $cff_account = trim($atts['account']);
+    if( !empty( $cff_account ) ){
+        $cff_connected_accounts = get_option('cff_connected_accounts');
+        if( !empty($cff_connected_accounts) ){
+
+            $cff_connected_accounts = json_decode( str_replace('\"','"', $cff_connected_accounts) );
+            
+            //Grab the ID and token from the connected accounts setting
+            $page_id = $cff_connected_accounts->{ $cff_account }->{'id'};
+            $access_token = $cff_connected_accounts->{ $cff_account }->{'accesstoken'};
+            
+            //Replace the encryption string in the Access Token
+            if (strpos($access_token, '02Sb981f26534g75h091287a46p5l63') !== false) {
+                $access_token = str_replace("02Sb981f26534g75h091287a46p5l63","",$access_token);
+            }
+        }
+    }
 
     //If user pastes their full URL into the Page ID field then strip it out
     $cff_facebook_string = 'facebook.com';
@@ -724,8 +747,6 @@ function display_cff($atts) {
         //Get last part of url
         $page_id = substr( $page_id, strrpos( $page_id, '/' )+1 );
     }
-
-
 
     //Masonry
     $masonry = false;
@@ -758,8 +779,6 @@ function display_cff($atts) {
             }
         }
     }
-
-
 
     //If the Page ID contains a query string at the end then remove it
     if ( stripos( $page_id, '?') !== false ) $page_id = substr($page_id, 0, strrpos($page_id, '?'));
@@ -992,19 +1011,42 @@ function display_cff($atts) {
 
                 //Check whether any data is returned from the API. If it isn't then don't cache the error response and instead keep checking the API on every page load until data is returned.
                 $FBdata = json_decode($posts_json);
-                if( !empty($FBdata->data) ) {
 
-                    //If it's a rate limit error then don't cache the response so another token can be used
-                    if (strpos($posts_json, '"error":{"message":"(#4) Application request limit reached",') == false && strpos($posts_json, 'Error validating application. Application has been deleted.') == false) {
-                        //Cache the JSON
-                        set_transient( $transient_name, $posts_json, $cache_seconds );
+                if( !empty($FBdata) ) {
+
+                    //Error returned by API
+                    if( isset($FBdata->error) ){
+
+                        //Cache the error JSON so doesn't keep making repeated requests
+                        //See if a backup cache exists
+                        if ( false !== get_transient( '!cff_' . $transient_name ) ) {
+
+                            $posts_json = get_transient( '!cff_' . $transient_name );
+
+                            //Add error message to backup cache so can be displayed at top of feed
+                            isset( $FBdata->error->message ) ? $error_message = $FBdata->error->message : $error_message = '';
+                            isset( $FBdata->error->type ) ? $error_type = $FBdata->error->type : $error_type = '';
+                            $prefix = '{';
+                            if (substr($posts_json, 0, strlen($prefix)) == $prefix) $posts_json = substr($posts_json, strlen($prefix));
+                            $posts_json = '{"cached_error": { "message": "'.$error_message.'", "type": "'.$error_type.'" }, ' . $posts_json;
+                        }
+
+                    //Posts data returned by API
+                    } else {
+                        //If a backup should be created for this data then create one
+                        set_transient( '!cff_' . $transient_name, $posts_json, YEAR_IN_SECONDS );
                     }
+
+                    //Set regular cache
+                    set_transient( $transient_name, $posts_json, $cache_seconds );
                     
                 }
             } else {
+
                 $posts_json = get_transient( $transient_name );
                 //If we can't find the transient then fall back to just getting the json from the api
                 if ($posts_json == false) $posts_json = cff_fetchUrl($cff_posts_json_url);
+
             }
         } else {
             $posts_json = cff_fetchUrl($cff_posts_json_url);
@@ -1015,33 +1057,40 @@ function display_cff($atts) {
         $FBdata = json_decode($posts_json);
 
         //If there's no data then show a pretty error message
-        if( empty($FBdata->data) ) {
-            $cff_content .= '<div class="cff-error-msg"><p>Unable to display Facebook posts.<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()">Show error</a>';
+        if( empty($FBdata->data) || isset($FBdata->cached_error) ) {
+
+            //Check whether it's an error in the backup cache
+            if( isset($FBdata->cached_error) ) $FBdata->error = $FBdata->cached_error;
+
+            //Show custom message for the PPCA error
+            if( isset($FBdata->error->message) && strpos($FBdata->error->message, 'Page Public Content Access') !== false ) {
+                $FBdata->error->message = '(#10) To use "Page Public Content Access", your use of this endpoint must be reviewed and approved by Facebook.';
+                $FBdata->error->type = $FBdata->error->code = $FBdata->error->error_subcode = NULL;
+            }
+
+            $cff_content .= '<div class="cff-error-msg">';
+            $cff_content .= '<p><b>This message is only visible to admins.</b><br />';
+            $cff_content .= '<p>Problem displaying Facebook posts.';
+            if( isset($FBdata->cached_error) ) $cff_content .= ' Backup cache in use.';
+            $cff_content .= '<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()">Click to show error</a>';
             $cff_content .= '<script type="text/javascript">function cffShowError() { document.getElementById("cff-error-reason").style.display = "block"; document.getElementById("cff-show-error").style.display = "none"; }</script>';
             $cff_content .= '</p><div id="cff-error-reason">';
             
-            if( isset($FBdata->error->message) ) $cff_content .= 'Error: ' . $FBdata->error->message;
-            if( isset($FBdata->error->type) ) $cff_content .= '<br />Type: ' . $FBdata->error->type;
-            if( isset($FBdata->error->code) ) $cff_content .= '<br />Code: ' . $FBdata->error->code;
+            if( isset($FBdata->error->message) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error->message;
+            if( isset($FBdata->error->type) ) $cff_content .= '<br /><b>Type:</b> ' . $FBdata->error->type;
             if( isset($FBdata->error->error_subcode) ) $cff_content .= '<br />Subcode: ' . $FBdata->error->error_subcode;
 
-            if( isset($FBdata->error_msg) ) $cff_content .= 'Error: ' . $FBdata->error_msg;
+            if( isset($FBdata->error_msg) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error_msg;
             if( isset($FBdata->error_code) ) $cff_content .= '<br />Code: ' . $FBdata->error_code;
             
-            if($FBdata == null) $cff_content .= 'Error: Server configuration issue';
-
-            if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= 'Error: No posts available for this Facebook ID';
-
-            $cff_content .= '<br />Please refer to our <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">Error Message Reference</a>.';
-            
+            if($FBdata == null) $cff_content .= '<b>Error:</b> Server configuration issue';
+            if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= '<b>Error:</b> No posts available for this Facebook ID';
+            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
             $cff_content .= '</div></div>'; //End .cff-error-msg and #cff-error-reason
             //Only display errors to admins
             if( current_user_can( 'manage_options' ) ){
                 $cff_content .= '<style>#cff .cff-error-msg{ display: block !important; }</style>';
             }
-            $cff_content .= '</div></div>'; //End #cff and .cff-wrapper
-
-            return $cff_content;
         }
 
 
@@ -1470,7 +1519,10 @@ function display_cff($atts) {
                                 }
                             }
 
-                            for($tag = count($message_tags_arr); $tag >= 1; $tag--) {
+                            //Sort the array by the "offset" key as Facebook doesn't always return them in the correct order
+                            usort($message_tags_arr, "cffSortTags");
+
+                            for($tag = count($message_tags_arr)-1; $tag >= 0; $tag--) {
 
                                 //If the name is blank (aka the story tag doesn't work properly) then don't use it
                                 if( $message_tags_arr[$tag]['name'] !== '' ) {
@@ -1557,6 +1609,9 @@ function display_cff($atts) {
                     if ( !empty($news->description) ) {
                         $description_text = $news->description;
                     }
+
+                    //Replace ellipsis char in description text
+                    $description_text = str_replace( '…','...', $description_text);
 
                     //If the description is the same as the post text then don't show it
                     if( $description_text ==  $cff_story_raw || $description_text ==  $cff_message_raw || $description_text ==  $cff_name_raw ){
@@ -2050,11 +2105,18 @@ function cff_desc_tags($description){
 
     return $cff_description_tagged;
 }
+//Sort message tags by offset value
+function cffSortTags($a, $b) {
+    return $a['offset'] - $b['offset'];
+}
 
 //Get JSON object of feed data
 function cff_fetchUrl($url){
     $response = wp_remote_get($url);
     $feedData = wp_remote_retrieve_body( $response );
+
+    $feedData = apply_filters( 'cff_filter_api_data', $feedData );
+
     return $feedData;
 }
 

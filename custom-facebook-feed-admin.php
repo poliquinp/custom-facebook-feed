@@ -39,6 +39,7 @@ function cff_settings_page() {
     $show_access_token      = 'cff_show_access_token';
     $access_token           = 'cff_access_token';
     $page_id                = 'cff_page_id';
+    $cff_connected_accounts = 'cff_connected_accounts';
     $cff_page_type          = 'cff_page_type';
     $num_show               = 'cff_num_show';
     $cff_post_limit         = 'cff_post_limit';
@@ -50,6 +51,8 @@ function cff_settings_page() {
     $show_access_token_val = true;
     $access_token_val = get_option( $access_token );
     $page_id_val = get_option( $page_id );
+    $cff_connected_accounts_val = get_option( $cff_connected_accounts );
+
     $cff_page_type_val = get_option( $cff_page_type, 'page' );
     $num_show_val = get_option( $num_show, '5' );
     $cff_post_limit_val = get_option( $cff_post_limit );
@@ -76,6 +79,7 @@ function cff_settings_page() {
             isset( $_POST[ $show_access_token ] ) ? $show_access_token_val = true : $show_access_token_val = true;
             isset( $_POST[ $access_token ] ) ? $access_token_val = sanitize_text_field( $_POST[ $access_token ] ) : $access_token_val = '';
             isset( $_POST[ $page_id ] ) ? $page_id_val = sanitize_text_field( $_POST[ $page_id ] ) : $page_id_val = '';
+            isset( $_POST[ $cff_connected_accounts ] ) ? $cff_connected_accounts_val = $_POST[ $cff_connected_accounts ] : $cff_connected_accounts_val = '';
             isset( $_POST[ $cff_page_type ] ) ? $cff_page_type_val = sanitize_text_field( $_POST[ $cff_page_type ] ) : $cff_page_type_val = '';
             isset( $_POST[ $num_show ] ) ? $num_show_val = sanitize_text_field( $_POST[ $num_show ] ) : $num_show_val = '';
             isset( $_POST[ $cff_post_limit ] ) ? $cff_post_limit_val = sanitize_text_field( $_POST[ $cff_post_limit ] ) : $cff_post_limit_val = '';
@@ -89,6 +93,8 @@ function cff_settings_page() {
             update_option( $show_access_token, true );
             update_option( $access_token, $access_token_val );
             update_option( $page_id, $page_id_val );
+            update_option( $cff_connected_accounts, $cff_connected_accounts_val );
+
             update_option( $cff_page_type, $cff_page_type_val );
             update_option( $num_show, $num_show_val );
             update_option( $cff_post_limit, $cff_post_limit_val );
@@ -265,7 +271,7 @@ function cff_settings_page() {
                                     foreach ( $groups_admin_data_arr->data as $page => $group_data ) {
                                         echo '<div class="cff-managed-page cff-group-admin';
                                         if( $group_data->id == $page_id_val ) echo ' cff-page-selected';
-                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'">';
+                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'" data-pagetype="group">';
                                         echo '<p>';
                                         if( isset( $group_data->picture->data->url ) ) echo '<img class="cff-page-avatar" border="0" height="50" width="50" src="'.$group_data->picture->data->url.'">';
                                         echo '<b class="cff-page-info-name">'.$group_data->name.'</b><span class="cff-page-info">(Group ID: '.$group_data->id.')</span></p>';
@@ -276,7 +282,7 @@ function cff_settings_page() {
                                     foreach ( $groups_data_arr->data as $page => $group_data ) {
                                         echo '<div class="cff-managed-page';
                                         if( $group_data->id == $page_id_val ) echo ' cff-page-selected';
-                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'">';
+                                        echo '" data-token="'.$access_token.'" data-page-id="'.$group_data->id.'" id="cff_'.$group_data->id.'" data-pagetype="group">';
                                         echo '<p>';
                                         if( isset( $group_data->picture->data->url ) ) echo '<img class="cff-page-avatar" border="0" height="50" width="50" src="'.$group_data->picture->data->url.'">';
                                         echo '<b class="cff-page-info-name">'.$group_data->name.'</b><span class="cff-page-info">(Group ID: '.$group_data->id.')</span></p>';
@@ -323,14 +329,15 @@ function cff_settings_page() {
                             foreach ( $pages_data_arr->data as $page => $page_data ) {
                                 echo '<div class="cff-managed-page ';
                                 if( $page_data->id == $page_id_val ) echo 'cff-page-selected';
-                                echo '" data-token="'.$page_data->access_token.'" data-page-id="'.$page_data->id.'">';
+                                echo '" data-token="'.$page_data->access_token.'" data-page-id="'.$page_data->id.'" data-pagetype="page">';
                                 echo '<p><img class="cff-page-avatar" border="0" height="50" width="50" src="https://graph.facebook.com/'.$page_data->id.'/picture"><b class="cff-page-info-name">'.$page_data->name.'</b><span class="cff-page-info">(Page ID: '.$page_data->id.')</span></p>';
                                 echo '</div>';
                             }
                             echo '</div>';
 
-                            $cff_use_token_text = 'Use token for this page';
+                            $cff_use_token_text = 'Connect this page';
                             echo '<a href="JavaScript:void(0);" id="cff-insert-token" class="button button-primary" disabled="disabled">'.$cff_use_token_text.'</a>';
+                            echo '<a href="JavaScript:void(0);" id="cff-insert-all-tokens" class="button button-secondary cff_connect_all">Connect All</a>';
 
                         }
 
@@ -355,7 +362,8 @@ function cff_settings_page() {
                         <th scope="row"><label><?php _e('Facebook Page ID<br /><i style="font-weight: normal; font-size: 12px;">ID of your Facebook Page or Group</i>', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> id
                         Eg: id="YOUR_PAGE_OR_GROUP_ID"</code></th>
                         <td>
-                            <input name="cff_page_id" id="cff_page_id" type="text" value="<?php esc_attr_e( $page_id_val, 'custom-facebook-feed' ); ?>" size="45" />
+                            <p id="cff_primary_account_label"></p>
+                            <input name="cff_page_id" id="cff_page_id" type="text" value="<?php esc_attr_e( $page_id_val, 'custom-facebook-feed' ); ?>" size="45" data-page-id="<?php esc_attr_e( $page_id_val ); ?>" />
                             &nbsp;<a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What\'s my Page ID?', 'custom-facebook-feed'); ?></a>
                             <br /><i style="color: #666; font-size: 11px;">Eg. 1234567890123 or smashballoon</i>
                             <div class="cff-tooltip cff-more-info">
@@ -378,7 +386,7 @@ function cff_settings_page() {
                     <tr valign="top">
                         <th scope="row" style="padding-bottom: 10px;"><?php _e('Facebook Access Token', 'custom-facebook-feed'); ?><br /><i style="font-weight: normal; font-size: 12px; color: red;"><?php _e('Required', 'custom-facebook-feed'); ?></i></th>
                         <td>
-                            <textarea name="cff_access_token" id="cff_access_token" style="min-width: 60%;"><?php esc_attr_e( $access_token_val ); ?></textarea><br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
+                            <textarea name="cff_access_token" id="cff_access_token" style="min-width: 60%;" data-accesstoken="<?php esc_attr_e( $access_token_val ); ?>"><?php esc_attr_e( $access_token_val ); ?></textarea><br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
                             <p class="cff-tooltip cff-more-info"><?php _e("In order to connect to Facebook and get a feed, you need to use an Access Token. To get one, simply use the blue button above to log into your Facebook account. You will then receive a token that will be used to connect to Facebook's API. If you already have an Access Token then you can enter it here.", 'custom-facebook-feed'); ?></p>
 
                             <div class="cff-notice cff-profile-error cff-access-token">
@@ -388,6 +396,64 @@ function cff_settings_page() {
                     </tr>
                 </tbody>
             </table>
+
+            <div id="cff_accounts_section">
+                <a href="JavaScript:void(0);" class="button-secondary button" id="cff_manual_account_button">Manually connect account</a>
+
+                <div id="cff_manual_account">
+                    <div id="cff_manual_account_step_1">
+                        <label for="cff_manual_account_type"><?php _e('Is it a Facebook page or group?'); ?></label>
+                        <select name="cff_manual_account_type" id="cff_manual_account_type">
+                            <option value="" disabled selected><?php _e('- Select one -'); ?></option>
+                            <option value="page"><?php _e('Page'); ?></option>
+                            <option value="group"><?php _e('Group'); ?></option>
+                        </select>
+                    </div>
+
+                    <div id="cff_manual_account_step_2" class="cff_account_type_page">
+                        <div>
+                            <label for="cff_manual_account_name"><span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('Name'); ?> <span style="font-size: 11px;"><?php _e('(optional)'); ?></span></label>
+                            <input name="cff_manual_account_name" id="cff_manual_account_name" type="text" value="" />
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e('This is just for labeling the account here on this settings page'); ?></p>
+                        </div>
+
+                        <div>
+                            <label for="cff_manual_account_id"><span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('ID'); ?></label>
+                            <input name="cff_manual_account_id" id="cff_manual_account_id" type="text" value="" />
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e('The ID of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add'); ?></p>
+                        </div>
+
+                        <div>
+                            <label for="cff_manual_account_token"><?php _e('Access Token'); ?></label>
+                            <input name="cff_manual_account_token" id="cff_manual_account_token" type="text" value="" />
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e('The Access Token of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add'); ?></p>
+                        </div>
+
+                        <?php
+                        $cff_submit_btn_atts = array( 'disabled' => 'true' );
+                        submit_button('Connect Account', 'primary', 'submit', true, $cff_submit_btn_atts);
+                        ?>
+                    </div>
+
+                </div>
+
+                <h3 class="cff_connected_actions">Connected Accounts:</h3>
+                <div id="cff_connected_accounts_wrap"><?php //Add connected accounts here ?></div>
+
+                <div class="cff_connected_actions">
+                    <a href="JavaScript:void(0);" id="cff_export_accounts">Show raw account data</a>
+                    <div id="cff_export_accounts_wrap">
+                        <textarea name="cff_connected_accounts" id="cff_connected_accounts" style="width: 100%;" rows="5" /><?php echo stripslashes( esc_attr( $cff_connected_accounts_val ) ); ?></textarea>
+                    </div>
+
+                    <?php submit_button('Save Settings'); ?>
+                </div>
+
+            </div>
+
             <hr />
             <table class="form-table">
                 <tbody>
@@ -763,7 +829,7 @@ foreach ( $plugins as $plugin_path => $plugin ) {
 ?>
 
 ## PLUGIN SETTINGS: ##
-Access Token:           <?php echo chunk_split( get_option( 'cff_access_token' ), 100 ); ?>
+Access Token:           <?php echo chunk_split( get_option( 'cff_access_token' ), 110 ); ?>
 Page ID:                <?php echo get_option( 'cff_page_id' ) ."\n"; ?>
 Number of Posts:        <?php echo get_option( 'cff_num_show' ) ."\n"; ?>
 Post Limit:             <?php echo get_option( 'cff_post_limit' ) ."\n"; ?>

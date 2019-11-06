@@ -490,8 +490,22 @@
 
 #cff .cff-error-msg{
   display: none;
+  position: relative;
   font-size: 12px;
   font-family: sans-serif;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  clear: both;
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+#cff .cff-error-msg p{
+  float: none;
 }
 #cff #cff-error-reason{
   display: none;

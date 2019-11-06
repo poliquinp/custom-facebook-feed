@@ -216,14 +216,62 @@ jQuery(document).ready(function($) {
 
 		$('#cff_token_expiration_note').show();
 
-		$(this).siblings().removeClass('cff-page-selected');
-		$(this).addClass('cff-page-selected');
+		var $self = $(this);
+		if( $self.hasClass('cff-page-selected') ){
+			$self.removeClass('cff-page-selected');
+		} else {
+			$self.addClass('cff-page-selected');
+		}
 	});
 
+	
+
+
+
+	//Connect Accounts array object
+	var cff_connected_accounts = {},
+		cff_multifeed_enabled = false,
+		cff_remove_primary_text = 'Remove as Primary Feed',
+    	cff_add_primary_text = 'Make Primary Feed';
+
+    if( $('#cff_page_id').hasClass('cff_multifeed_enabled') ) cff_multifeed_enabled = true;
+    if( cff_multifeed_enabled ){
+    	cff_remove_primary_text = 'Remove from Primary Feed';
+    	cff_add_primary_text = 'Add to Primary Feed';
+    }
+
+	//If there are accounts displayed then assign them to the connected accounts array
+	var cff_connected_accounts_val = $('#cff_connected_accounts').val();
+	if( cff_connected_accounts_val !== '' && cff_connected_accounts_val !== '{}' && typeof cff_connected_accounts_val !== 'undefined' ){
+
+		cff_connected_accounts = cff_connected_accounts_val.replace(/\\"/g, '"');
+		cff_connected_accounts = JSON.parse(cff_connected_accounts);
+
+		createAccountHTML(cff_connected_accounts);
+	}
+
 	//Insert Page Access Token
-	$('#cff-insert-token').on('click', function(){
-		$('#cff_access_token').val( $('.cff-page-selected').attr('data-token') ).addClass('cff-success');
-		if( $('#cff_page_id').val().trim() == '' ) $('#cff_page_id').val( $('.cff-page-selected').attr('data-page-id') );
+	$('#cff-insert-token, #cff-insert-all-tokens').on('click', function(){
+
+		if( $(this).hasClass('cff_connect_all') ) $('.cff-managed-page').addClass('cff-page-selected');
+
+		var $selectedPage = $('.cff-page-selected'),
+			selectedPageId = $selectedPage.attr('data-page-id'),
+			selectedPageToken = $selectedPage.attr('data-token');
+
+		//Add ID to setting
+		if( $('#cff_page_id').val().trim() == '' ){
+			$('#cff_page_id').val( selectedPageId ).addClass('cff-success');
+			cffAddCurIdLabel($('.cff-page-selected').first().find('.cff-page-info-name').text(), $('.cff-page-selected').first().find('.cff-page-avatar').attr('src'));
+		}
+
+		//Add token to setting
+		if( $('#cff_access_token').val().trim() == '' ){
+			//If multifeed then add ID to front so it's assigned to that ID in the feed
+			if( $('#cff_page_id').hasClass('cff_multifeed_enabled') ) selectedPageToken = selectedPageId + ':' + selectedPageToken;
+
+			$('#cff_access_token').val( selectedPageToken ).addClass('cff-success');
+		}
 
 		if( $(this).hasClass('cff-group-btn') ){
 			$('.cff-groups-list').hide();
@@ -243,14 +291,329 @@ jQuery(document).ready(function($) {
 			$('.cff-page-options').hide();
 
 			//Dynamically create group edit link
-			var cffGroupEditLink = 'https://facebook.com/groups/'+$('.cff-page-selected').attr('data-page-id')+'/edit';
+			var cffGroupEditLink = 'https://facebook.com/groups/'+selectedPageId+'/edit';
 			$('#cff-group-installation #cff-group-edit').attr('href', cffGroupEditLink);
 		} else {
 			$('.cff_modal_tokens').hide();
 		}
 
+		// cff_connected_accounts
+		$('.cff-managed-pages').find('.cff-page-selected').each(function(){
+			var $page = $(this);
+
+			addConnectedAccounts(
+				$page.attr('data-page-id'),
+				$page.find('.cff-page-info-name').text(),
+				$page.attr('data-pagetype'),
+				$page.attr('data-token'),
+				$page.find('.cff-page-avatar').attr('src')
+			);
+
+		});
+
 		location.hash = "cffnomodal";
 	});
+
+	//Manually connect account
+	//Step 1
+	$('#cff_manual_account_button').on('click', function(e){
+		e.preventDefault();
+		$('#cff_manual_account').toggle();
+		$('#cff_manual_account_step_1').show();
+		$('#cff_manual_account_step_2').hide();
+	});
+	//Step 2
+	jQuery("#cff_manual_account_type").change(function() {
+		$('#cff_manual_account_step_2').attr('class', 'cff_account_type_'+jQuery("#cff_manual_account_type option:selected").val() );
+
+		$('#cff_manual_account_step_1').hide();
+		$('#cff_manual_account_step_2').show();
+	});
+	//Add account
+	$('#cff_manual_account_step_2 input[type=submit').on('click', function(e){
+		e.preventDefault();
+
+		var $cff_manual_account = $('#cff_manual_account');
+
+		addConnectedAccounts(
+			$cff_manual_account.find('#cff_manual_account_id').val(),
+			$cff_manual_account.find('#cff_manual_account_name').val(),
+			$cff_manual_account.find('#cff_manual_account_type').val(),
+			$cff_manual_account.find('#cff_manual_account_token').val(),
+			false
+		);
+	});
+
+	//Only enable manual account submit button if ID/token fields have values
+	$('#cff_manual_account_id, #cff_manual_account_token').on('input', function() {
+		if( $('#cff_manual_account_id').val() == '' || $('#cff_manual_account_token').val() == '' ){
+			$('#cff_manual_account_step_2 #submit').attr('disabled', true);
+		} else {
+			$('#cff_manual_account_step_2 #submit').removeAttr('disabled');
+		}
+	});
+
+	//Show raw account data (can be used for exporting/importing accounts in bulk)
+	$('#cff_export_accounts').on('click', function(e){
+		e.preventDefault();
+		$('#cff_export_accounts_wrap').toggle();
+	});
+
+
+	function addConnectedAccounts(id, name, pagetype, accesstoken, avatar=false){
+
+		if( pagetype == 'page' ) avatar = '';
+
+		//Add to connected accounts array
+		cff_connected_accounts[id] = {
+			id: id,
+			name: encodeURI( name ),
+			pagetype: pagetype,
+			accesstoken: accesstoken,
+			avatar: avatar
+		};
+
+		//Update setting on page
+		$('#cff_connected_accounts').val( JSON.stringify(cff_connected_accounts) );
+
+		//Add HTML to page
+		createAccountHTML(cff_connected_accounts);
+	}
+
+	function removeConnectedAccount($account){		
+		//Remove account from array
+		delete cff_connected_accounts[$account.attr('data-page-id')];
+
+		//Update setting on page
+		$('#cff_connected_accounts').val( JSON.stringify(cff_connected_accounts) );
+
+		//Remove it from primary feed if it's in there
+		removePrimaryAcount($account);
+
+		//Remove account element from page
+		$account.remove();
+	}
+
+	function createAccountHTML(cff_connected_accounts){
+
+		var accountsHTML = '';
+
+		//Loop through accounts and create HTML
+		for (var key in cff_connected_accounts) {
+		    if (cff_connected_accounts.hasOwnProperty(key)) {
+
+		        var id = cff_connected_accounts[key]['id'],
+		        	name = decodeURI(cff_connected_accounts[key]['name']),
+		        	pagetype = cff_connected_accounts[key]['pagetype'],
+		        	accesstoken = cff_connected_accounts[key]['accesstoken'],
+		        	avatar = cff_connected_accounts[key]['avatar'],
+		        	cff_account_active = '',
+		        	no_avatar = false;
+
+		        if( (!avatar || avatar == 'false' ) && pagetype == 'group' ) no_avatar = true;
+		        if( !avatar || avatar == '' ) avatar = 'https://graph.facebook.com/'+id+'/picture';
+
+		        //If it's in use then mark it as primary/active
+		        if( $('#cff_page_id').val().indexOf(id) !== -1 ) cff_account_active = ' cff_account_active';
+
+		        accountsHTML += '<div class="cff_connected_account cff_account_type_'+pagetype+cff_account_active+'" id="cff_connected_account_'+id+'" data-accesstoken="'+accesstoken+'" data-pagetype="'+pagetype+'" data-page-id="'+id+'">' +
+                    '<div class="cff_ca_info">' +
+                        '<div class="cff_ca_delete"><a href="JavaScript:void(0);" class="cff_delete_account"><i class="fa fa-times"></i><span class="cff_remove_text">Remove</span></a></div>'+
+                        '<div class="cff_ca_username">';
+                        ( no_avatar ) ? accountsHTML += '' : accountsHTML += '<img class="cff_ca_avatar" src="'+avatar+'">';
+							accountsHTML += '<strong><span class="cff_ca_fullname">'+name+'</span><span class="cff_ca_pagetype">'+pagetype+' ID: '+id+'</span></strong>' +
+                        '</div>' +
+                        '<div class="cff_ca_actions">' +
+							'<a href="JavaScript:void(0);" class="cff_make_primary">';
+							if( cff_account_active !== '' ){
+								accountsHTML += '<i class="fa fa-minus-circle" aria-hidden="true"></i>'+cff_remove_primary_text;
+							} else {
+								accountsHTML += '<i class="fa fa-plus-circle" aria-hidden="true"></i>'+cff_add_primary_text;
+							}
+							accountsHTML += '</a>';
+
+							if( $('#cff_page_access_token').length && pagetype == 'page' ) accountsHTML += '<a href="JavaScript:void(0);" class="cff_make_reviews"><i class="fa fa-star" aria-hidden="true"></i>Use for Reviews Feed</a>';
+
+							accountsHTML += '<a class="cff_ca_token_shortcode" href="JavaScript:void(0);"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i>Add to another Feed</a>' +
+                            '<p class="cff_ca_show_token"><a href="javascript:void(0);" id="cff_ca_show_token_'+id+'"><i class="fa fa-ellipsis-h" style="margin: 0; font-size: 12px;" aria-hidden="true"></i></a></p>' +
+                        '</div>' +
+                        '<div class="cff_ca_shortcode">' +
+                            '<p>Copy and paste this shortcode into your page or widget area:<br>' +
+                                '<code>[custom-facebook-feed account="'+id+'"]</code>' +
+                            '</p>';
+                        if( cff_multifeed_enabled ) accountsHTML += '<p>To add multiple accounts in the same feed, simply separate them using commas:<br>' +
+								'<code>[custom-facebook-feed account="'+id+', account_2, account_3"]</code>' +
+                            '</p>';
+                        accountsHTML += '<p>Click <a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/" target="_blank">here</a> to learn more about shortcodes</p>' +
+                        '</div>' +
+                        '<div class="cff_ca_accesstoken">' +
+                            '<span class="cff_ca_token_label">Access Token:</span><input type="text" class="cff_ca_token" value="'+accesstoken+'" readonly="readonly" onclick="this.focus();this.select()" title="To copy, click the field then press Ctrl + C (PC) or Cmd + C (Mac).">' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+		    }
+		}
+
+		//Add HTML to page
+		$('#cff_connected_accounts_wrap').html(accountsHTML);
+
+		//Add Raw Data button
+		$('.cff_connected_actions').show();
+
+	}
+
+	function removePrimaryAcount($account){
+		//Remove ID/token from fields
+    	if( $account.hasClass('cff_account_active') ){
+
+    		var selected_id = $account.attr('data-page-id'),
+        		selected_token = $account.attr('data-accesstoken');
+
+    		//Remove as primary account
+    		cffLabelAsPrimary($account);
+
+    		$('#cff_primary_account_label').hide();
+
+    		if( cff_multifeed_enabled ){
+
+    			//Find the ID from the removed account and remove it from the ID field
+    			var updatedIdVal = $('#cff_page_id').val().replace(selected_id, '');
+    			//Remove any stray commas left over
+    			updatedIdVal = updatedIdVal.replace(',,', '').replace(' ,', '').replace(/^, |, $/g,'');
+
+        		$('#cff_page_id').val( updatedIdVal ).removeClass('cff-success');
+
+        		//Remove Token
+        		// var updatedTokenVal = $('#cff_access_token').val().replace(selected_id+':'+selected_token, '').replace(selected_token, '');
+        		var updatedTokenVal = $('#cff_access_token').val().replace(selected_id+':'+selected_token, '');
+        		//Remove any stray commas left over
+    			updatedTokenVal = updatedTokenVal.replace(',,', '').replace(' ,', '').replace(':,', ':').replace(/^, |, $/g,'');
+
+        		$('#cff_access_token').val( updatedTokenVal ).removeClass('cff-success');
+
+
+        	} else {
+
+        		//Revert ID/token fields back to previous values
+        		$('#cff_page_id').val( $('#cff_page_id').attr('data-page-id') ).removeClass('cff-success');
+        		$('#cff_access_token').val( $('#cff_access_token').attr('data-accesstoken') ).removeClass('cff-success');
+
+        	}
+    	}
+	}
+
+
+	var $body = $('body');
+	//Show Access Token
+	$body.on('click', '.cff_ca_show_token a', function(e) {
+		e.preventDefault();
+        jQuery(this).closest('.cff_ca_info').find('.cff_ca_accesstoken').slideToggle(200);
+    });
+    $body.on('click', '.cff_ca_token_shortcode, .cff_make_primary, .cff_make_reviews', function (event) {
+        event.preventDefault();
+        var $clicked = $(event.target);
+        //Show shortcode
+        if( $clicked.hasClass('cff_ca_token_shortcode') ) {
+            jQuery(this).closest('.cff_ca_info').find('.cff_ca_shortcode').slideToggle(200);
+        }
+        //Make Reviews account
+        if( $clicked.hasClass('cff_make_reviews') ){
+        	$('#cff_page_access_token').val( $clicked.closest('.cff_connected_account').attr('data-accesstoken') ).addClass('cff-success');
+        }
+        //Make primary account
+        if( $clicked.hasClass('cff_make_primary') ){
+        	var $selected_account = $clicked.closest('.cff_connected_account'),
+        		selected_id = $selected_account.attr('data-page-id'),
+        		selected_token = $selected_account.attr('data-accesstoken');
+
+
+        	//Remove ID/token from fields
+        	if( $selected_account.hasClass('cff_account_active') ){
+        		
+        		removePrimaryAcount($selected_account);
+
+	        //Add ID/token to fields
+        	} else {
+
+        		//Add as primary account
+        		cffLabelAsPrimary($selected_account, true);
+
+	        	//Add ID/token to fields
+	        	if( cff_multifeed_enabled ){
+
+	        		//Add ID to existing IDs already in field
+	        		var id_sep = ', ',
+	        			existing_id = $('#cff_page_id').val().trim(),
+	        			existing_token = $('#cff_access_token').val().trim();
+
+	        		if( existing_id == '' ) id_sep = '';
+	        		$('#cff_page_id').val( existing_id + id_sep + selected_id ).addClass('cff-success');
+
+	        		//Change to multiple token format
+	        		var token_format = '';
+	        		if( existing_token !== '' ) token_format += existing_token + ', ';
+	        		token_format += selected_id + ':' + selected_token;
+
+	        		$('#cff_access_token').val( token_format ).addClass('cff-success');
+
+	        	} else {
+
+	        		//Replace existing ID and token
+	        		$('#cff_page_id').val( selected_id ).addClass('cff-success');
+	        		$('#cff_access_token').val( selected_token ).addClass('cff-success');
+
+	        		//Remove active account class from other accounts
+	        		$selected_account.siblings().each(function(){
+	        			cffLabelAsPrimary($(this));
+	        		});
+
+	        	}
+        	
+
+        	}
+        }
+    });
+    //Remove account
+    $body.on('click', '.cff_delete_account', function(){
+        removeConnectedAccount( $(this).closest('.cff_connected_account') );
+    });
+
+    //Change button label when adding/removing as primary account
+    function cffLabelAsPrimary($account, makePrimary=false){
+    	if( makePrimary ){
+        	$account.addClass('cff_account_active').find('.cff_make_primary').html('<i class="fa fa-minus-circle" aria-hidden="true"></i>'+cff_remove_primary_text);
+
+        	if( $account.length > 0 ) cffAddCurIdLabel($account.find('.cff_ca_fullname').text(), $account.find('.cff_ca_avatar').attr('src'));
+
+    	} else {
+    		$account.removeClass('cff_account_active').find('.cff_make_primary').html('<i class="fa fa-plus-circle" aria-hidden="true"></i>'+cff_add_primary_text);
+    	}
+    }
+
+    function cffAddCurIdLabel(name, avatar){
+    	var account_img = '',
+    		account_name = '<span>' + name + '</span>';
+    	if( avatar !== undefined ) account_img = '<img src="' + avatar + '" />';
+
+    	$('#cff_primary_account_label').show().html( account_img + account_name );
+    }
+
+    //Label a primary account when page is first loaded
+    var cff_current_page_id = $('#cff_page_id').val(),
+    	cff_current_page_id_arr = [];
+    if( typeof cff_current_page_id !== 'undefined' ) var cff_current_page_id_arr = cff_current_page_id.split(',');
+
+    if( cff_current_page_id_arr.length > 1 ){
+    	for (var i = 0; i < cff_current_page_id_arr.length; i++) {
+		    cffLabelAsPrimary( $('#cff_connected_account_' + cff_current_page_id_arr[i].trim() ), true );
+		}
+    } else {
+    	cffLabelAsPrimary( $('#cff_connected_account_' + cff_current_page_id ), true );
+    }
+
+
+
+
 
 	//Show the modal by default, but hide if the "cffnomodal" class is added to prevent it showing after saving settings
 	if( location.hash !== '#cffnomodal' ){

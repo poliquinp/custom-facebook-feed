@@ -330,7 +330,7 @@ jQuery(document).ready(function($) {
 		$('#cff_manual_account_step_2').show();
 	});
 	//Add account
-	$('#cff_manual_account_step_2 input[type=submit').on('click', function(e){
+	$('#cff_manual_account_step_2 input[type=submit]').on('click', function(e){
 		e.preventDefault();
 
 		var $cff_manual_account = $('#cff_manual_account');
@@ -394,6 +394,18 @@ jQuery(document).ready(function($) {
 		$account.remove();
 	}
 
+	function cffStripURLParts(string){
+		//If user pastes their full URL into the Page ID field then strip it out
+		var cff_facebook_string = 'facebook.com',
+			hasURL = (string.indexOf(cff_facebook_string) > -1);
+		if (hasURL) {
+			var stringArr = string.split('?')[0].replace(/\/$/, '').split('/');
+			string = stringArr[stringArr.length-1].replace(/[\.\/]/,'');
+		}
+
+		return string;
+	}
+
 	function createAccountHTML(cff_connected_accounts){
 
 		var accountsHTML = '';
@@ -402,13 +414,17 @@ jQuery(document).ready(function($) {
 		for (var key in cff_connected_accounts) {
 		    if (cff_connected_accounts.hasOwnProperty(key)) {
 
-		        var id = cff_connected_accounts[key]['id'],
+		        var id = cffStripURLParts(cff_connected_accounts[key]['id']),
 		        	name = decodeURI(cff_connected_accounts[key]['name']),
 		        	pagetype = cff_connected_accounts[key]['pagetype'],
 		        	accesstoken = cff_connected_accounts[key]['accesstoken'],
 		        	avatar = cff_connected_accounts[key]['avatar'],
 		        	cff_account_active = '',
 		        	no_avatar = false;
+
+		        /*
+		        //
+		         */
 
 		        if( (!avatar || avatar == 'false' ) && pagetype == 'group' ) no_avatar = true;
 		        if( !avatar || avatar == '' ) avatar = 'https://graph.facebook.com/'+id+'/picture';
@@ -605,15 +621,11 @@ jQuery(document).ready(function($) {
 
     if( cff_current_page_id_arr.length > 1 ){
     	for (var i = 0; i < cff_current_page_id_arr.length; i++) {
-		    cffLabelAsPrimary( $('#cff_connected_account_' + cff_current_page_id_arr[i].trim() ), true );
+			cffLabelAsPrimary( $('#cff_connected_account_' + cffStripURLParts(cff_current_page_id_arr[i].trim()) ), true );
 		}
     } else {
-    	cffLabelAsPrimary( $('#cff_connected_account_' + cff_current_page_id ), true );
+		cffLabelAsPrimary( $('#cff_connected_account_' + cffStripURLParts(cff_current_page_id) ), true );
     }
-
-
-
-
 
 	//Show the modal by default, but hide if the "cffnomodal" class is added to prevent it showing after saving settings
 	if( location.hash !== '#cffnomodal' ){

@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.12');
+define('CFFVER', '2.12.0.1');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {

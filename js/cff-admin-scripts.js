@@ -316,19 +316,31 @@ jQuery(document).ready(function($) {
 
 	//Manually connect account
 	//Step 1
-	$('#cff_manual_account_button').on('click', function(e){
+	$('#cff_manual_account_button, #cff-admin .cff_manual_back').on('click', function(e){
 		e.preventDefault();
-		$('#cff_manual_account').toggle();
+		if( !$(this).hasClass('cff_manual_back') ) $('#cff_manual_account').toggle();
 		$('#cff_manual_account_step_1').show();
 		$('#cff_manual_account_step_2').hide();
 	});
 	//Step 2
 	jQuery("#cff_manual_account_type").change(function() {
+		cff_go_to_step_2();
+	});
+	$('#cff-admin .cff_manual_forward').on('click', function(){
+		if( $("#cff_manual_account_type option:selected").val() ){
+			cff_go_to_step_2();
+		} else {
+			$("#cff_manual_account_type").addClass('cff_error');
+			setTimeout(function(){ $("#cff_manual_account_type").removeClass('cff_error'); }, 500);
+		}
+	});
+	function cff_go_to_step_2(){
 		$('#cff_manual_account_step_2').attr('class', 'cff_account_type_'+jQuery("#cff_manual_account_type option:selected").val() );
 
 		$('#cff_manual_account_step_1').hide();
 		$('#cff_manual_account_step_2').show();
-	});
+	}
+
 	//Add account
 	$('#cff_manual_account_step_2 input[type=submit]').on('click', function(e){
 		e.preventDefault();
@@ -363,6 +375,8 @@ jQuery(document).ready(function($) {
 	function addConnectedAccounts(id, name, pagetype, accesstoken, avatar=false){
 
 		if( pagetype == 'page' ) avatar = '';
+
+		id = cffStripURLParts(id);
 
 		//Add to connected accounts array
 		cff_connected_accounts[id] = {
@@ -424,10 +438,6 @@ jQuery(document).ready(function($) {
 		        	avatar = cff_connected_accounts[key]['avatar'],
 		        	cff_account_active = '',
 		        	no_avatar = false;
-
-		        /*
-		        //
-		         */
 
 		        if( (!avatar || avatar == 'false' ) && pagetype == 'group' ) no_avatar = true;
 		        if( !avatar || avatar == '' ) avatar = 'https://graph.facebook.com/'+id+'/picture';

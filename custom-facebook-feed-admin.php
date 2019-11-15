@@ -408,21 +408,22 @@ function cff_settings_page() {
                             <option value="page"><?php _e('Page'); ?></option>
                             <option value="group"><?php _e('Group'); ?></option>
                         </select>
+                        <a href="javascript:void(0);" class="cff_manual_forward button-primary"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
                     </div>
 
                     <div id="cff_manual_account_step_2" class="cff_account_type_page">
                         <div>
                             <label for="cff_manual_account_name"><span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('Name'); ?> <span style="font-size: 11px;"><?php _e('(optional)'); ?></span></label>
-                            <input name="cff_manual_account_name" id="cff_manual_account_name" type="text" value="" />
+                            <input name="cff_manual_account_name" id="cff_manual_account_name" type="text" value="" placeholder="Eg: John's Facebook Page" />
                             <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
                             <p class="cff-tooltip cff-more-info"><?php _e('This is just for labeling the account here on this settings page'); ?></p>
                         </div>
 
                         <div>
                             <label for="cff_manual_account_id"><span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('ID'); ?></label>
-                            <input name="cff_manual_account_id" id="cff_manual_account_id" type="text" value="" />
+                            <input name="cff_manual_account_id" id="cff_manual_account_id" type="text" value="" placeholder="Eg: 1234567890123 or smashballoon" />
                             <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
-                            <p class="cff-tooltip cff-more-info"><?php _e('The ID of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add'); ?></p>
+                            <p class="cff-tooltip cff-more-info"><?php _e('The ID of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add.'); ?> &nbsp;<a href='https://smashballoon.com/custom-facebook-feed/id/'><?php _e("How do I find my Page ID?"); ?></a></p>
                         </div>
 
                         <div>
@@ -436,6 +437,7 @@ function cff_settings_page() {
                         $cff_submit_btn_atts = array( 'disabled' => 'true' );
                         submit_button('Connect Account', 'primary', 'submit', true, $cff_submit_btn_atts);
                         ?>
+                        <a href="javascript:void(0);" class="cff_manual_back button-secondary">Back</a>
                     </div>
 
                 </div>

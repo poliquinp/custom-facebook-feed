@@ -1470,6 +1470,8 @@
 	width: 80%;
 	display: inline-block;
 	margin-left: 0;
+	min-height: 10px;
+	line-height: 1.4;
 }
 #cff-admin a.cff_ca_token_shortcode,
 #cff-admin .cff_make_primary,
@@ -1646,9 +1648,15 @@
 	border: 1px solid #ddd;
 	border-radius: 5px;
 }
-#cff-admin #cff_manual_account p.submit{
+#cff-admin #cff_manual_account p.submit,
+#cff-admin .cff_manual_back{
+	float: left;
 	padding: 0;
-	margin: 20px 0 0 0;
+	margin: 20px 5px 0 0;
+}
+#cff-admin .cff_manual_back{
+	display: block;
+    padding: 0 10px;
 }
 #cff-admin .cff_account_type_page .cff_group,
 #cff-admin .cff_account_type_group .cff_page{
@@ -1660,6 +1668,14 @@
 }
 #cff-admin #cff_manual_account_step_2 input[type=text] {
     width: 300px;
+}
+#cff-admin .cff_manual_forward{
+	position: relative;
+    top: 2px;
+}
+#cff-admin .cff_error{
+	border: 1px solid #e37177;
+	background: #ffebec;
 }
 
 @media all and (max-width: 1200px){

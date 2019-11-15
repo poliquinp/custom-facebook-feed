@@ -395,6 +395,9 @@ jQuery(document).ready(function($) {
 	}
 
 	function cffStripURLParts(string){
+		if (typeof string === 'undefined') {
+			return '';
+		}
 		//If user pastes their full URL into the Page ID field then strip it out
 		var cff_facebook_string = 'facebook.com',
 			hasURL = (string.indexOf(cff_facebook_string) > -1);

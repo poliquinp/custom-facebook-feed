@@ -423,7 +423,7 @@ function cff_settings_page() {
                             <label for="cff_manual_account_id"><span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('ID'); ?></label>
                             <input name="cff_manual_account_id" id="cff_manual_account_id" type="text" value="" placeholder="Eg: 1234567890123 or smashballoon" />
                             <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
-                            <p class="cff-tooltip cff-more-info"><?php _e('The ID of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add.'); ?> &nbsp;<a href='https://smashballoon.com/custom-facebook-feed/id/'><?php _e("How do I find my Page ID?"); ?></a></p>
+                            <p class="cff-tooltip cff-more-info"><?php _e('The ID of the Facebook'); ?> <span class="cff_page"><?php _e('Page'); ?></span><span class="cff_group"><?php _e('Group'); ?></span> <?php _e('you want to add.'); ?> &nbsp;<a href='https://smashballoon.com/custom-facebook-feed/id/' target='_blank'><?php _e("How do I find my Page ID?"); ?></a></p>
                         </div>
 
                         <div>

@@ -530,10 +530,9 @@ function display_cff($atts) {
     
     $cff_date_before = isset($options[ 'cff_date_before' ]) ? $options[ 'cff_date_before' ] : '';
     $cff_date_after = isset($options[ 'cff_date_after' ]) ? $options[ 'cff_date_after' ] : '';
-    //Set user's timezone based on setting
+
+    //Timezone. The post date is adjusted by the timezone offset in the cff_getdate function.
     $cff_timezone = $atts['timezone'];
-    $cff_orig_timezone = date_default_timezone_get();
-    date_default_timezone_set($cff_timezone);
 
     //Posted ago strings
     $cff_date_translate_strings = array(
@@ -1261,7 +1260,7 @@ function display_cff($atts) {
                     isset($news->created_time) ? $post_time = $news->created_time : $post_time = '';
                     if( isset($news->backdated_time) ) $post_time = $news->backdated_time; //If the post is backdated then use that as the date instead
 
-                    $cff_date = '<p class="cff-date" '.$cff_date_styles.'>'. $cff_date_before . ' ' . cff_getdate(strtotime($post_time), $cff_date_formatting, $cff_date_custom, $cff_date_translate_strings) . ' ' . $cff_date_after;
+                    $cff_date = '<p class="cff-date" '.$cff_date_styles.'>'. $cff_date_before . ' ' . cff_getdate(strtotime($post_time), $cff_date_formatting, $cff_date_custom, $cff_date_translate_strings, $cff_timezone) . ' ' . $cff_date_after;
                     if($cff_date_position == 'below' || (!$cff_show_author && $cff_date_position == 'author') ) $cff_date .= '<span class="cff-date-dot">&nbsp;&middot;&nbsp;&nbsp;</span>';
                     $cff_date .= '</p>';
 
@@ -2044,8 +2043,6 @@ function display_cff($atts) {
         $p++;
     }
 
-    //Reset the timezone
-    date_default_timezone_set( $cff_orig_timezone );
     //Add the Like Box inside
     if ($cff_like_box_position == 'bottom' && $cff_show_like_box && !$cff_like_box_outside) $cff_content .= $like_box;
     /* Credit link */
@@ -2165,9 +2162,22 @@ function cff_wrap_span_callback($matches) {
     return "<span class='cff-break-word'>$url_short</span>";
 }
 
-//2013-04-28T21:06:56+0000
+//Use the timezone to offset the date as all post dates are in UTC +0000
+function cff_set_timezone($original, $cff_timezone){
+    $cff_date_time = new DateTime(date('m/d g:i a'), new DateTimeZone('UTC'));
+    $cff_date_time->setTimeZone(new DateTimeZone($cff_timezone));
+    $cff_date_time_offset = $cff_date_time->getOffset();
+
+    $original = $original + $cff_date_time_offset;
+
+    return $original;
+}
 //Time stamp function - used for posts
-function cff_getdate($original, $date_format, $custom_date, $cff_date_translate_strings) {
+function cff_getdate($original, $date_format, $custom_date, $cff_date_translate_strings, $cff_timezone) {
+
+    //Offset the date by the timezone
+    $original = cff_set_timezone($original, $cff_timezone);
+    
     switch ($date_format) {
         
         case '2':

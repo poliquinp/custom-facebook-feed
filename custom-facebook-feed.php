@@ -2176,45 +2176,45 @@ function cff_set_timezone($original, $cff_timezone){
 function cff_getdate($original, $date_format, $custom_date, $cff_date_translate_strings, $cff_timezone) {
 
     //Offset the date by the timezone
-    $original = cff_set_timezone($original, $cff_timezone);
+    $new_time = cff_set_timezone($original, $cff_timezone);
     
     switch ($date_format) {
         
         case '2':
-            $print = date_i18n('F jS, g:i a', $original);
+            $print = date_i18n('F jS, g:i a', $new_time);
             break;
         case '3':
-            $print = date_i18n('F jS', $original);
+            $print = date_i18n('F jS', $new_time);
             break;
         case '4':
-            $print = date_i18n('D F jS', $original);
+            $print = date_i18n('D F jS', $new_time);
             break;
         case '5':
-            $print = date_i18n('l F jS', $original);
+            $print = date_i18n('l F jS', $new_time);
             break;
         case '6':
-            $print = date_i18n('D M jS, Y', $original);
+            $print = date_i18n('D M jS, Y', $new_time);
             break;
         case '7':
-            $print = date_i18n('l F jS, Y', $original);
+            $print = date_i18n('l F jS, Y', $new_time);
             break;
         case '8':
-            $print = date_i18n('l F jS, Y - g:i a', $original);
+            $print = date_i18n('l F jS, Y - g:i a', $new_time);
             break;
         case '9':
-            $print = date_i18n("l M jS, 'y", $original);
+            $print = date_i18n("l M jS, 'y", $new_time);
             break;
         case '10':
-            $print = date_i18n('m.d.y', $original);
+            $print = date_i18n('m.d.y', $new_time);
             break;
         case '11':
-            $print = date_i18n('m/d/y', $original);
+            $print = date_i18n('m/d/y', $new_time);
             break;
         case '12':
-            $print = date_i18n('d.m.y', $original);
+            $print = date_i18n('d.m.y', $new_time);
             break;
         case '13':
-            $print = date_i18n('d/m/y', $original);
+            $print = date_i18n('d/m/y', $new_time);
             break;
         default:
             
@@ -2264,7 +2264,7 @@ function cff_getdate($original, $date_format, $custom_date, $cff_date_translate_
         
     }
     if ( !empty($custom_date) ){
-        $print = date_i18n($custom_date, $original);
+        $print = date_i18n($custom_date, $new_time);
     }
 
     return $print;

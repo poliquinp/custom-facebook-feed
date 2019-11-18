@@ -634,10 +634,17 @@ jQuery(document).ready(function($) {
 
     if( cff_current_page_id_arr.length > 1 ){
     	for (var i = 0; i < cff_current_page_id_arr.length; i++) {
-			cffLabelAsPrimary( $('#cff_connected_account_' + cffStripURLParts(cff_current_page_id_arr[i].trim()) ), true );
+		    cffLabelAsPrimary( $('#cff_connected_account_' + cffValidateID( cff_current_page_id_arr[i] ) ), true );
 		}
     } else {
-		cffLabelAsPrimary( $('#cff_connected_account_' + cffStripURLParts(cff_current_page_id) ), true );
+    	cffLabelAsPrimary( $('#cff_connected_account_' + cffValidateID( cff_current_page_id ) ), true );
+    }
+    //Make sure ID is a valid string
+    function cffValidateID(id){
+    	//Remove slashes from end
+    	id = cffStripURLParts( id.replace(/\/$/, "").trim() );
+    	//Only return if it contains numbers/letters
+    	if( id.match("^[A-Za-z0-9]+$") ) return id;
     }
 
 	//Show the modal by default, but hide if the "cffnomodal" class is added to prevent it showing after saving settings

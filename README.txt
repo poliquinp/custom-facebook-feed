@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.3
-Stable tag: 2.12.1
+Stable tag: 2.12.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,6 +255,9 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.12.2 =
+* Fix: Fixed a JavaScript error in the admin caused by the previous update. Apologies for any inconvenience.
+
 = 2.12.1 =
 * Fix: Fixed an issue with post date timezones due to changes in the WordPress 5.3 update
 * Fix: Fixed a rare issue where a JavaScript error would occur in the WordPress admin if a Facebook account was manually connected and the Page ID used was the full URL

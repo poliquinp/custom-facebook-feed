@@ -641,6 +641,8 @@ jQuery(document).ready(function($) {
     }
     //Make sure ID is a valid string
     function cffValidateID(id){
+    	if( typeof id === 'undefined' || id != '' ) return;
+    	
     	//Remove slashes from end
     	id = cffStripURLParts( id.replace(/\/$/, "").trim() );
     	//Only return if it contains numbers/letters

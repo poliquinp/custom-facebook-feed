@@ -1755,8 +1755,13 @@ function display_cff($atts) {
                     //Add a call to action button if included
                     if( isset($news->call_to_action->value->link) ){
                         $cff_cta_link = $news->call_to_action->value->link;
-                        //If it's not an absolute link then it means it's a relative Facebook one so prefix it with facebook.com
-                        if (strpos($cff_cta_link, 'http') === false) $cff_cta_link = 'https://facebook.com' . $cff_cta_link;
+
+	                    if( $cff_cta_link[0] == '/' ){
+		                    $cff_cta_link = 'https://facebook.com' . $cff_cta_link;
+	                    } else {
+		                    //If it doesn't start with 'http' then add it otherwise the link doesn't work. Don't do this if it's a tel num.
+		                    if (strpos($cff_cta_link, 'http') === false && strpos($cff_cta_link, 'tel:') === false) $cff_cta_link = 'http://' . $cff_cta_link;
+	                    }
 
                         $cff_button_type = $news->call_to_action->type;
 

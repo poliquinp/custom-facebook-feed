@@ -1611,10 +1611,11 @@ function display_cff($atts) {
                         }
 
                         //Replace ellipsis char in description text
+	                    $raw_desc = $description_text;
                         $description_text = str_replace( '…','...', $description_text);
 
                         //If the description is the same as the post text then don't show it
-                        if( $description_text ==  $cff_story_raw || $description_text ==  $cff_message_raw || $description_text ==  $cff_name_raw ){
+                        if( $raw_desc ==  $cff_story_raw || $raw_desc ==  $cff_message_raw || $raw_desc ==  $cff_name_raw ){
                             $cff_description = '';
                         } else {
                             //Add links and create HTML

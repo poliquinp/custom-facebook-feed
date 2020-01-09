@@ -266,7 +266,7 @@ jQuery(document).ready(function($) {
 		}
 
 		//Add token to setting
-		if( $('#cff_access_token').val().trim() == '' ){
+		if( $('#cff_access_token').val().trim() == '' || $('#cff_access_token').hasClass('cff-replace-token') ){
 			//If multifeed then add ID to front so it's assigned to that ID in the feed
 			if( $('#cff_page_id').hasClass('cff_multifeed_enabled') ) selectedPageToken = selectedPageId + ':' + selectedPageToken;
 

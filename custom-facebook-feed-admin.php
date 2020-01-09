@@ -383,10 +383,27 @@ function cff_settings_page() {
                         </td>
                     </tr>
 
+                    <?php
+                    //When connecting an account check the current access token to see if it has an error. If so then add a class to the field and replace it automatically in JS when getting a new one.
+                    $cff_replace_token = false;
+                    if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
+
+                        if( $_GET['final_response'] == 'true' ){
+                            $api_page_id = trim($page_id_val);
+                            $url = 'https://graph.facebook.com/'.$api_page_id.'?limit=1&fields=id&access_token='.$access_token_val;
+                            $accounts_data = cff_fetchUrl($url);
+                            //If there's an error (and it's not the PPCA one) then mark the token as needing to be replaced
+                            if (strpos($accounts_data, 'error') !== false && strpos($accounts_data, 'Public') == false) $cff_replace_token = true;
+                        }
+
+                    }
+
+                    ?>
+
                     <tr valign="top">
                         <th scope="row" style="padding-bottom: 10px;"><?php _e('Facebook Access Token', 'custom-facebook-feed'); ?><br /><i style="font-weight: normal; font-size: 12px; color: red;"><?php _e('Required', 'custom-facebook-feed'); ?></i></th>
                         <td>
-                            <textarea name="cff_access_token" id="cff_access_token" style="min-width: 60%;" data-accesstoken="<?php esc_attr_e( $access_token_val ); ?>"><?php esc_attr_e( $access_token_val ); ?></textarea><br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
+                            <textarea name="cff_access_token" id="cff_access_token" <?php if($cff_replace_token) echo 'class="cff-replace-token"' ?> style="min-width: 60%;" data-accesstoken="<?php esc_attr_e( $access_token_val ); ?>"><?php esc_attr_e( $access_token_val ); ?></textarea><br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
                             <p class="cff-tooltip cff-more-info"><?php _e("In order to connect to Facebook and get a feed, you need to use an Access Token. To get one, simply use the blue button above to log into your Facebook account. You will then receive a token that will be used to connect to Facebook's API. If you already have an Access Token then you can enter it here.", 'custom-facebook-feed'); ?></p>
 
                             <div class="cff-notice cff-profile-error cff-access-token">
@@ -741,7 +758,7 @@ function cff_settings_page() {
 
         <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
 
-        <p class="cff_plugins_promo dashicons-before dashicons-admin-plugins"> <?php _e('Check out our other free plugins: <a href="https://wordpress.org/plugins/instagram-feed/" target="_blank">Instagram</a> and <a href="https://wordpress.org/plugins/custom-twitter-feeds/" target="_blank">Twitter</a>.', 'instagram-feed' ); ?></p>
+        <p class="cff_plugins_promo dashicons-before dashicons-admin-plugins"> <?php _e('Check out our other free plugins for <a href="https://wordpress.org/plugins/instagram-feed/" target="_blank">Instagram</a>, <a href="https://wordpress.org/plugins/custom-twitter-feeds/" target="_blank">Twitter</a>, and <a href="https://wordpress.org/plugins/feeds-for-youtube/" target="_blank">YouTube</a>.', 'instagram-feed' ); ?></p>
 
         <div class="cff-share-plugin">
             <h3><?php _e('Like the plugin? Help spread the word!', 'custom-facebook-feed'); ?></h3>
@@ -4070,8 +4087,7 @@ add_action( 'admin_enqueue_scripts', 'cff_admin_style' );
 //Enqueue admin scripts
 function cff_admin_scripts() {
     //Declare color-picker as a dependency
-    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', array( 'wp-color-picker' ), CFFVER );
-
+    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', CFFVER );
     if( !wp_script_is('jquery-ui-draggable') ) { 
         wp_enqueue_script(
             array(
@@ -4083,7 +4099,8 @@ function cff_admin_scripts() {
     }
     wp_enqueue_script(
         array(
-        'hoverIntent'
+        'hoverIntent',
+        'wp-color-picker'
         )
     );
 }

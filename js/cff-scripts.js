@@ -240,7 +240,7 @@ if(!cff_js_exists){
 			//Add target attr to post text links via JS so aren't included in char count
 			$self.find('.cff-text a').add( $self.find('.cff-post-desc a') ).attr({
 				'target' : '_blank',
-				'rel' : 'nofollow'
+				'rel' : 'nofollow noopener noreferrer'
 			});
 
 	        //Share tooltip function

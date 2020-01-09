@@ -260,7 +260,10 @@ The most common reason for this is that an add-on or extension you have installe
 * Tweak: Added a text link in the settings page footer to our new free [YouTube plugin](https://wordpress.org/plugins/feeds-for-youtube/)
 * Tweak: When reconnecting an account on the settings page, if there's an issue with the existing access token then it'll be automatically replaced.
 * Tweak: Added 'rel="noopener"' to all external links and added 'rel="noreferrer"' to all non-Facebook links. Thanks to Dev VIP for the suggestion.
-* Fix: Fixed a JavaScript conflict with the [Forminator](https://wordpress.org/plugins/forminator/) plugin.
+* Fix: Fixed an issue with some call-to-action link URLs when a link protocol wasn’t included
+* Fix: Fixed a JavaScript conflict with the [Forminator](https://wordpress.org/plugins/forminator/) plugin
+* Fix: Fixed duplicate post message displaying due to ellipsis HTML character
+* Fix: If a shared link post had no post text then the link title was used causing it to be displayed twice in the post
 
 = 2.12.2 =
 * Fix: Fixed a JavaScript error in the admin caused by the previous update. Apologies for any inconvenience.

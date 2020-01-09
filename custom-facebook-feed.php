@@ -1648,8 +1648,8 @@ function display_cff($atts) {
                     }
 
 
-                    //Use the name
-                    if (!empty($news->name) && empty($news->message)) {
+                    //Use the name if there's no other text, unless it's a shared link post as then it's already used as the shared link box title
+                    if ( !empty($news->name) && empty($news->message) && $cff_post_type != 'link' ) {
                         $cff_name_raw = $news->name;
                         $post_text = htmlspecialchars($cff_name_raw);
                         $cff_post_text_type = 'name';

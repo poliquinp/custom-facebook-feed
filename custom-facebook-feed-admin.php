@@ -123,7 +123,7 @@ function cff_settings_page() {
 	if ( ! $lite_notice_dismissed ) :
 		?>
         <div id="cff-notice-bar" style="display:none">
-            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=liteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=facebookliteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
             <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'instagram-feed'); ?>" data-page="overview">
             </button>
         </div>

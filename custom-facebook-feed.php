@@ -1085,7 +1085,10 @@ function display_cff($atts) {
             
             if($FBdata == null) $cff_content .= '<b>Error:</b> Server configuration issue';
             if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= '<b>Error:</b> No posts available for this Facebook ID';
-            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
+
+            if (current_user_can('manage_options')) {
+	            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
+            }
             $cff_content .= '</div></div>'; //End .cff-error-msg and #cff-error-reason
             //Only display errors to admins
             if( current_user_can( 'manage_options' ) ){

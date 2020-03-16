@@ -3,8 +3,8 @@ Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
-Tested up to: 5.3
-Stable tag: 2.12.3
+Tested up to: 5.4
+Stable tag: 2.12.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,6 +255,8 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.12.4 =
+* Tested with upcoming WordPress 5.4 update.
 
 = 2.12.3 =
 * Tweak: Added a text link in the settings page footer to our new free [YouTube plugin](https://wordpress.org/plugins/feeds-for-youtube/)

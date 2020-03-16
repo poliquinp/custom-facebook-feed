@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.12.2
+Version: 2.12.3
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.12.2');
+define('CFFVER', '2.12.3');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -928,7 +928,8 @@ function display_cff($atts) {
     $cff_nofollow = $atts['nofollow'];
     ( $cff_nofollow == 'on' || $cff_nofollow == 'true' || $cff_nofollow == true ) ? $cff_nofollow = true : $cff_nofollow = false;
     if( $atts[ 'nofollow' ] == 'false' ) $cff_nofollow = false;
-    ( $cff_nofollow ) ? $cff_nofollow = ' rel="nofollow"' : $cff_nofollow = '';
+    ( $cff_nofollow ) ? $cff_nofollow = ' rel="nofollow noopener"' : $cff_nofollow = '';
+    $cff_nofollow_referrer = ' rel="nofollow noopener noreferrer"';
 
     //If the number of posts is set to zero then don't show any and set limit to one
     if ( ($atts['num'] == '0' || $atts['num'] == 0) && $atts['num'] !== ''){
@@ -1647,8 +1648,8 @@ function display_cff($atts) {
                     }
 
 
-                    //Use the name
-                    if (!empty($news->name) && empty($news->message)) {
+                    //Use the name if there's no other text, unless it's a shared link post as then it's already used as the shared link box title
+                    if ( !empty($news->name) && empty($news->message) && $cff_post_type != 'link' ) {
                         $cff_name_raw = $news->name;
                         $post_text = htmlspecialchars($cff_name_raw);
                         $cff_post_text_type = 'name';
@@ -1787,7 +1788,7 @@ function display_cff($atts) {
                         }
 
                         isset($news->call_to_action->value->app_link) ? $cff_app_link = $news->call_to_action->value->app_link : $cff_app_link = '';
-                        $cff_post_text .= '<p class="cff-cta-link" '.$cff_title_styles.'><a href="'.$cff_cta_link.'" target="_blank" data-app-link="'.$cff_app_link.'" style="color: #'.$cff_posttext_link_color.';" >'.$cff_cta_button_text.'</a></p>';
+                        $cff_post_text .= '<p class="cff-cta-link" '.$cff_title_styles.'><a href="'.$cff_cta_link.'" target="_blank" data-app-link="'.$cff_app_link.'" style="color: #'.$cff_posttext_link_color.';" '.$cff_nofollow_referrer.' >'.$cff_cta_button_text.'</a></p>';
                     }
 
                     //LINK
@@ -1808,7 +1809,7 @@ function display_cff($atts) {
                         $cff_shared_link .= '<div class="cff-text-link ';
                         if (!$cff_link_image) $cff_shared_link .= 'cff-no-image';
                         //The link title:
-                        if( isset($news->name) ) $cff_shared_link .= '"><'.$cff_link_title_format.' class="cff-link-title" '.$cff_link_title_styles.'><a href="'.$link.'" '.$target.$cff_nofollow.' style="color:#' . $cff_link_title_color . ';">'. $news->name . '</a></'.$cff_link_title_format.'>';
+                        if( isset($news->name) ) $cff_shared_link .= '"><'.$cff_link_title_format.' class="cff-link-title" '.$cff_link_title_styles.'><a href="'.$link.'" '.$target.$cff_nofollow_referrer.' style="color:#' . $cff_link_title_color . ';">'. $news->name . '</a></'.$cff_link_title_format.'>';
                         //The link source:
                         if( !empty($news->link) ){
                             $cff_link_caption = htmlentities($news->link, ENT_QUOTES, 'UTF-8');
@@ -2706,7 +2707,7 @@ function cff_autolink_do($text, $link_color, $sub, $limit, $tagfill, $auto_title
 
                 
                 if( substr( $link_url_enc, 0, 4 ) !== "http" ) $link_url_enc = 'http://' . $link_url_enc;
-                $buffer .= "<a href=\"{$link_url_enc}\">{$display_url_enc}</a>";
+                $buffer .= "<a href=\"{$link_url_enc}\" rel='nofollow noopener noreferrer'>{$display_url_enc}</a>";
                 
             
             }else{

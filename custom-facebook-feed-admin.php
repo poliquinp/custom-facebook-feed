@@ -116,6 +116,19 @@ function cff_settings_page() {
     <?php } //End nonce check ?> 
  
     <div id="cff-admin" class="wrap">
+
+	<?php
+	$lite_notice_dismissed = get_transient( 'facebook_feed_dismiss_lite' );
+
+	if ( ! $lite_notice_dismissed ) :
+		?>
+        <div id="cff-notice-bar" style="display:none">
+            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=liteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+            <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'instagram-feed'); ?>" data-page="overview">
+            </button>
+        </div>
+	<?php endif; ?>
+
         <div id="header">
             <h1><?php _e('Custom Facebook Feed', 'custom-facebook-feed'); ?></h1>
         </div>
@@ -4071,7 +4084,11 @@ add_action( 'admin_enqueue_scripts', 'cff_admin_style' );
 function cff_admin_scripts() {
     //Declare color-picker as a dependency
     wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', array( 'wp-color-picker' ), CFFVER );
-
+	wp_localize_script( 'cff_admin_script', 'cffA', array(
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'cff_nonce' => wp_create_nonce( 'cff_nonce' )
+		)
+	);
     if( !wp_script_is('jquery-ui-draggable') ) { 
         wp_enqueue_script(
             array(
@@ -4088,6 +4105,19 @@ function cff_admin_scripts() {
     );
 }
 add_action( 'admin_enqueue_scripts', 'cff_admin_scripts' );
+
+function cff_lite_dismiss() {
+	$nonce = isset( $_POST['cff_nonce'] ) ? sanitize_text_field( $_POST['cff_nonce'] ) : '';
+
+	if ( ! wp_verify_nonce( $nonce, 'cff_nonce' ) ) {
+		die ( 'You did not do this the right way!' );
+	}
+
+	set_transient( 'facebook_feed_dismiss_lite', 'dismiss', 1 * WEEK_IN_SECONDS );
+
+	die();
+}
+add_action( 'wp_ajax_cff_lite_dismiss', 'cff_lite_dismiss' );
 
 // Add a Settings link to the plugin on the Plugins page
 $cff_plugin_file = 'custom-facebook-feed/custom-facebook-feed.php';

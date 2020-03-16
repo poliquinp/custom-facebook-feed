@@ -709,4 +709,28 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+	// notices
+
+	if (jQuery('#cff-notice-bar').length) {
+		jQuery('#wpadminbar').after(jQuery('#cff-notice-bar'));
+		jQuery('#wpcontent').css('padding-left', 0);
+		jQuery('#wpbody').css('padding-left', '20px');
+		jQuery('#cff-notice-bar').show();
+	}
+
+	jQuery('#cff-notice-bar .dismiss').click(function(e) {
+		e.preventDefault();
+		jQuery('#cff-notice-bar').remove();
+		jQuery.ajax({
+			url: cffA.ajax_url,
+			type: 'post',
+			data: {
+				action : 'cff_lite_dismiss',
+				cff_nonce: cffA.cff_nonce
+			},
+			success: function (data) {
+			}
+		});
+	});
+
 });

@@ -257,6 +257,8 @@ The most common reason for this is that an add-on or extension you have installe
 == Changelog ==
 = 2.12.4 =
 * Tested with upcoming WordPress 5.4 update.
+* Tweak: Updated Facebook API calls
+* Fix: Minor bug fixes
 
 = 2.12.3 =
 * Tweak: Added a text link in the settings page footer to our new free [YouTube plugin](https://wordpress.org/plugins/feeds-for-youtube/)

@@ -1701,12 +1701,11 @@
 
 #cff-notice-bar {
 	background-color: #DDDDDD;
-	border-top: 3px solid #e34f0e;
 	color: #777777;
 	text-align: center;
 	position: relative;
 	padding: 7px;
-	margin-bottom: -4px;
+	margin-bottom: 0;
 	opacity: 1;
 	transition: all .3s ease-in-out;
 	max-height: 100px;

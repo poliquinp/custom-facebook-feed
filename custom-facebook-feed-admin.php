@@ -1945,6 +1945,17 @@ function cff_style_page() {
 
     <?php } //End nonce check ?>
 
+    <?php
+    $lite_notice_dismissed = get_transient( 'facebook_feed_dismiss_lite' );
+
+    if ( ! $lite_notice_dismissed ) :
+        ?>
+        <div id="cff-notice-bar" style="display:none">
+            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=facebookliteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+            <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'instagram-feed'); ?>" data-page="overview">
+            </button>
+        </div>
+    <?php endif; ?>
  
     <div id="cff-admin" class="wrap">
         <div id="header">

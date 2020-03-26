@@ -66,6 +66,25 @@ function cff_check_for_db_updates() {
 }
 add_action( 'wp_loaded', 'cff_check_for_db_updates' );
 
+function cff_plugin_init() {
+	// Plugin Folder Path.
+	if ( ! defined( 'CFF_PLUGIN_DIR' ) ) {
+		define( 'CFF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+	}
+	// Plugin Folder URL.
+	if ( ! defined( 'CFF_PLUGIN_URL' ) ) {
+		define( 'CFF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	}
+	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'blocks/class-cff-blocks.php';
+
+	$cff_blocks = new CFF_Blocks_Blocks();
+	
+	if ( $cff_blocks->allow_load() ) {
+		$cff_blocks->load();
+	}
+}
+
+add_action( 'plugins_loaded', 'cff_plugin_init' );
 
 // Add shortcodes
 add_shortcode('custom-facebook-feed', 'display_cff');

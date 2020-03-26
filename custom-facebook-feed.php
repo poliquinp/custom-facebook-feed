@@ -86,6 +86,11 @@ function cff_plugin_init() {
 
 add_action( 'plugins_loaded', 'cff_plugin_init' );
 
+function cff_text_domain() {
+	load_plugin_textdomain( 'custom-facebook-feed', false, basename( dirname(__FILE__) ) . '/languages' );
+}
+add_action( 'plugins_loaded', 'cff_text_domain' );
+
 // Add shortcodes
 add_shortcode('custom-facebook-feed', 'display_cff');
 function display_cff($atts) {

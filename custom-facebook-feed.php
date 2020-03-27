@@ -77,7 +77,7 @@ function cff_plugin_init() {
 	}
 	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'blocks/class-cff-blocks.php';
 
-	$cff_blocks = new CFF_Blocks_Blocks();
+	$cff_blocks = new CFF_Blocks();
 	
 	if ( $cff_blocks->allow_load() ) {
 		$cff_blocks->load();

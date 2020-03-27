@@ -4,7 +4,7 @@
  *
  * @since 2.3
  */
-class CFF_Blocks_Blocks {
+class CFF_Blocks {
 
 	/**
 	 * Indicates if current integration is allowed to load.

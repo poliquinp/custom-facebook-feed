@@ -1,5 +1,5 @@
 "use strict";
-
+window.cffmetatrans = false;
 (function () {
     var _wp = wp,
         _wp$serverSideRender = _wp.serverSideRender,
@@ -75,7 +75,7 @@
                 key: "cff-gutenberg-settings",
                 className: "cff-gutenberg-settings",
                 label: cff_block_editor.i18n.shortcodeSettings,
-                help: cff_block_editor.i18n.example + ": 'user=\"smashballoon\" showheader=\"true\"'",
+                help: cff_block_editor.i18n.example + ": 'id=\"smashballoon\" showheader=\"true\"'",
                 value: shortcodeSettings,
                 onChange: setState
             }), React.createElement(Button, {

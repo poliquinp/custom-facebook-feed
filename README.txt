@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.4
-Stable tag: 2.12.4
+Stable tag: 2.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,6 +255,10 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.13 =
+* New: Added a “Custom Facebook Feed” Gutenberg block to use in the block editor, allowing you to easily add a feed to posts and pages.
+* New: Added support for translations.
+
 = 2.12.4 =
 * Tested with upcoming WordPress 5.4 update.
 * Tweak: Updated Facebook API calls

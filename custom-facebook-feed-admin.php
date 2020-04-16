@@ -2,9 +2,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function cff_menu() {
+	global $cff_error_reporter;
+	$notice = '';
+	if ( $cff_error_reporter->are_critical_errors() ) {
+		$notice = ' <span class="update-plugins cff-error-alert"><span>!</span></span>';
+	}
     add_menu_page(
         '',
-        'Facebook Feed',
+        'Facebook Feed'. $notice,
         'manage_options',
         'cff-top',
         'cff_settings_page'
@@ -12,7 +17,7 @@ function cff_menu() {
     add_submenu_page(
         'cff-top',
         'Settings',
-        'Settings',
+        'Settings'. $notice,
         'manage_options',
         'cff-top',
         'cff_settings_page'
@@ -194,6 +199,9 @@ function cff_settings_page() {
             if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
 
                 if( $_GET['final_response'] == 'true' ){
+	                global $cff_error_reporter;
+
+	                $cff_error_reporter->remove_error( 'accesstoken' );
 
                     $access_token = $_GET['access_token'];
                     $cff_is_groups = false;
@@ -275,7 +283,9 @@ function cff_settings_page() {
                                 echo "<p>Facebook has not returned any groups for your user. It is only possible to display a feed from a group which you are either an admin or a member. Please note, if you are not an admin of the group then it is required that an admin add our app in the group settings in order to display a feed.</p><p>Please either create or join a Facebook group and then follow the directions when connecting your account on this page.</p>";
                                 echo '<a href="JavaScript:void(0);" class="button button-primary" id="cff-close-modal-primary-button">Close</a>';
                             } else {
+	                            global $cff_error_reporter;
 
+	                            $cff_error_reporter->remove_error( 'accesstoken' );
                                 echo '<div class="cff-groups-list">';
                                     echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook group below to get an Access Token.</p>';
 
@@ -334,7 +344,9 @@ function cff_settings_page() {
 
                         } else {
                             //PAGES
+	                        global $cff_error_reporter;
 
+	                        $cff_error_reporter->remove_error( 'accesstoken' );
                             echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook page below to get an Access Token.</p>';
                             echo '<p class="cff-tokens-note">Note: This Access Token will allow you to display posts from <b style="font-weight: 900;">any</b> public Facebook page, not just the one selected.</p>';
 
@@ -1025,6 +1037,9 @@ Force Cache To Clear => <?php echo $options['cff_cron'] ."\n"; ?>
 Request Method => <?php echo $options['cff_request_method'] ."\n"; ?>
 Fix Text Shortening => <?php echo $options['cff_format_issue'] ."\n"; ?>
 Disable Default Styles => <?php echo $options['cff_disable_styles'] ."\n"; ?>
+Disable Frontend Error Notice => <?php if ( isset( $options['disable_admin_notice'] ) ) echo $options['disable_admin_notice']; echo "\n"; ?>
+Enable Email => <?php if ( isset( $options['enable_email_report'] ) ) echo $options['enable_email_report']; echo "\n" ?>
+Email Addresses => <?php if ( isset( $options['enable_email_report'] ) ) echo $options['email_notification_addresses']; echo "\n"; ?>
 
 ## CUSTOM TEXT/TRANSLATE: ##
 Modified text strings:
@@ -1067,7 +1082,29 @@ if( isset( $api_response_json->error ) ) echo $posts_json;
 if( isset( $api_response_json->data ) ){
     $posts_json_split = explode(',"paging":{', $posts_json);
     echo $posts_json_split[0];
+} ?>
+
+
+## Cron Events: ##
+<?php
+$cron = _get_cron_array();
+foreach ( $cron as $key => $data ) {
+	$is_target = false;
+	foreach ( $data as $key2 => $val ) {
+		if ( strpos( $key2, 'cff' ) !== false ) {
+			$is_target = true;
+			echo $key2;
+			echo "\n";
+		}
+	}
+	if ( $is_target) {
+		echo date( "Y-m-d H:i:s", $key );
+		echo "\n";
+		echo 'Next Scheduled: ' . ((int)$key - time())/60 . ' minutes';
+		echo "\n\n";
+	}
 }
+
 ?>
         </textarea>
 
@@ -1215,6 +1252,7 @@ function cff_style_page() {
         'cff_show_credit'           => '',
         'cff_font_source'           => '',
         'cff_minify'                => false,
+        'disable_admin_notice'      => false,
         'cff_sep_color'             => '',
         'cff_sep_size'              => '1',
 
@@ -1266,7 +1304,12 @@ function cff_style_page() {
         'cff_translate_months'      => 'months',
         'cff_translate_year'        => 'year',
         'cff_translate_years'       => 'years',
-        'cff_translate_ago'         => 'ago'
+        'cff_translate_ago'         => 'ago',
+
+        // email
+        'enable_email_report' => 'on',
+		'email_notification' => 'monday',
+		'email_notification_addresses' => get_option( 'admin_email' )
     );
     //Save layout option in an array
     $options = wp_parse_args(get_option('cff_style_settings'), $defaults);
@@ -1427,6 +1470,10 @@ function cff_style_page() {
     $cff_minify = $options[ 'cff_minify' ];
     $cff_cols = $options[ 'cff_cols' ];
     $cff_cols_mobile = $options[ 'cff_cols_mobile' ];
+	$cff_disable_admin_notice = $options[ 'disable_admin_notice' ];
+	$cff_enable_email_report = $options[ 'enable_email_report' ];
+	$cff_email_notification = $options[ 'email_notification' ];
+	$cff_email_notification_addresses = $options[ 'email_notification_addresses' ];
 
     //Page Header
     $cff_show_header = $options[ 'cff_show_header' ];
@@ -1827,6 +1874,7 @@ function cff_style_page() {
                 (isset($_POST[ 'cff_format_issue' ])) ? $cff_format_issue = sanitize_text_field( $_POST[ 'cff_format_issue' ] ) : $cff_format_issue = '';
                 (isset($_POST[ 'cff_restricted_page' ])) ? $cff_restricted_page = sanitize_text_field( $_POST[ 'cff_restricted_page' ] ) : $cff_restricted_page = '';
                 (isset($_POST[ 'cff_minify' ])) ? $cff_minify = sanitize_text_field( $_POST[ 'cff_minify' ] ) : $cff_minify = '';
+	            (isset($_POST[ 'cff_disable_admin_notice' ])) ? $cff_disable_admin_notice = sanitize_text_field( $_POST[ 'cff_disable_admin_notice' ] ) : $cff_disable_admin_notice = '';
 
                 //Custom CSS
                 $options[ 'cff_custom_css' ] = $cff_custom_css;
@@ -1848,6 +1896,7 @@ function cff_style_page() {
                 $options[ 'cff_format_issue' ] = $cff_format_issue;
                 $options[ 'cff_restricted_page' ] = $cff_restricted_page;
                 $options[ 'cff_minify' ] = $cff_minify;
+	            $options[ 'disable_admin_notice' ] = $cff_disable_admin_notice;
 
                 if( $cff_cron == 'no' ) wp_clear_scheduled_hook('cff_cron_job');
 
@@ -1866,6 +1915,29 @@ function cff_style_page() {
 
                     wp_schedule_event(time(), $cff_cron_schedule, 'cff_cron_job');
                 }
+
+	            isset($_POST[ 'cff_enable_email_report' ]) ? $cff_enable_email_report = $_POST[ 'cff_enable_email_report' ] : $cff_enable_email_report = '';
+	            $options['enable_email_report'] = $cff_enable_email_report;
+	            isset($_POST[ 'cff_email_notification' ]) ? $cff_email_notification = $_POST[ 'cff_email_notification' ] : $cff_email_notification = '';
+	            $original = $options['email_notification'];
+	            $options['email_notification'] = $cff_email_notification;
+	            isset($_POST[ 'cff_email_notification_addresses' ]) ? $cff_email_notification_addresses = $_POST[ 'cff_email_notification_addresses' ] : $cff_email_notification_addresses = get_option( 'admin_email' );
+	            $options['email_notification_addresses'] = $cff_email_notification_addresses;
+
+	            if ( $original !== $cff_email_notification && $cff_enable_email_report === 'on' ){
+		            //Clear the existing cron event
+		            wp_clear_scheduled_hook('cff_feed_issue_email');
+
+		            $input = sanitize_text_field($_POST[ 'cff_email_notification' ] );
+		            $timestamp = strtotime( 'next ' . $input );
+
+		            if ( $timestamp - (3600 * 1) < time() ) {
+			            $timestamp = $timestamp + (3600 * 24 * 7);
+		            }
+		            $six_am_local = $timestamp + cff_get_utc_offset() + (6*60*60);
+
+		            wp_schedule_event( $six_am_local, 'cffweekly', 'cff_feed_issue_email' );
+	            }
 
             }
             //Update the Custom Text / Translate options
@@ -3937,6 +4009,79 @@ function cff_style_page() {
                             <p class="cff-tooltip cff-more-info"><?php _e("The plugin includes some basic text and link styles which can be disabled by enabling this setting. Note that the styles used for the layout of the posts will still be applied.", 'custom-facebook-feed'); ?></p>
                         </td>
                     </tr>
+
+                    <tr>
+                        <th class="bump-left"><label for="cff_disable_admin_notice" class="bump-left"><?php _e("Disable admin error notice", 'custom-facebook-feed'); ?></label></th>
+                        <td>
+                            <input name="cff_disable_admin_notice" type="checkbox" id="cff_disable_admin_notice" <?php if($cff_disable_admin_notice == true) echo "checked"; ?> />
+                            <label for="cff_disable_admin_notice"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("This will permanently disable the feed error notice that displays in the bottom right corner for admins on the front end of your site.", 'custom-facebook-feed'); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="bump-left"><label for="cff_enable_email_report" class="bump-left"><?php _e("Feed issue email report", 'instagram-feed'); ?></label></th>
+                        <td>
+                            <input name="cff_enable_email_report" type="checkbox" id="cff_enable_email_report" <?php if($cff_enable_email_report == 'on') echo "checked"; ?> />
+                            <label for="cff_enable_email_report"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("Custom Facebook Feed will send a weekly notification email using your site's wp_mail() function if one or more of your feeds is not updating or is not displaying. If you're not receiving the emails in your inbox, you may need to configure an SMTP service using another plugin like WP Mail SMTP.", 'custom-facebook-feed'); ?></p>
+
+                            <div class="cff_box" style="display: block;">
+                                <div class="cff_box_setting">
+                                    <label><?php _e('Schedule Weekly on', 'custom-facebook-feed'); ?></label><br>
+				                    <?php
+				                    $schedule_options = array(
+					                    array(
+						                    'val' => 'monday',
+						                    'label' => __( 'Monday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'tuesday',
+						                    'label' => __( 'Tuesday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'wednesday',
+						                    'label' => __( 'Wednesday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'thursday',
+						                    'label' => __( 'Thursday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'friday',
+						                    'label' => __( 'Friday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'saturday',
+						                    'label' => __( 'Saturday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'sunday',
+						                    'label' => __( 'Sunday', 'custom-facebook-feed' )
+					                    ),
+				                    );
+
+				                    if ( isset( $_GET['flag'] ) ){
+					                    echo '<span id="cff-goto"></span>';
+				                    }
+				                    ?>
+                                    <select name="cff_email_notification" id="cff_email_notification">
+					                    <?php foreach ( $schedule_options as $schedule_option ) : ?>
+                                            <option value="<?php echo esc_attr( $schedule_option['val'] ) ; ?>" <?php if ( $schedule_option['val'] === $cff_email_notification ) { echo 'selected';} ?>><?php echo esc_html( $schedule_option['label'] ) ; ?></option>
+					                    <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="cff_box_setting">
+                                    <label><?php _e('Email Recipients', 'custom-facebook-feed'); ?></label><br><input class="regular-text" type="text" name="cff_email_notification_addresses" value="<?php echo esc_attr( $cff_email_notification_addresses ); ?>"><span class="sbi_note"><?php _e('separate multiple emails with commas', 'custom-facebook-feed'); ?></span>
+                                    <br><br><?php _e( 'Emails not working?', 'custom-facebook-feed' ) ?> <a href="https://smashballoon.com/email-report-is-not-in-my-inbox/" target="_blank"><?php _e( 'See our related FAQ', 'custom-facebook-feed' ) ?></a>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                
                 </tbody>
             </table>
 
@@ -4148,6 +4293,17 @@ function cff_lite_dismiss() {
 	die();
 }
 add_action( 'wp_ajax_cff_lite_dismiss', 'cff_lite_dismiss' );
+
+function cff_reset_log() {
+    global $cff_error_reporter;
+
+	$cff_error_reporter->remove_all_errors();
+	cff_delete_cache();
+
+	die();
+}
+add_action( 'wp_ajax_cff_reset_log', 'cff_reset_log' );
+
 
 // Add a Settings link to the plugin on the Plugins page
 $cff_plugin_file = 'custom-facebook-feed/custom-facebook-feed.php';

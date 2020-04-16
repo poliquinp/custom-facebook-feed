@@ -28,7 +28,16 @@ define('CFFVER', '2.13');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
-    define( 'CFF_DBVERSION', '1.0' );
+    define( 'CFF_DBVERSION', '1.1' );
+}
+
+// Plugin Folder Path.
+if ( ! defined( 'CFF_PLUGIN_DIR' ) ) {
+	define( 'CFF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+// Plugin Folder URL.
+if ( ! defined( 'CFF_PLUGIN_URL' ) ) {
+	define( 'CFF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -63,28 +72,57 @@ function cff_check_for_db_updates() {
         }
         update_option( 'cff_db_version', CFF_DBVERSION );
     }
+
+	if ( (float) $db_ver < 1.1 ) {
+		if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
+			$timestamp = strtotime( 'next monday' );
+			$timestamp = $timestamp + (3600 * 24 * 7);
+			$six_am_local = $timestamp + cff_get_utc_offset() + (6*60*60);
+
+			wp_schedule_event( $six_am_local, 'cffweekly', 'cff_feed_issue_email' );
+		}
+
+
+		update_option( 'sbi_db_version', CFF_DBVERSION );
+	}
 }
 add_action( 'wp_loaded', 'cff_check_for_db_updates' );
 
 function cff_plugin_init() {
-	// Plugin Folder Path.
-	if ( ! defined( 'CFF_PLUGIN_DIR' ) ) {
-		define( 'CFF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	}
-	// Plugin Folder URL.
-	if ( ! defined( 'CFF_PLUGIN_URL' ) ) {
-		define( 'CFF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	}
-	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'blocks/class-cff-blocks.php';
+	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-error-reporter.php';
+	global $cff_error_reporter;
+	$cff_error_reporter = new CFF_Error_Reporter();
 
+	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'blocks/class-cff-blocks.php';
 	$cff_blocks = new CFF_Blocks();
-	
 	if ( $cff_blocks->allow_load() ) {
 		$cff_blocks->load();
+	}
+
+	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-sitehealth.php';
+	$cff_sitehealth = new CFF_SiteHealth();
+	if ( $cff_sitehealth->allow_load() ) {
+		$cff_sitehealth->load();
 	}
 }
 
 add_action( 'plugins_loaded', 'cff_plugin_init' );
+
+function cff_get_utc_offset() {
+	return get_option( 'gmt_offset', 0 ) * HOUR_IN_SECONDS;
+}
+
+function cff_schedule_report_email() {
+	$options = get_option('cff_style_settings');
+
+	$input = isset( $options[ 'email_notification' ] ) ? $options[ 'email_notification' ] : 'monday';
+	$timestamp = strtotime( 'next ' . $input );
+	$timestamp = $timestamp + (3600 * 24 * 7);
+
+	$six_am_local = $timestamp + cff_get_utc_offset() + (6*60*60);
+
+	wp_schedule_event( $six_am_local, 'cffweekly', 'cff_feed_issue_email' );
+}
 
 function cff_text_domain() {
 	load_plugin_textdomain( 'custom-facebook-feed', false, basename( dirname(__FILE__) ) . '/languages' );
@@ -2143,14 +2181,115 @@ function cffSortTags($a, $b) {
     return $a['offset'] - $b['offset'];
 }
 
+function cff_is_wp_error( $response ) {
+	return is_wp_error( $response );
+}
+function cff_log_wp_error( $response, $url ) {
+	if ( is_wp_error( $response ) ) {
+		global $cff_error_reporter;
+		delete_option( 'cff_dismiss_critical_notice' );
+		$admin_message = sprintf( __( 'Error connecting to %s.', 'custom-facebook-feed' ), $url );
+		$public_message =__( 'Unable to make remote requests to the Facebook API. Log in as an admin to view more details.', 'custom-facebook-feed' );
+		$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
+		$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
+		$error = array(
+			'accesstoken' => 'none',
+			'public_message' => $public_message,
+			'admin_message' => $admin_message,
+			'frontend_directions' => $frontend_directions,
+			'backend_directions' => $backend_directions,
+			'post_id' => get_the_ID(),
+			'errorno' => 'wp_remote_get'
+		);
+
+
+		$cff_error_reporter->add_error( 'wp_remote_get', $error );
+	}
+}
+function cff_is_fb_error( $response ) {
+	return (strpos( $response, '{"error":' ) === 0);
+}
+function cff_log_fb_error( $response, $url ) {
+	if ( is_admin() ) {
+		return;
+	}
+	global $cff_error_reporter;
+	delete_option( 'cff_dismiss_critical_notice' );
+
+	$access_token_refresh_errors = array( 10, 4, 200 );
+
+	$response = json_decode( $response, true );
+	$api_error_code = $response['error']['code'];
+
+	if ( in_array( (int)$api_error_code, $access_token_refresh_errors, true ) ) {
+		$pieces = explode( 'access_token=', $url );
+		$accesstoken_parts = isset( $pieces[1] ) ? explode( '&', $pieces[1] ) : 'none';
+		$accesstoken = $accesstoken_parts[0];
+
+		$api_error_number_message = sprintf( __( 'API Error %s:', 'custom-facebook-feed' ), $api_error_code );
+		$admin_message = '<strong>' . $api_error_number_message . '</strong><br>' . $response['error']['message'];
+		$public_message = __( 'There is a problem with your access token.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
+		$link = admin_url( 'admin.php?page=cff-top' );
+		$frontend_directions = '<p class="cff-error-directions cff-reconnect"><a href="'. esc_url( $link ).'" target="_blank" rel="noopener">' . __( 'Reconnect Your Account in the Admin Area', 'custom-facebook-feed')  . '</a></p>';
+		$backend_directions = '<button class="cff-reconnect button button-primary" >' . __( 'Reconnect Your Account', 'custom-facebook-feed')  . '</button>';
+		$error = array(
+			'accesstoken' => $accesstoken,
+			'post_id' => get_the_ID(),
+			'errorno' => $api_error_code
+		);
+
+		$cff_error_reporter->add_error( 'accesstoken', $error );
+	} else {
+		$api_error_number_message = sprintf( __( 'API Error %s:', 'custom-facebook-feed' ), $api_error_code );
+		$admin_message = '<strong>' . $api_error_number_message . '</strong><br>' . $response['error']['message'];
+		$public_message = __( 'Error connecting to the Facebook API.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
+		$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
+		$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
+		$error = array(
+			'accesstoken' => 'none',
+			'public_message' => $public_message,
+			'admin_message' => $admin_message,
+			'frontend_directions' => $frontend_directions,
+			'backend_directions' => $backend_directions,
+			'post_id' => get_the_ID(),
+			'errorno' => $api_error_code
+		);
+
+		$cff_error_reporter->add_error( 'api', $error );
+	}
+
+}
 //Get JSON object of feed data
 function cff_fetchUrl($url){
-    $response = wp_remote_get($url);
-    $feedData = wp_remote_retrieve_body( $response );
+	//return '{}';
+	//$response = wp_remote_get('fff'.$url);
+	//$url = str_replace( '100178597731', '200178597732', $url );
+    $response = wp_remote_get( $url );
 
-    $feedData = apply_filters( 'cff_filter_api_data', $feedData );
+	if ( !cff_is_wp_error( $response ) ) {
+		$feedData = wp_remote_retrieve_body( $response );
 
-    return $feedData;
+		if ( ! cff_is_fb_error( $feedData ) ) {
+			global $cff_error_reporter;
+
+			$cff_error_reporter->remove_error( 'api' );
+			$cff_error_reporter->remove_error( 'connection' );
+
+			$feedData = apply_filters( 'cff_filter_api_data', $feedData );
+
+			return $feedData;
+		} else {
+			cff_log_fb_error( $feedData, $url );
+
+			return $feedData;
+		}
+
+	} else {
+		cff_log_wp_error( $response, $url );
+
+		return '{}';
+	}
+
 }
 
 //Make links into span instead when the post text is made clickable
@@ -2493,8 +2632,21 @@ function cff_activate() {
 
     //Run cron twice daily when plugin is first activated for new users
     wp_schedule_event(time(), 'twicedaily', 'cff_cron_job');
+	if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
+		cff_schedule_report_email();
+	}
 }
 register_activation_hook( __FILE__, 'cff_activate' );
+
+function cff_cron_custom_interval( $schedules ) {
+	$schedules['cffweekly'] = array(
+		'interval' => 3600 * 24 * 7,
+		'display'  => __( 'Weekly' )
+	);
+
+	return $schedules;
+}
+add_filter( 'cron_schedules', 'cff_cron_custom_interval' );
 
 function cff_deactivate() {
     wp_clear_scheduled_hook('cff_cron_job');
@@ -2895,7 +3047,4 @@ function cff_autolink_email($text, $tagfill=''){
     return $buffer;
 }
 
-####################################################################
-
-
-?>
+###################################################################

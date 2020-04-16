@@ -733,4 +733,43 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	//sb_instagram_enable_email_report
+	function cffToggleEmail() {
+		if (jQuery('#cff_enable_email_report').is(':checked')) {
+			jQuery('#cff_enable_email_report').closest('td').find('.cff_box').slideDown();
+		} else {
+			jQuery('#cff_enable_email_report').closest('td').find('.cff_box').slideUp();
+		}
+	}cffToggleEmail();
+	jQuery('#cff_enable_email_report').change(cffToggleEmail);
+	if (jQuery('#cff-goto').length) {
+		jQuery('#cff-goto').closest('tr').addClass('cff-goto');
+		$('html, body').animate({
+			scrollTop: $('#cff-goto').offset().top - 200
+		}, 500);
+	}
+
+	jQuery('.cff-error-directions .cff-reconnect').click(function(){
+		event.preventDefault();
+		jQuery('.cff_admin_btn').trigger('click');
+	});
+	jQuery('.cff-clear-errors-visit-page').click(function(event) {
+		event.preventDefault();
+		var $btn = jQuery(this);
+		$btn.prop( 'disabled', true ).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'cff_reset_log'
+			},
+			success : function(data) {
+				window.location.href = $btn.attr('data-url');
+			},
+			error : function(data)  {
+				window.location.href = $btn.attr('data-url');
+			}
+		}); // ajax call
+	})
+
 });

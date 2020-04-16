@@ -1749,3 +1749,52 @@
 	width: 20px;
 	-webkit-font-smoothing: antialiased
 }
+
+/* Error Reporting */
+#cff-admin .cff-space-left {
+	margin-left: 10px;
+}
+#cff-admin .cff-goto {
+	border: 1px solid #e89a2e;
+	background-color: rgba(232, 154, 46, .2);
+}
+#cff-admin .cff-goto th {
+	padding-left: 4px;
+}
+
+#cff-admin .cff_box {
+	float: left;
+	clear: both;
+	width: 96%;
+
+	padding: 10px 2%;
+	margin: 10px 0;
+	font-size: 13px;
+	background: #f9f9f9;
+	background: rgba(255,255,255,0.8);
+
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+}
+#cff-admin .cff_box_setting{
+	margin-bottom: 20px;
+}
+#cff-admin .cff_box_setting:last-child {
+	margin-bottom: 0;
+}
+#cff-admin .cff_box_setting label {
+	display: inline-block;
+	font-weight: bold;
+	font-size: 14px;
+	padding-bottom: 5px;
+	padding-right: 5px;
+}
+#cff-admin .cff_box_setting textarea {
+	width: 100%;
+}
+#cff-admin .cff_box_setting .sbi_shortcode{
+	position: relative;
+	float: none;
+	top: -4px
+}

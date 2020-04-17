@@ -1758,9 +1758,6 @@
 	border: 1px solid #e89a2e;
 	background-color: rgba(232, 154, 46, .2);
 }
-#cff-admin .cff-goto th {
-	padding-left: 4px;
-}
 
 #cff-admin .cff_box {
 	float: left;
@@ -1792,9 +1789,4 @@
 }
 #cff-admin .cff_box_setting textarea {
 	width: 100%;
-}
-#cff-admin .cff_box_setting .sbi_shortcode{
-	position: relative;
-	float: none;
-	top: -4px
 }

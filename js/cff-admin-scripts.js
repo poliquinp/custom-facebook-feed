@@ -770,6 +770,259 @@ jQuery(document).ready(function($) {
 				window.location.href = $btn.attr('data-url');
 			}
 		}); // ajax call
-	})
+	});
+
+	/* removing padding */
+	if (jQuery('#cff-admin-about').length) {
+		jQuery('#wpcontent').css('padding', 0);
+	}
 
 });
+
+
+
+/* global smash_admin, jconfirm, wpCookies, Choices, List */
+
+(function($) {
+
+	'use strict';
+
+	// Global settings access.
+	var s;
+
+	// Admin object.
+	var SmashCFFAdmin = {
+
+		// Settings.
+		settings: {
+			iconActivate: '<i class="fa fa-toggle-on fa-flip-horizontal" aria-hidden="true"></i>',
+			iconDeactivate: '<i class="fa fa-toggle-on" aria-hidden="true"></i>',
+			iconInstall: '<i class="fa fa-cloud-download" aria-hidden="true"></i>',
+			iconSpinner: '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>',
+			mediaFrame: false
+		},
+
+		/**
+		 * Start the engine.
+		 *
+		 * @since 1.3.9
+		 */
+		init: function() {
+
+			// Settings shortcut.
+			s = this.settings;
+
+			// Document ready.
+			$( document ).ready( SmashCFFAdmin.ready );
+
+			// Addons List.
+			SmashCFFAdmin.initAddons();
+		},
+
+		/**
+		 * Document ready.
+		 *
+		 * @since 1.3.9
+		 */
+		ready: function() {
+
+			// Action available for each binding.
+			$( document ).trigger( 'smashReady' );
+		},
+
+		//--------------------------------------------------------------------//
+		// Addons List.
+		//--------------------------------------------------------------------//
+
+		/**
+		 * Element bindings for Addons List page.
+		 *
+		 * @since 1.3.9
+		 */
+		initAddons: function() {
+
+			// Some actions have to be delayed to document.ready.
+			$( document ).on( 'smashReady', function() {
+
+				// Only run on the addons page.
+				if ( ! $( '#cff-admin-addons' ).length ) {
+					return;
+				}
+
+				// Display all addon boxes as the same height.
+				$( '.addon-item .details' ).matchHeight( { byrow: false, property: 'height' } );
+
+				// Addons searching.
+				if ( $('#cff-admin-addons-list').length ) {
+					var addonSearch = new List( 'cff-admin-addons-list', {
+						valueNames: [ 'addon-name' ]
+					} );
+
+					$( '#cff-admin-addons-search' ).on( 'keyup', function () {
+						var searchTerm = $( this ).val(),
+							$heading = $( '#addons-heading' );
+
+						if ( searchTerm ) {
+							$heading.text( cff_admin.addon_search );
+						}
+						else {
+							$heading.text( $heading.data( 'text' ) );
+						}
+
+						addonSearch.search( searchTerm );
+					} );
+				}
+			});
+
+			// Toggle an addon state.
+			$( document ).on( 'click', '#cff-admin-addons .addon-item button', function( event ) {
+
+				event.preventDefault();
+
+				if ( $( this ).hasClass( 'disabled' ) ) {
+					return false;
+				}
+
+				SmashCFFAdmin.addonToggle( $( this ) );
+			});
+		},
+
+		/**
+		 * Toggle addon state.
+		 *
+		 * @since 1.3.9
+		 */
+		addonToggle: function( $btn ) {
+
+			var $addon = $btn.closest( '.addon-item' ),
+				plugin = $btn.attr( 'data-plugin' ),
+				plugin_type = $btn.attr( 'data-type' ),
+				action,
+				cssClass,
+				statusText,
+				buttonText,
+				errorText,
+				successText;
+
+			if ( $btn.hasClass( 'status-go-to-url' ) ) {
+				// Open url in new tab.
+				window.open( $btn.attr('data-plugin'), '_blank' );
+				return;
+			}
+
+			$btn.prop( 'disabled', true ).addClass( 'loading' );
+			$btn.html( s.iconSpinner );
+
+			if ( $btn.hasClass( 'status-active' ) ) {
+				// Deactivate.
+				action     = 'cff_deactivate_addon';
+				cssClass   = 'status-inactive';
+				if ( plugin_type === 'plugin' ) {
+					cssClass += ' button button-secondary';
+				}
+				statusText = cff_admin.addon_inactive;
+				buttonText = cff_admin.addon_activate;
+				if ( plugin_type === 'addon' ) {
+					buttonText = s.iconActivate + buttonText;
+				}
+				errorText  = s.iconDeactivate + cff_admin.addon_deactivate;
+
+			} else if ( $btn.hasClass( 'status-inactive' ) ) {
+				// Activate.
+				action     = 'cff_activate_addon';
+				cssClass   = 'status-active';
+				if ( plugin_type === 'plugin' ) {
+					cssClass += ' button button-secondary disabled';
+				}
+				statusText = cff_admin.addon_active;
+				buttonText = cff_admin.addon_deactivate;
+				if ( plugin_type === 'addon' ) {
+					buttonText = s.iconDeactivate + buttonText;
+				} else if ( plugin_type === 'plugin' ) {
+					buttonText = cff_admin.addon_activated;
+				}
+				errorText  = s.iconActivate + cff_admin.addon_activate;
+
+			} else if ( $btn.hasClass( 'status-download' ) ) {
+				// Install & Activate.
+				action   = 'cff_install_addon';
+				cssClass = 'status-active';
+				if ( plugin_type === 'plugin' ) {
+					cssClass += ' button disabled';
+				}
+				statusText = cff_admin.addon_active;
+				buttonText = cff_admin.addon_activated;
+				if ( plugin_type === 'addon' ) {
+					buttonText = s.iconActivate + cff_admin.addon_deactivate;
+				}
+				errorText = s.iconInstall + cff_admin.addon_activate;
+
+			} else {
+				return;
+			}
+
+			var data = {
+				action: action,
+				nonce : cff_admin.nonce,
+				plugin: plugin,
+				type  : plugin_type
+			};
+			$.post( cff_admin.ajax_url, data, function( res ) {
+
+				if ( res.success ) {
+					if ( 'cff_install_addon' === action ) {
+						$btn.attr( 'data-plugin', res.data.basename );
+						successText = res.data.msg;
+						if ( ! res.data.is_activated ) {
+							cssClass = 'status-inactive';
+							if ( plugin_type === 'plugin' ) {
+								cssClass = 'button';
+							}
+							statusText = cff_admin.addon_inactive;
+							buttonText = s.iconActivate + cff_admin.addon_activate;
+						}
+					} else {
+						successText = res.data;
+					}
+					$addon.find( '.actions' ).append( '<div class="msg success">'+successText+'</div>' );
+					$addon.find( 'span.status-label' )
+						.removeClass( 'status-active status-inactive status-download' )
+						.addClass( cssClass )
+						.removeClass( 'button button-primary button-secondary disabled' )
+						.text( statusText );
+					$btn
+						.removeClass( 'status-active status-inactive status-download' )
+						.removeClass( 'button button-primary button-secondary disabled' )
+						.addClass( cssClass ).html( buttonText );
+				} else {
+					if ( 'download_failed' === res.data[0].code ) {
+						if ( plugin_type === 'addon' ) {
+							$addon.find( '.actions' ).append( '<div class="msg error">'+cff_admin.addon_error+'</div>' );
+						} else {
+							$addon.find( '.actions' ).append( '<div class="msg error">'+cff_admin.plugin_error+'</div>' );
+						}
+					} else {
+						$addon.find( '.actions' ).append( '<div class="msg error">'+res.data+'</div>' );
+					}
+					$btn.html( errorText );
+				}
+
+				$btn.prop( 'disabled', false ).removeClass( 'loading' );
+
+				// Automatically clear addon messages after 3 seconds.
+				setTimeout( function() {
+					$( '.addon-item .msg' ).remove();
+				}, 3000 );
+
+			}).fail( function( xhr ) {
+				console.log( xhr.responseText );
+			});
+		},
+
+	};
+
+	SmashCFFAdmin.init();
+
+	window.SmashCFFAdmin = SmashCFFAdmin;
+
+})( jQuery );

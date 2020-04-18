@@ -99,10 +99,21 @@ function cff_plugin_init() {
 		$cff_blocks->load();
 	}
 
-	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-sitehealth.php';
-	$cff_sitehealth = new CFF_SiteHealth();
-	if ( $cff_sitehealth->allow_load() ) {
-		$cff_sitehealth->load();
+	if ( is_admin() ) {
+		require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/class-cff-about.php';
+
+		if ( version_compare( PHP_VERSION,  '5.3.0' ) >= 0 ) {
+			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/addon-functions.php';
+			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/PluginSilentUpgrader.php';
+			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/PluginSilentUpgraderSkin.php';
+			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/class-install-skin.php';
+		}
+
+		require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-sitehealth.php';
+		$cff_sitehealth = new CFF_SiteHealth();
+		if ( $cff_sitehealth->allow_load() ) {
+			$cff_sitehealth->load();
+		}
 	}
 }
 

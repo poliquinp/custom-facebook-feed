@@ -34,8 +34,20 @@ function cff_styling_menu() {
         'cff-style',
         'cff_style_page'
     );
+	add_submenu_page(
+		'cff-top',
+		__( 'About Us', 'custom-facebook-feed' ),
+		__( 'About Us', 'custom-facebook-feed' ),
+		'manage_options',
+		'cff-about',
+		'cff_about_page'
+	);
 }
 add_action('admin_menu', 'cff_styling_menu');
+
+function cff_about_page() {
+	do_action('cff_admin_page' );
+}
 
 //Create Settings page
 function cff_settings_page() {

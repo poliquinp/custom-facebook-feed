@@ -827,9 +827,9 @@ function cff_settings_page() {
 
                 <ul class="cff-faq-col-1">
                 <li><b>FAQs</b></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/faq/?cat=18" target="_blank">General Questions</a>'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/getting-started/?cat=18" target="_blank">Getting Started</a>'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/troubleshooting/?cat=18" target="_blank">Common Issues</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/faq/" target="_blank">General Questions</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/getting-started/" target="_blank">Getting Started</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/troubleshooting/" target="_blank">Common Issues</a>'); ?></li>
                 <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/faq/?utm_source=plugin-free&utm_campaign=cff" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
                 </ul>
 
@@ -837,7 +837,7 @@ function cff_settings_page() {
                 <li><b>Documentation</b></li>
                 <li>&bull;&nbsp; <?php _e('<a href="http://smashballoon.com/custom-facebook-feed/docs/free/" target="_blank">Installation and Configuration</a>'); ?></li>
                 <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/" target="_blank">Shortcode Reference</a>', 'custom-facebook-feed'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href=https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href=https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
                 <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/docs/?utm_source=plugin-free&utm_campaign=cff" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
@@ -3847,7 +3847,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
                             <textarea name="cff_custom_css" id="cff_custom_css" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_css), 'custom-facebook-feed' ); ?></textarea>
                         </td>
                     </tr>
@@ -3858,7 +3858,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>      
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>      
                             <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_js), 'custom-facebook-feed' ); ?></textarea>                  
                         </td>
                     </tr>

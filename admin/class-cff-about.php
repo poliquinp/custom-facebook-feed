@@ -72,7 +72,7 @@ class CFF_About {
 		self::$licenses_features = array(
 			'entries'      => esc_html__( 'Media Display', 'custom-facebook-feed' ),
 			//'fields'       => esc_html__( 'Layouts', 'custom-facebook-feed' ),
-			'templates'    => esc_html__( 'Post Information', 'custom-facebook-feed' ),
+			// 'templates'    => esc_html__( 'Post Display', 'custom-facebook-feed' ),
 			//'conditionals' => esc_html__( 'Image and Video Display', 'custom-facebook-feed' ),
 			'addons' => esc_html__( 'Post Source', 'custom-facebook-feed' ),
 			'addons1' => esc_html__( 'Number of Posts', 'custom-facebook-feed' ),
@@ -83,6 +83,7 @@ class CFF_About {
 			'payments'      => esc_html__( 'Feed Layout', 'custom-facebook-feed' ),
 			'surveys'     => esc_html__( 'Post Information', 'custom-facebook-feed' ),
 			'advanced'       => esc_html__( 'Comments', 'custom-facebook-feed' ),
+			'extensions'       => esc_html__( 'Extensions', 'custom-facebook-feed' ),
 			'support'      => esc_html__( 'Customer Support', 'custom-facebook-feed' ),
 		);
 
@@ -470,7 +471,7 @@ class CFF_About {
 			</div>
 
 			<div class="cff-admin-about-section-first-form-video">
-				<iframe src="https://www.youtube-nocookie.com/embed/oHEcCW-8NJU?rel=0" width="540" height="304" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+				<iframe src="https://www.youtube-nocookie.com/embed/0gykYq3JSrY?rel=0" width="540" height="304" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 			</div>
 
 		</div>
@@ -500,7 +501,7 @@ class CFF_About {
 						printf(
 							wp_kses(
 							/* translators: %s - stars. */
-								__( 'We know that you will truly love Custom Facebook Feed. It has over <strong>1000+ five star ratings</strong> (%s) and is active on over 200 thousand websites.', 'custom-facebook-feed' ),
+								__( 'We know that you will truly love Custom Facebook Feed. It has over <strong>1000+ five star ratings</strong> (%s) and is active on over 200,000 websites.', 'custom-facebook-feed' ),
 								array(
 									'strong' => array(),
 								)
@@ -521,15 +522,11 @@ class CFF_About {
 							<ul class="list-features list-plain">
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Embed videos and interactive Flash content.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Display photos, videos, and albums in your posts.', 'custom-facebook-feed' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Choose which types of posts to display.', 'custom-facebook-feed' ); ?>
-								</li>
-								<li>
-									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Control which types of content and which parts of post to display.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Choose which content type to display; posts, photos, albums, videos, links, or events.', 'custom-facebook-feed' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
@@ -537,7 +534,11 @@ class CFF_About {
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Add comments, likes, shares and comment replies.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Show comments, likes, shares, reactions and comment replies.', 'custom-facebook-feed' ); ?>
+								</li>
+								<li>
+									<i class="fa fa-check" aria-hidden="true"></i>
+									<?php esc_html_e( 'Filter posts by hashtag or words.', 'custom-facebook-feed' ); ?>
 								</li>
 							</ul>
 						</div>
@@ -549,19 +550,19 @@ class CFF_About {
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'HD, 360o, and Live video support.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'HD, 360 degree, and Live video support.', 'custom-facebook-feed' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Support for Facebook groups.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Support for Facebook Groups.', 'custom-facebook-feed' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'View images and videos attached to each post.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Multiple post layout options.', 'custom-facebook-feed' ); ?>
 								</li>
 								<li>
 									<i class="fa fa-check" aria-hidden="true"></i>
-									<?php esc_html_e( 'Filter posts by hashtag or words.', 'custom-facebook-feed' ); ?>
+									<?php esc_html_e( 'Priority Pro support from our team of experts.', 'custom-facebook-feed' ); ?>
 								</li>
 							</ul>
 						</div>
@@ -932,9 +933,9 @@ class CFF_About {
 		$data = array(
 			'entries'      => array(
 				'lite'  => array(
-					'status' => 'partial',
+					'status' => 'none',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Display placeholders for media', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Not available', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 				'basic' => array(
@@ -1010,32 +1011,6 @@ class CFF_About {
 					),
 				),
 			),
-			'templates'    => array(
-				'lite'  => array(
-					'status' => 'partial',
-					'text'   => array(
-						'<strong>' . esc_html__( 'Images and link only', 'custom-facebook-feed' ) . '</strong>',
-					),
-				),
-				'basic' => array(
-					'status' => 'partial',
-					'text'   => array(
-						'<strong>' . esc_html__( 'Basic Form Templates', 'custom-facebook-feed' ) . '</strong>',
-					),
-				),
-				'plus'  => array(
-					'status' => 'partial',
-					'text'   => array(
-						'<strong>' . esc_html__( 'Basic Form Templates', 'custom-facebook-feed' ) . '</strong>',
-					),
-				),
-				'pro'   => array(
-					'status' => 'full',
-					'text'   => array(
-						'<strong>' . esc_html__( 'Thumbnails, dates, caption, comments, like counts, and comment counts.', 'custom-facebook-feed' ) . '</strong>',
-					),
-				),
-			),
 			'marketing'    => array(
 				'lite'  => array(
 					'status' => 'none',
@@ -1068,7 +1043,7 @@ class CFF_About {
 				'lite'  => array(
 					'status' => 'partial',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Arrange posts in a standard layout', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Default post layout', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 				'basic' => array(
@@ -1086,7 +1061,7 @@ class CFF_About {
 				'pro'   => array(
 					'status' => 'full',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Choose from thumbnail, half-width or full-width layouts', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Choose from thumbnail, half-width or full-width post layouts, and grid layout for photo, album, and video feeds.', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 			),
@@ -1140,7 +1115,7 @@ class CFF_About {
 				'pro'   => array(
 					'status' => 'full',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Display comments in the pop-up lightbox', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Display comments below each post and in the pop-up lightbox', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 			),
@@ -1148,7 +1123,7 @@ class CFF_About {
 				'lite'  => array(
 					'status' => 'partial',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Show posts from your page', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Show feeds from a timeline', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 				'basic' => array(
@@ -1166,7 +1141,7 @@ class CFF_About {
 				'pro'   => array(
 					'status' => 'full',
 					'text'   => array(
-						'<strong>' . esc_html__( 'Choose to show only certain post types. For example, only photos, only events, etc.', 'custom-facebook-feed' ) . '</strong>',
+						'<strong>' . esc_html__( 'Timeline feeds, Photo Grids, Album feeds, Video feeds, Event feeds', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 			),
@@ -1219,6 +1194,32 @@ class CFF_About {
 					'status' => 'full',
 					'text'   => array(
 						'<strong>' . esc_html__( 'Filter posts in your feed based on a particular hashtag, word, or phrase', 'custom-facebook-feed' ) . '</strong>',
+					),
+				),
+			),
+			'extensions'       => array(
+				'lite'  => array(
+					'status' => 'none',
+					'text'   => array(
+						'<strong>' . esc_html__( 'Not available', 'custom-facebook-feed' ) . '</strong>',
+					),
+				),
+				'basic' => array(
+					'status' => 'partial',
+					'text'   => array(
+						'<strong>' . esc_html__( 'Custom Captcha Addon included', 'custom-facebook-feed' ) . '</strong>',
+					),
+				),
+				'plus'  => array(
+					'status' => 'partial',
+					'text'   => array(
+						'<strong>' . esc_html__( 'Email Marketing Addons included', 'custom-facebook-feed' ) . '</strong>',
+					),
+				),
+				'pro'   => array(
+					'status' => 'full',
+					'text'   => array(
+						'<strong>' . esc_html__( 'Supports all add-on extensions; Reviews, Multifeed, Date Range, Album Embed, Featured Post, and Carousel.', 'custom-facebook-feed' ) . '</strong>',
 					),
 				),
 			),

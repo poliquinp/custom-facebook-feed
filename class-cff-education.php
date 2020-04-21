@@ -36,27 +36,27 @@ class CFF_Education {
 
 		$free_messages = array(
 			array(
-				'title' => esc_html__( 'Get the Most out of Hashtags', 'custom-facebook-feeds' ),
-				'content' => esc_html__( 'You can use hashtags on Instagram for so many things; targeted promotions, engaging with your audience, running contests, or just for categorizing posts. Learn more about how you can display Instagram hashtag feeds on your website using the Instagram Feed Pro plugin.', 'custom-facebook-feeds' ),
-				'more' => 'https://smashballoon.com/instagram-feed/features/#hashtag',
+				'title' => esc_html__( 'Bring Your Feeds to Life with Media Content', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'You\'ve done the hard work of getting a visitor onto your site, now keep them there by displaying your Facebook photos and videos directly on your site, rather than sending your visitors away to Facebook.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/custom-facebook-feed/',
 				'item' => 1,
 			),
 			array(
-				'title' => esc_html__( 'Keep Visitors on Your Site', 'custom-facebook-feeds' ),
-				'content' => esc_html__( "You've done the hard work of getting a visitor onto your site, now keep them there by displaying your Instagram content inside a pop-up lightbox, rather than sending your visitors away to Instagram.  Learn more about the Instagram Feed Pro lightbox feature.", 'custom-facebook-feeds' ),
-				'more' => 'https://smashballoon.com/instagram-feed/features/#popuplightbox',
+				'title' => esc_html__( 'Use Facebook Reviews to Boost Conversions', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'Reviews for your product or service are the best way to give users the confidence to take action. With the Reviews extension, easily add 5 star reviews and recommendations from Facebook to your website help increase conversions.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/extensions/reviews/',
 				'item' => 2,
 			),
 			array(
-				'title' => esc_html__( 'Highlight Your Posts and Create Carousels', 'custom-facebook-feeds' ),
-				'content' => esc_html__( "Feature specific Instagram posts in your feeds by using the Highlight layout to feature specific posts, either by using their ID or a hashtag in their caption. Also create rotating carousels of your photos and videos to best utilize the space on your site. These layouts and more are available in our Pro version.", 'custom-facebook-feeds' ),
-				'more' => 'https://smashballoon.com/instagram-feed/features/#highlight',
+				'title' => esc_html__( 'Bring the Conversation to Your Website', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'Include the Facebook comments with each of your posts to engage your website viewers, keep them on your site for longer, and encourage them to interact with your content.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/custom-facebook-feed/wordpress-plugin/#comments',
 				'item' => 3,
 			),
 			array(
-				'title' => esc_html__( 'Moderate your Feed Content', 'custom-facebook-feeds' ),
-				'content' => esc_html__( "Control exactly which posts show up in your feed by using the Visual Moderation Mode feature to pick and choose what to display. Remove specific posts or create a whitelist of approved content using Instagram Feed Pro.", 'custom-facebook-feeds' ),
-				'more' => 'https://smashballoon.com/instagram-feed/features/#moderation',
+				'title' => esc_html__( 'Automatically Feed Facebook Events to Your Website', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'Save yourself the time and effort of posting events both to Facebook and your website by using the Custom Facebook Feed Pro plugin to automatically feeds events right to your site.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/custom-facebook-feed/docs/displaying-facebook-events-using-wordpress-plugin/',
 				'item' => 4,
 			),
 		);
@@ -69,9 +69,9 @@ class CFF_Education {
 				'item' => 1,
 			),
 			array(
-				'title' => esc_html__( 'Display Facebook Pages and Groups', 'custom-facebook-feeds' ),
-				'content' => esc_html__( 'Have a Facebook Page or Group? Easily embed a feed of posts into your website, delivering fresh content automatically to your site from Facebook. Posts, Photos, Events, Videos, Albums, Reviews, and more!', 'custom-facebook-feeds' ),
-				'more' => 'https://smashballoon.com/custom-facebook-feed/',
+				'title' => esc_html__( 'Use Facebook Reviews to Boost Conversions', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'Reviews for your product or service are the best way to give users the confidence to take action. With the Reviews extension, easily add 5 star reviews and recommendations from Facebook to your website help increase conversions.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/extensions/reviews/',
 				'item' => 2,
 			),
 			array(
@@ -79,6 +79,12 @@ class CFF_Education {
 				'content' => esc_html__( 'Twitter testimonials are one of the best ways to add verifiable social proof to your website. They add credibility to your brand, product, or service by displaying reviews from real people to your site, helping to convert more visitors into customers. Our free Custom Twitter Feeds plugin makes displaying Tweets on your website a breeze.', 'custom-facebook-feeds' ),
 				'more' => 'https://wordpress.org/plugins/custom-twitter-feeds/',
 				'item' => 3,
+			),
+			array(
+				'title' => esc_html__( 'Run Promotions with Instagram Hashtags', 'custom-facebook-feeds' ),
+				'content' => esc_html__( 'You can use hashtags on Instagram for so many things; but one of the most effective is for targeted promotions or competitions which engage with your audience and boost your exposure. Our Instagram Feed Pro plugin allows you to bring your hashtagged content into your website and display it in one centralized location.', 'custom-facebook-feeds' ),
+				'more' => 'https://smashballoon.com/instagram-feed/features/#hashtag',
+				'item' => 4,
 			),
 		);
 

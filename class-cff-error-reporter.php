@@ -179,8 +179,7 @@ class CFF_Error_Reporter
 			return;
 		}
 
-		/** TODO: Match real option */
-		$options = get_option('cff_settings' );		
+		$options = get_option('cff_style_settings');
 		if ( isset( $options['disable_admin_notice'] ) && $options['disable_admin_notice'] === 'on' ) {
 			return;
 		}
@@ -382,8 +381,7 @@ class CFF_Error_Reporter
 		if ( ! $this->are_critical_errors() ) {
 			return;
 		}
-		/** TODO: Match real option */
-		$options = get_option('cff_settings' );
+		$options = get_option('cff_style_settings');
 
 		if ( isset( $options['enable_email_report'] ) && empty( $options['enable_email_report'] ) ) {
 			return;

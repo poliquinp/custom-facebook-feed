@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.13
+Version: 2.14
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.13');
+define('CFFVER', '2.14');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -2642,7 +2642,9 @@ function cff_activate() {
     update_option( 'cff_show_access_token', true );
 
     //Run cron twice daily when plugin is first activated for new users
-    wp_schedule_event(time(), 'twicedaily', 'cff_cron_job');
+	if ( ! wp_next_scheduled( 'cff_cron_job' ) ) {
+		wp_schedule_event( time(), 'twicedaily', 'cff_cron_job' );
+	}
 	if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
 		cff_schedule_report_email();
 	}
@@ -2690,6 +2692,8 @@ function cff_uninstall()
     delete_option( 'cff_title_length' );
     delete_option( 'cff_body_length' );
     delete_option('cff_style_settings');
+
+	wp_clear_scheduled_hook( 'cff_feed_issue_email' );
 }
 register_uninstall_hook( __FILE__, 'cff_uninstall' );
 add_action( 'wp_head', 'cff_custom_css' );

@@ -4647,7 +4647,55 @@ function cff_get_future_date( $month, $year, $week, $day, $direction ) {
     return mktime( 0, 0, 0, $month, $startday + $offset, $year );
 }
 
+function cff_admin_hide_unrelated_notices() {
 
+	// Bail if we're not on a sbi screen or page.
+	if ( ! isset( $_GET['page'] ) || strpos( $_GET['page'], 'cff') === false ) {
+		return;
+	}
+
+	// Extra banned classes and callbacks from third-party plugins.
+	$blacklist = array(
+		'classes'   => array(),
+		'callbacks' => array(
+			'cffdb_admin_notice', // 'Database for sbi' plugin.
+		),
+	);
+
+	global $wp_filter;
+
+	foreach ( array( 'user_admin_notices', 'admin_notices', 'all_admin_notices' ) as $notices_type ) {
+		if ( empty( $wp_filter[ $notices_type ]->callbacks ) || ! is_array( $wp_filter[ $notices_type ]->callbacks ) ) {
+			continue;
+		}
+		foreach ( $wp_filter[ $notices_type ]->callbacks as $priority => $hooks ) {
+			foreach ( $hooks as $name => $arr ) {
+				if ( is_object( $arr['function'] ) && $arr['function'] instanceof Closure ) {
+					unset( $wp_filter[ $notices_type ]->callbacks[ $priority ][ $name ] );
+					continue;
+				}
+				$class = ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) ? strtolower( get_class( $arr['function'][0] ) ) : '';
+				if (
+					! empty( $class ) &&
+					strpos( $class, 'cff' ) !== false &&
+					! in_array( $class, $blacklist['classes'], true )
+				) {
+					continue;
+				}
+				if (
+					! empty( $name ) && (
+						strpos( $name, 'cff' ) === false ||
+						in_array( $class, $blacklist['classes'], true ) ||
+						in_array( $name, $blacklist['callbacks'], true )
+					)
+				) {
+					unset( $wp_filter[ $notices_type ]->callbacks[ $priority ][ $name ] );
+				}
+			}
+		}
+	}
+}
+add_action( 'admin_print_scripts', 'cff_admin_hide_unrelated_notices' );
 
 
 ?>

@@ -4504,7 +4504,7 @@ function cff_notices_html() {
         $dismiss_url = add_query_arg( 'cff_ignore_rating_notice_nag', '1' );
         $later_url = add_query_arg( 'cff_ignore_rating_notice_nag', 'later' );
         if ( $should_show_bfcm_discount ) {
-            $other_notice_html = '<p class="cff_other_notice">' .  __( 'PS. We currently have a <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount='.$cff_bfcm_discount_code.'" target="_blank"><b style="font-weight: 700;">Black Friday deal</b></a> for 20% off the Pro version!', 'custom-facebook-feed' ) . '</p>';
+            $other_notice_html = '<p class="cff_other_notice">' .  __( 'PS. We currently have a <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount='.$cff_bfcm_discount_code.'" target="_blank"><b style="font-weight: 700;">Black Friday deal</b></a> for 60% off the Pro version!', 'custom-facebook-feed' ) . '</p>';
 
             $dismiss_url = add_query_arg( array(
                     'cff_ignore_rating_notice_nag' => '1',
@@ -4549,7 +4549,7 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_new_user_sale_notice'>
             <img src='" . plugins_url( 'img/cff-icon-offer.png?74px' , __FILE__ ) . "' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Exclusive offer!</b>  We don\'t run promotions very often, but for a limited time we\'re offering <b style="font-weight: 700;">20% off</b> our Pro version to all users of our free Smash Balloon Custom Facebook Feed plugin.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Exclusive offer!</b>  We don\'t run promotions very often, but for a limited time we\'re offering <b style="font-weight: 700;">60% off</b> our Pro version to all users of our free Smash Balloon Custom Facebook Feed plugin.', 'custom-facebook-feed' ) . "</p>
                 <p class='cff-links'>
                     <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=facebookthankyou' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" . esc_url( add_query_arg( 'cff_ignore_new_user_sale_notice', 'always' ) ) . "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>
@@ -4567,7 +4567,7 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_bfcm_sale_notice'>
             <img src='". plugins_url( 'img/cff-icon-offer.png?74px' , __FILE__ ) ."' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using the free Smash Balloon Custom Facebook Feed plugin. For a limited time, we\'re offering <b style="font-weight: 700;">20% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using the free Smash Balloon Custom Facebook Feed plugin. For a limited time, we\'re offering <b style="font-weight: 700;">60% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
                 <p class='cff-links'>
                     <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=".$cff_bfcm_discount_code."' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" .esc_url( add_query_arg( 'cff_ignore_bfcm_sale_notice', date( 'Y', $current_time ) ) ). "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>

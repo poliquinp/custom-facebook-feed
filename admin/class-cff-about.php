@@ -288,7 +288,7 @@ class CFF_About {
 	 */
 	protected function output_about_addons() {
 
-		if ( ! current_user_can( 'manage_instagram_feed_options' ) || 	version_compare( PHP_VERSION,  '5.3.0' ) <= 0 ) {
+		if ( ! current_user_can( 'manage_custom_facebook_feed_options' ) || version_compare( PHP_VERSION,  '5.3.0' ) <= 0 ) {
 			return;
 		}
 

@@ -50,8 +50,8 @@ Display Facebook posts on your website. **Completely customizable**, **responsiv
 
 In order to maintain the free version of the plugin on an ongoing basis, and to provide quick and effective support for free, we offer a Pro version of the plugin. The Pro version allows you to display photos, videos, the number of likes, shares, reactions and comments for each Facebook post, choose from multiple layout options, filter posts by type or #hashtag/string, load more posts into your feed, and more. [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the free version and Pro version.
 
-* [Find out more about the Pro version](https://smashballoon.com/custom-facebook-feed/ "Custom Facebook Feed Pro")
-* [Try out the Pro demo](https://smashballoon.com/custom-facebook-feed/demo "Custom Facebook Feed Pro Demo").
+* [Find out more about the Pro version](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=findout "Custom Facebook Feed Pro")
+* [Try out the Pro demo](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=demo "Custom Facebook Feed Pro Demo").
 
 ### Benefits
 
@@ -75,7 +75,7 @@ One of our main priorities has always been to make our plugins as easy as possib
 
 That's it!  You can then customize the feed as needed using the settings on the plugin "Customize" page.
 
-For full step-by-step setup directions with screenshots, see [here](https://smashballoon.com/custom-facebook-feed/docs/free/ "Custom Facebook Feed Free Setup Doc").
+For full step-by-step setup directions with screenshots, see [here](https://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free-readme&utm_source=howto&utm_medium=setup "Custom Facebook Feed Free Setup Doc").
 
 ### Requesting support
 
@@ -85,7 +85,7 @@ Customer support is a huge deal to us. We pride ourselves on always providing qu
 
 We're Smash Balloon; a fun-loving WordPress plugin development company birthed into existence in early 2013. We specialize in creating plugins that are not only intuitive and simple to use, but also designed to integrate seamlessly into your website and allow you to display your social media content in powerful and unique ways. Over 1 million awesome people have decided to actively use our free plugins, which is an incredible honor that we don't take lightly. This compels us to try to provide the quickest and most effective customer support that we can, blowing users away with the best customer service they've ever experienced.
 
-To find out more about the team, see [here](https://smashballoon.com/about/ "Team Smash Balloon").
+To find out more about the team, see [here](https://smashballoon.com/about/?utm_campaign=facebook-free-readme&utm_source=who&utm_medium=about "Team Smash Balloon").
 
 Check out our other free plugins for both [Instagram](https://wordpress.org/plugins/instagram-feed "Instagram Feed free plugin") and [Twitter](https://wordpress.org/plugins/custom-twitter-feeds/ "Custom Twitter Feeds free plugin").
 
@@ -105,9 +105,9 @@ For a full list of FAQs and help with troubleshooting please visit the **[FAQ & 
 
 If you have a Facebook **page** with a URL like this: `https://www.facebook.com/smashballoon` then the Page ID is just `smashballoon`. If your page URL is structured like this: `https://www.facebook.com/pages/smashballoon/123654123654123` then the Page ID is actually the number at the end, so in this case `123654123654123`.
 
-Due to [recent changes](https://smashballoon.com/facebook-api-changes-april-4-2018/) to the Facebook API it is unfortunately no longer possible to display a feed from a Facebook Group.
+Due to [recent changes](https://smashballoon.com/facebook-api-changes-april-4-2018/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=id) to the Facebook API it is unfortunately no longer possible to display a feed from a Facebook Group.
 
-Copy and paste the ID into the [Pro demo](https://smashballoon.com/custom-facebook-feed/demo/) to test it.
+Copy and paste the ID into the [Pro demo](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=demoid) to test it.
 
 = Are there any limitations on which Facebook page or group feeds I can display? =
 
@@ -131,11 +131,11 @@ Once you've done so, the plugin will be able to retrieve and display all of your
 
 = Can I show photos and videos in my Custom Facebook feed? =
 
-This free plugin only allows you to display text from your Facebook posts. To display photos and videos in your feed you would need to upgrade to the Pro version of the plugin. Try out a demo of the Pro version on the [Custom Facebook Feed website](https://smashballoon.com/custom-facebook-feed/demo "Custom Facebook Feed Demo"), and find out more about the Pro version [here](https://smashballoon.com/custom-facebook-feed/ "Custom Facebook Feed Pro"). [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the free version and Pro version.
+This free plugin only allows you to display text from your Facebook posts. To display photos and videos in your feed you would need to upgrade to the Pro version of the plugin. Try out a demo of the Pro version on the [Custom Facebook Feed website](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=media "Custom Facebook Feed Demo"), and find out more about the Pro version [here](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=pro "Custom Facebook Feed Pro"). [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the free version and Pro version.
 
 = Can I show the comments, shares and likes associated with each Facebook post? =
 
-This is a feature of the [Pro version of the plugin](https://smashballoon.com/custom-facebook-feed/ "Custom Facebook Feed Pro"). To display comments, shares and likes you would need to upgrade from the free version to the Pro version.
+This is a feature of the [Pro version of the plugin](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=comments "Custom Facebook Feed Pro"). To display comments, shares and likes you would need to upgrade from the free version to the Pro version.
 
 = Is the content of my Custom Facebook Feed crawlable by search engines? =
 
@@ -147,7 +147,7 @@ You can embed your Facebook feed directly into a template file by using the Word
 
 = My Facebook feed posts are not showing up, or all I can see is the Facebook Like box but no posts =
 
-Please refer to [this FAQ](https://smashballoon.com/facebook-feed-doesnt-show-can-see-like-box-posts-gives/ "My Facebook feed posts are not showing up, or all I can see is the Facebook Like box but no posts") for potential solutions on how to resolve this issue.
+Please refer to [this FAQ](https://smashballoon.com/facebook-feed-doesnt-show-can-see-like-box-posts-gives/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=errors "My Facebook feed posts are not showing up, or all I can see is the Facebook Like box but no posts") for potential solutions on how to resolve this issue.
 
 = Create a basic slideshow from your Facebook posts =
 
@@ -183,11 +183,11 @@ setInterval(function(){
 
 = Changing the font in your Facebook feed and using Google Fonts =
 
-Please refer to [this FAQ](https://smashballoon.com/changing-the-font-in-your-facebook-feed-using-google-fonts/ "Changing the font in your Facebook feed and using Google Fonts") for directions on how to use Google fonts in your Facebook posts.
+Please refer to [this FAQ](https://smashballoon.com/changing-the-font-in-your-facebook-feed-using-google-fonts/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=fonts "Changing the font in your Facebook feed and using Google Fonts") for directions on how to use Google fonts in your Facebook posts.
 
 = Can I display my Facebook posts horizontally or in multiple columns? =
 
-Please refer to [this FAQ](https://smashballoon.com/can-display-facebook-post-horizontally-multiple-columns/ "Can I display my Facebook posts horizontally or in multiple columns?") for directions on how to display your Facebook posts in multiple columns.
+Please refer to [this FAQ](https://smashballoon.com/can-display-facebook-post-horizontally-multiple-columns/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=horizontal "Can I display my Facebook posts horizontally or in multiple columns?") for directions on how to display your Facebook posts in multiple columns.
 
 = My Facebook feed appears to have stopped updating / working =
 
@@ -203,11 +203,11 @@ Please note, this isn't a limitation of our plugin, it's a restriction which Fac
 
 = I'm receiving an error message when trying to display my Facebook posts =
 
-Please refer to our [Error Message Reference page](https://smashballoon.com/custom-facebook-feed/docs/errors/ "I'm receiving an error message when trying to display my Facebook posts") for information on how to resolve common error messages.
+Please refer to our [Error Message Reference page](https://smashballoon.com/custom-facebook-feed/docs/errors/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=errors "I'm receiving an error message when trying to display my Facebook posts") for information on how to resolve common error messages.
 
 = Creating a Masonry grid layout from your Facebook posts =
 
-Please refer to [this FAQ](https://smashballoon.com/creating-a-masonry-grid-layout-from-your-facebook-posts/ "Creating a Masonry grid layout from your Facebook posts") for directions on how to create a Masonry grid layout from your Facebook feed posts.
+Please refer to [this FAQ](https://smashballoon.com/creating-a-masonry-grid-layout-from-your-facebook-posts/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=masonry "Creating a Masonry grid layout from your Facebook posts") for directions on how to create a Masonry grid layout from your Facebook feed posts.
 
 = How do I customize my Facebook feed? =
 
@@ -229,7 +229,7 @@ If your shortcode includes single quotes then check that they are the standard s
 
 3) Typo in the shortcode option
 
-Ensure that there aren't any spelling errors in the shortcode options that you're using and that the format is consistent with that demonstrated on the [Shortcode Options reference page](https://smashballoon.com/custom-facebook-feed/docs/shortcodes/ "The shortcode options aren't working").
+Ensure that there aren't any spelling errors in the shortcode options that you're using and that the format is consistent with that demonstrated on the [Shortcode Options reference page](https://smashballoon.com/custom-facebook-feed/docs/shortcodes/?utm_campaign=facebook-free-readme&utm_source=faq&utm_medium=shortcode "The shortcode options aren't working").
 
 = Facebook avatar pictures aren't showing up in my Facebook feed =
 
@@ -357,7 +357,7 @@ The most common reason for this is that an add-on or extension you have installe
 * Tweak: Removed the minimum caching time if you're using your own Facebook Page Access Token
 
 = 2.6.4 =
-* **Important:** If you are displaying Facebook posts from a Facebook page that **you are an admin of** then it is now highly recommended that you retrieve your own Facebook Access Token for that Facebook page to avoid any Facebook API rate limit errors. Simply follow these [step-by-step](https://smashballoon.com/custom-facebook-feed/page-token/) instructions to obtain one.
+* **Important:** If you are displaying Facebook posts from a Facebook page that **you are an admin of** then it is now highly recommended that you retrieve your own Facebook Access Token for that Facebook page to avoid any Facebook API rate limit errors. Simply follow these [step-by-step](https://smashballoon.com/custom-facebook-feed/page-token/?utm_campaign=facebook-free-readme&utm_source=changelog&utm_medium=limits) instructions to obtain one.
 
 = 2.6.3 =
 * Fix: Fixed an issue where Facebook API errors were being cached

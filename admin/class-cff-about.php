@@ -451,17 +451,17 @@ class CFF_About {
 
 				<ul class="list-plain">
 					<li>
-						<a href="https://smashballoon.com/can-display-feeds-multiple-facebook-pages/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted#multiple-feeds" target="_blank" rel="noopener noreferrer">
+						<a href="https://smashballoon.com/can-display-feeds-multiple-facebook-pages/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=multiplefeeds" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Display Multiple Feeds', 'custom-facebook-feed' ); ?>
 						</a>
 					</li>
 					<li>
-						<a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted#differentaccount" target="_blank" rel="noopener noreferrer">
+						<a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=shortcode" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Shortcode Settings Guide', 'custom-facebook-feed' ); ?>
 						</a>
 					</li>
 					<li>
-						<a href="https://smashballoon.com/find-facebook-page-group-id/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted#display-form" target="_blank" rel="noopener noreferrer">
+						<a href="https://smashballoon.com/find-facebook-page-group-id/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=pageid" target="_blank" rel="noopener noreferrer">
 							<?php esc_html_e( 'Find My Page ID', 'custom-facebook-feed' ); ?>
 						</a>
 					</li>
@@ -572,9 +572,9 @@ class CFF_About {
 					<h3 class="call-to-action">
 						<?php
 						if ( 'lite' === $license ) {
-							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_source=plugin-free&utm_campaign=cff" target="_blank" rel="noopener noreferrer">';
+							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 						} else {
-							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer">';
+							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-pro&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 						}
 						esc_html_e( 'Get Custom Facebook Feed Pro Today and Unlock all the Powerful Features', 'custom-facebook-feed' );
 						?>
@@ -614,7 +614,7 @@ class CFF_About {
 					<?php esc_html_e( 'View detailed steps with related images on our website. We have a comprehensive guide to getting up and running with Custom Facebook Feed.', 'custom-facebook-feed' ); ?>
                 </p>
 
-                <a href="https://smashballoon.com/custom-facebook-feed/docs/free/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="cff-admin-about-section-post-link">
+                <a href="https://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=readsetup" target="_blank" rel="noopener noreferrer" class="cff-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'custom-facebook-feed' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
                 </a>
             </div>
@@ -633,7 +633,7 @@ class CFF_About {
 					<?php esc_html_e( 'Are you having trouble displaying your feed due to an error connecting an account or a Facebook API error? We have several articles to help you troubleshoot issues and help you solve them.', 'custom-facebook-feed' ); ?>
 				</p>
 
-				<a href="https://smashballoon.com/custom-facebook-feed/docs/errors/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer" class="cff-admin-about-section-post-link">
+				<a href="https://smashballoon.com/custom-facebook-feed/docs/errors/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=readerrordoc" target="_blank" rel="noopener noreferrer" class="cff-admin-about-section-post-link">
 					<?php esc_html_e( 'Read Documentation', 'custom-facebook-feed' ); ?><i class="fa fa-external-link" aria-hidden="true"></i>
 				</a>
 			</div>
@@ -752,9 +752,9 @@ class CFF_About {
 				<h3 class="call-to-action centered">
 					<?php
 					if ( 'lite' === $license ) {
-						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer">';
+						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 					} else {
-						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_source=WordPress&utm_medium=cff-about-page&utm_campaign=gettingstarted" target="_blank" rel="noopener noreferrer">';
+						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-pro&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 					}
 					printf( /* translators: %s - next license level. */
 						esc_html__( 'Get Custom Facebook Feed Pro Today and Unlock all the Powerful Features', 'custom-facebook-feed' ),
@@ -806,7 +806,7 @@ class CFF_About {
 					'icon' => $images_url . 'plugin-if.png',
 					'name' => esc_html__( 'Instagram Feed Pro', 'custom-facebook-feed' ),
 					'desc' => esc_html__( 'Instagram Feed is a clean and beautiful way to add your Instagram posts to your website. Grab your visitors attention and keep them engaged with your site longer.', 'custom-facebook-feed' ),
-					'url'  => 'https://smashballoon.com/instagram-feed/?utm_source=WordPress&utm_campaign=facebook'.$this->get_license_type().'about',
+					'url'  => 'https://smashballoon.com/instagram-feed/?utm_campaign=facebook-free&utm_source=cross&utm_medium=sbiinstaller',
 					'act'  => 'go-to-url',
 				),
 			),
@@ -821,7 +821,7 @@ class CFF_About {
 					'icon' => $images_url . 'plugin-tw.jpg',
 					'name' => esc_html__( 'Custom Twitter Feeds Pro', 'custom-facebook-feed' ),
 					'desc' => esc_html__( 'Custom Twitter Feeds is a highly customizable way to display tweets from your Twitter account. Promote your latest content and update your site content automatically.', 'custom-facebook-feed' ),
-					'url'  => 'https://smashballoon.com/custom-twitter-feeds/?utm_source=WordPress&utm_campaign=facebook'.$this->get_license_type().'about',
+					'url'  => 'https://smashballoon.com/custom-twitter-feeds/?utm_campaign=facebook-free&utm_source=cross&utm_medium=ctfinstaller',
 					'act'  => 'go-to-url',
 				),
 			),
@@ -836,7 +836,7 @@ class CFF_About {
 					'icon' => $images_url . 'plugin-yt.png',
 					'name' => esc_html__( 'Feeds for YouTube Pro', 'custom-facebook-feed' ),
 					'desc' => esc_html__( 'Feeds for YouTube is a simple yet powerful way to display videos from YouTube on your website. Increase engagement with your channel while keeping visitors on your website.', 'custom-facebook-feed' ),
-					'url'  => 'https://smashballoon.com/youtube-feed/?utm_source=WordPress&utm_campaign=facebook'.$this->get_license_type().'about',
+					'url'  => 'https://smashballoon.com/youtube-feed/?utm_campaign=facebook-free&utm_source=cross&utm_medium=sbyinstaller',
 					'act'  => 'go-to-url',
 				),
 			),

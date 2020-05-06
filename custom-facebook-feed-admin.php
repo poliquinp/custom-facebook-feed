@@ -838,7 +838,7 @@ function cff_settings_page() {
                 <li><b>Documentation</b></li>
                 <li>&bull;&nbsp; <?php _e('<a href="http://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free&utm_source=support&utm_medium=setup" target="_blank">Installation and Configuration</a>'); ?></li>
                 <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/?utm_campaign=facebook-free&utm_source=support&utm_medium=shortcode" target="_blank">Shortcode Reference</a>', 'custom-facebook-feed'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href=https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?utm_campaign=facebook-free&utm_source=support&utm_medium=snippets" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/snippets/?utm_campaign=facebook-free&utm_source=support&utm_medium=snippets" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
                 <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/docs/?utm_campaign=facebook-free&utm_source=support&utm_medium=docs" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
@@ -1098,7 +1098,7 @@ if( isset( $api_response_json->data ) ){
 } ?>
 
 
-## Cron Events: ##
+## CRON EVENTS: ##
 <?php
 $cron = _get_cron_array();
 foreach ( $cron as $key => $data ) {
@@ -1117,6 +1117,19 @@ foreach ( $cron as $key => $data ) {
 		echo "\n\n";
 	}
 }
+?>
+
+## Error Log: ##
+<?php
+global $cff_error_reporter;
+$errors = $cff_error_reporter->get_errors();
+if ( ! empty( $errors ) ) :
+	foreach ( $errors as $error ) :
+		echo $error['admin_message']."\n";
+		echo 'Feed with error: ' . esc_url( get_the_permalink( $error['post_id'] ) )."\n";
+
+	endforeach;
+endif;
 
 ?>
         </textarea>
@@ -3848,7 +3861,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
                             <textarea name="cff_custom_css" id="cff_custom_css" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_css), 'custom-facebook-feed' ); ?></textarea>
                         </td>
                     </tr>
@@ -3859,7 +3872,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>      
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
                             <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_js), 'custom-facebook-feed' ); ?></textarea>                  
                         </td>
                     </tr>

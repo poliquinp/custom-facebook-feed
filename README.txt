@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.4
-Stable tag: 2.14
+Stable tag: 2.14.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -255,6 +255,9 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.14.1 =
+* Fix: Connection error notices not clearing automatically.
+
 = 2.14 =
 * New: Email alerts for critical issues. If there's an issue with a Facebook feed on your website which hasn't been resolved yet then you'll receive an email notification to let you know. This is sent once per week until the issue is resolved. These emails can be disabled by using the following setting: Facebook Feed > Customize > Misc > Feed Issue Email Report.
 * New: Admin notifications for critical issues. If there is an error with the feed, admins will see notices in the dashboard and on the front-end of the site along with instructions on how to resolve the issue. Front-end admin notifications can be disabled by using the following setting: Facebook Feed > Customize > Misc > Disable Admin Error Notice.

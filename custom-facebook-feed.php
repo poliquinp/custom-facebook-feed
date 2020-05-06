@@ -2199,7 +2199,15 @@ function cff_log_wp_error( $response, $url ) {
 	if ( is_wp_error( $response ) ) {
 		global $cff_error_reporter;
 		delete_option( 'cff_dismiss_critical_notice' );
-		$admin_message = sprintf( __( 'Error connecting to %s.', 'custom-facebook-feed' ), $url );
+
+		$admin_message_error = '';
+		if ( isset( $response ) && isset( $response->errors ) ) {
+			foreach ( $response->errors as $key => $item ) {
+				$admin_message_error .= ' '.$key . ' - ' . $item[0];
+			}
+		}
+
+		$admin_message = __( 'Error connecting to the Facebook API:', 'custom-facebook-feed' ) . ' ' . $admin_message_error;
 		$public_message =__( 'Unable to make remote requests to the Facebook API. Log in as an admin to view more details.', 'custom-facebook-feed' );
 		$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
 		$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
@@ -2272,9 +2280,6 @@ function cff_log_fb_error( $response, $url ) {
 }
 //Get JSON object of feed data
 function cff_fetchUrl($url){
-	//return '{}';
-	//$response = wp_remote_get('fff'.$url);
-	//$url = str_replace( '100178597731', '200178597732', $url );
     $response = wp_remote_get( $url );
 
 	if ( !cff_is_wp_error( $response ) ) {
@@ -2284,7 +2289,7 @@ function cff_fetchUrl($url){
 			global $cff_error_reporter;
 
 			$cff_error_reporter->remove_error( 'api' );
-			$cff_error_reporter->remove_error( 'connection' );
+			$cff_error_reporter->remove_error( 'wp_remote_get' );
 
 			$feedData = apply_filters( 'cff_filter_api_data', $feedData );
 

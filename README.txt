@@ -256,7 +256,7 @@ The most common reason for this is that an add-on or extension you have installe
 
 == Changelog ==
 = 2.14.1 =
-* Fix: Connection error notices not clearing automatically.
+* Fix: Some connection error notices not clearing automatically.
 
 = 2.14 =
 * New: Email alerts for critical issues. If there's an issue with a Facebook feed on your website which hasn't been resolved yet then you'll receive an email notification to let you know. This is sent once per week until the issue is resolved. These emails can be disabled by using the following setting: Facebook Feed > Customize > Misc > Feed Issue Email Report.

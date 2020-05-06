@@ -122,8 +122,8 @@ class CFF_Education {
 		if ( ! empty( $dyk_message['more'] ) ) {
 			$dyk_message['more'] = add_query_arg(
 				array(
-					'utm_source'   => 'plugin-'.$this->plugin_version,
-					'utm_campaign' => 'cff-issue-email',
+					'utm_campaign' => 'facebook-'.$this->plugin_version,
+					'utm_source'   => 'issueemail',
 					'utm_content'  => $dyk_message['item'],
 				),
 				$dyk_message['more']

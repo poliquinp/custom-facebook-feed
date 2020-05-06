@@ -56,6 +56,9 @@ class CFF_Blocks {
 			),
 			'noNewChanges' => array(
 				'type' => 'boolean',
+			),
+			'executed' => array(
+				'type' => 'boolean',
 			)
 		);
 

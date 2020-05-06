@@ -34,6 +34,9 @@ window.cffmetatrans = false;
             },
             shortcodeSettings: {
                 type: 'string',
+            },
+            executed: {
+                type: 'boolean'
             }
         },
         edit: function edit(props) {

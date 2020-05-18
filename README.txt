@@ -12,82 +12,80 @@ Formerly "Custom Facebook Feed". Display completely customizable Facebook feeds 
 
 == Description ==
 
-Display Facebook posts on your website. **Completely customizable**, **responsive** and **search engine crawlable**. Display **multiple Facebook feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of customization options!
+Display Facebook posts on your website. **Completely customizable**, **responsive** and **search engine crawlable** Facebook feeds. Display **multiple Facebook feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of customization options!
 
 *"The perfect Facebook plugin with amazing support! What else do you want? Get it!"* - [JoeJeffries](http://wordpress.org/support/topic/you-dont-already-have-this?facebook)
 
-*"I honestly cannot recommend this plugin enough. The plugin itself is gorgeous and super customizable, and if you run into trouble...support will get you out of it. Five Stars across the board."* - [pamsavoybarnett](http://wordpress.org/support/topic/love-this-plugin-w-awesome-support?facebook)
+*"I honestly cannot recommend this Facebook plugin enough. The plugin itself is gorgeous and super customizable, and if you run into trouble...support will get you out of it. Five Stars across the board."* - [pamsavoybarnett](http://wordpress.org/support/topic/love-this-plugin-w-awesome-support?facebook)
 
-**Please note:** This free plugin allows you to display text and links from Facebook posts. To display **photos, videos, comments,** and more, we offer a Pro version of the plugin.  See the Pro Version section below for more information.
+**Please note:** This free Facebook plugin allows you to display text and links from Facebook posts. To display **photos, videos, comments,** and more, we offer a Pro version of the plugin.  See the Pro Version section below for more information.
 
 ### Facebook Feed Features
 
 * **Super simple to set up** - 1 minute quick setup with no Facebook Developer App required
-* **Display feeds from ANY Facebook page** - even ones you aren't an admin of
-* **Completely Customizable** - By default the Facebook feed will adopt the style of your website, but can be completely customized to look however you like - with tons of styling and customization options!
+* **Display feeds from ANY Facebook page** - even Facebook pages you aren't an admin of
+* **Completely Customizable** - By default the Facebook feed will adopt the style of your website, but your Facebook feeds can be completely customized to look however you like - with tons of styling and customization options!
 * Facebook feed content is **crawlable by search engines** adding SEO value to your site - other Facebook plugins embed the feed using iframes which are not crawlable
-* Completely **responsive** and mobile optimized - layout looks great on any screen size and in any container width
-* Display **feeds from multiple different Facebook pages** and use the shortcode to embed them into a page, post or widget anywhere on your site
-* Add your own **custom CSS**
+* Completely **responsive** and mobile optimized Facebook feeds - layout looks great on any screen size and in any container width
+* Display **feeds from multiple different Facebook pages** and use the shortcode to embed your Facebook feeds into a page, post or widget anywhere on your site
 * **Caching** means that your Facebook posts load lightning fast. Set your own caching time - check for new posts on Facebook every few seconds, minutes, hours or days. You decide.
 * Show and hide certain parts of each Facebook post
-* Show or hide the Facebook profile picture and name of the author above each post
+* Show or hide the Facebook profile picture and name of the author above each Facebook post
 * Display Facebook posts by just the page owner, everyone who posts on your Facebook page, or only other people
 * Control the width, height, padding and background color of your Facebook feed
-* Customize the size, weight and color of text
+* Customize the size, weight and color of text in your Facebook posts
 * Choose to set a background color and rounded corners on your Facebook posts
 * Supports Facebook tags - creates links when using the @ symbol to tag people in your Facebook posts
 * Automatically links hashtags used in posts to the hashtag page on Facebook
-* Select the number of Facebook posts to display
-* Select from a range of date formats or enter your own
-* Use your own custom link text in place of the defaults
+* Select the number of Facebook posts to display in your Facebook feed
 * Use the shortcode options to style multiple Facebook feeds in completely different ways
 * Set a maximum character length for both the text and descriptions of your Facebook posts
-* Create a customizable header with a range of icons for your Custom Facebook Feed
-* Localization/i18n support to allow every part of the feed to be displayed in your language
+* Create a customizable Facebook header with a range of icons for your Custom Facebook Feed
+* Localization/i18n support to allow every part of the Facebook feed to be displayed in your language
+* Add your own **custom CSS**
 
 ### Pro Version (Custom Facebook Feed Pro)
 
-In order to maintain the free version of the plugin on an ongoing basis, and to provide quick and effective support for free, we offer a Pro version of the plugin. The Pro version allows you to display photos, videos, the number of likes, shares, reactions and comments for each Facebook post, choose from multiple layout options, filter posts by type or #hashtag/string, load more posts into your feed, and more. [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the free version and Pro version.
+In order to maintain the free version of the Custom Facebook Feed plugin on an ongoing basis, and to provide quick and effective support for free, we offer a Pro version of the plugin. Custom Facebook Feed Pro allows you to display photos, videos, the number of likes, shares, reactions and comments for each Facebook post, choose from multiple layout options, filter Facebook posts by type or #hashtag/string, load more Facebook posts into your feed, and more. [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the Custom Facebook Feed free and Pro versions.
 
-* [Find out more about the Pro version](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=findout "Custom Facebook Feed Pro")
-* [Try out the Pro demo](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=demo "Custom Facebook Feed Pro Demo").
+* [Find out more about Custom Facebook Feed Pro](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=findout "Custom Facebook Feed Pro")
+* [Try out the Custom Facebook Feed Pro demo](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=demo "Custom Facebook Feed Pro Demo").
 
 ### Benefits
 
 * **Increase social engagement** between you and your users, customers, or fans
 * **Save time** by using the Custom Facebook Feed to generate dynamic, search engine crawlable content on your website
 * **Get more likes** by displaying your Facebook content directly on your site
-* **Improve your SEO** as all of that quality keyword-rich Facebook content from posts and comments is directly embedded into your website
+* **Improve your SEO** as all of that quality keyword-rich Facebook content from posts and Facebook comments is directly embedded into your website
 * Display your Facebook content your way to perfectly match your website's style
 * **No Coding Required** - choose from tons of built-in customization options to create a truly unique feed of your Facebook content.
-* The plugin is **updated regularly** with new features, bug-fixes and Facebook API changes
+* The Custom Facebook Feed plugin is **updated regularly** with new features, bug-fixes and Facebook API changes
 * Support is quick and effective
 * We're dedicated to providing the **most customizable**, **robust** and **well supported** Facebook feed plugin in the world!
 
-### How to use the plugin
+### How to use the Custom Facebook Feed plugin
 
-One of our main priorities has always been to make our plugins as easy as possible to setup and use. Once you've installed the plugin there are only a few steps to get up and running:
+One of our main priorities has always been to make our Custom Facebook Feed plugin as easy as possible to setup and use. Once you've installed the plugin there are only a few steps to get up and running:
 
-* 1) Click the "Log in and get my Access Token" button on the plugin settings page. This will prompt you to log into your Facebook account to authorize the plugin.
-* 2) Once you've connected your account, save the plugin settings.
-* 3) Then simply copy and paste the `[custom-facebook-feed]` shortcode onto any page, post, or widget where you want the feed to be displayed.
+* 1) Click the big blue Facebook button on the plugin settings page. This will prompt you to log into your Facebook account to authorize the plugin.
+* 2) Once you've connected your Facebook account, save the plugin settings.
+* 3) Then simply copy and paste the `[custom-facebook-feed]` shortcode onto any page, post, or widget where you want the Facebook feed to be displayed.
 
-That's it!  You can then customize the feed as needed using the settings on the plugin "Customize" page.
+That's it!  You can then customize the Facebook feed as needed using the settings on the Facebook Feed > Customize page.
 
 For full step-by-step setup directions with screenshots, see [here](https://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free-readme&utm_source=howto&utm_medium=setup "Custom Facebook Feed Free Setup Doc").
 
 ### Requesting support
 
-Customer support is a huge deal to us. We pride ourselves on always providing quick, effective, and courteous support to all of our users. If you're having an issue then just let us know and we'll be there to help as soon as possible.  You can either open a ticket on the support forum on [WordPress.org](https://wordpress.org/support/plugin/custom-facebook-feed/ "Custom Facebook Feed Free support forum"), or directly on [our website](https://smashballoon.com/custom-facebook-feed/support/ "Custom Facebook Feed website support form").  We also have a large collection of help documentation and FAQs [on our website](https://smashballoon.com/custom-facebook-feed/faq/ "Custom Facebook Feed support FAQs") for all common issues.
+Customer support is a huge deal to us. We pride ourselves on always providing quick, effective, and courteous support to all of our users. If you're having an issue using the Custom Facebook Feed plugin then just let us know and we'll be there to help as soon as possible.  You can either open a ticket on the support forum on [WordPress.org](https://wordpress.org/support/plugin/custom-facebook-feed/ "Custom Facebook Feed Free support forum"), or directly on the Custom Facebook Feed section of [our website](https://smashballoon.com/custom-facebook-feed/support/ "Custom Facebook Feed website support form").  We also have a large collection of help documentation and FAQs [on our website](https://smashballoon.com/custom-facebook-feed/faq/ "Custom Facebook Feed support FAQs") for all common issues related to the Custom Facebook Feed plugin.
 
 ### Who's behind this plugin?
 
-We're Smash Balloon; a fun-loving WordPress plugin development company birthed into existence in early 2013. We specialize in creating plugins that are not only intuitive and simple to use, but also designed to integrate seamlessly into your website and allow you to display your social media content in powerful and unique ways. Over 1 million awesome people have decided to actively use our free plugins, which is an incredible honor that we don't take lightly. This compels us to try to provide the quickest and most effective customer support that we can, blowing users away with the best customer service they've ever experienced.
+We're Smash Balloon; a fun-loving WordPress plugin development company birthed into existence in early 2013. We specialize in creating social media plugins that are not only intuitive and simple to use, but also designed to integrate seamlessly into your website and allow you to display your social media content in powerful and unique ways. Over 1 million awesome people have decided to actively use our free plugins, which is an incredible honor that we don't take lightly. This compels us to try to provide the quickest and most effective customer support that we can, blowing users away with the best customer service they've ever experienced.
 
 To find out more about the team, see [here](https://smashballoon.com/about/?utm_campaign=facebook-free-readme&utm_source=who&utm_medium=about "Team Smash Balloon").
 
-Check out our other free plugins for both [Instagram](https://wordpress.org/plugins/instagram-feed "Instagram Feed free plugin") and [Twitter](https://wordpress.org/plugins/custom-twitter-feeds/ "Custom Twitter Feeds free plugin").
+Check out our other free plugins for [Instagram](https://wordpress.org/plugins/instagram-feed "Instagram Feed free plugin"), [Twitter](https://wordpress.org/plugins/custom-twitter-feeds/ "Custom Twitter Feeds free plugin"), and [YouTube](https://wordpress.org/plugins/feeds-for-youtube/ "Feeds for YouTube free plugin").
 
 == Installation ==
 

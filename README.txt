@@ -12,7 +12,7 @@ Formerly "Custom Facebook Feed". Display completely customizable Facebook feeds 
 
 == Description ==
 
-Display Facebook posts on your website. **Completely customizable**, **responsive** and **search engine crawlable** Facebook feeds. Display **multiple Facebook feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of customization options!
+Display Facebook posts on your website. **Completely customizable**, **responsive** and **search engine crawlable** Facebook feeds. Display **multiple Facebook feeds** from **any public Facebook page**, and completely match the look and feel of the site with tons of Facebook feed customization options!
 
 *"The perfect Facebook plugin with amazing support! What else do you want? Get it!"* - [JoeJeffries](http://wordpress.org/support/topic/you-dont-already-have-this?facebook)
 

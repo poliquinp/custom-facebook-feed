@@ -988,7 +988,7 @@ function display_cff($atts) {
     $cff_header = '<h3 class="cff-header';
     if ($cff_header_outside) $cff_header .= ' cff-outside';
     $cff_header .= '" ' . $cff_header_styles . '>';
-    $cff_header .= '<span class="fa fas fab fa-' . $cff_header_icon . '"';
+    $cff_header .= '<span class="fa fab fa-' . $cff_header_icon . '"';
     if(!empty($cff_header_icon_color) || !empty($cff_header_icon_size)) $cff_header .= ' style="';
     if(!empty($cff_header_icon_color)) $cff_header .= 'color: #' . str_replace('#', '', $cff_header_icon_color) . ';';
     if(!empty($cff_header_icon_size)) $cff_header .= ' font-size: ' . $cff_header_icon_size . 'px;';

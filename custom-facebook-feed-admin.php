@@ -7,10 +7,12 @@ function cff_menu() {
 	if ( $cff_error_reporter->are_critical_errors() ) {
 		$notice = ' <span class="update-plugins cff-error-alert"><span>!</span></span>';
 	}
+	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
     add_menu_page(
         '',
         'Facebook Feed'. $notice,
-        'manage_options',
+        $cap,
         'cff-top',
         'cff_settings_page'
     );
@@ -18,7 +20,7 @@ function cff_menu() {
         'cff-top',
         'Settings',
         'Settings'. $notice,
-        'manage_options',
+        $cap,
         'cff-top',
         'cff_settings_page'
     );
@@ -26,11 +28,13 @@ function cff_menu() {
 add_action('admin_menu', 'cff_menu');
 //Add styling page
 function cff_styling_menu() {
+	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
     add_submenu_page(
         'cff-top',
         'Customize',
         'Customize',
-        'manage_options',
+        $cap,
         'cff-style',
         'cff_style_page'
     );
@@ -38,7 +42,7 @@ function cff_styling_menu() {
 		'cff-top',
 		__( 'About Us', 'custom-facebook-feed' ),
 		__( 'About Us', 'custom-facebook-feed' ),
-		'manage_options',
+		$cap,
 		'cff-about',
 		'cff_about_page'
 	);
@@ -4047,7 +4051,7 @@ function cff_style_page() {
                     </tr>
 
                     <tr>
-                        <th class="bump-left"><label for="cff_enable_email_report" class="bump-left"><?php _e("Feed issue email report", 'instagram-feed'); ?></label></th>
+                        <th class="bump-left"><label for="cff_enable_email_report" class="bump-left"><?php _e("Feed issue email report", 'custom-facebook-feed'); ?></label></th>
                         <td>
                             <input name="cff_enable_email_report" type="checkbox" id="cff_enable_email_report" <?php if($cff_enable_email_report == 'on') echo "checked"; ?> />
                             <label for="cff_enable_email_report"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
@@ -4105,6 +4109,28 @@ function cff_style_page() {
                                 </div>
                             </div>
 
+                        </td>
+                    </tr>
+
+                    <tr>
+	                    <?php
+	                    $usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => cff_is_pro_version() ) );
+
+	                    if ( isset( $_POST['cff_email_notification_addresses'] ) ) {
+		                    $usage_tracking['enabled'] = false;
+		                    if ( isset( $_POST['cff_usage_tracking_enable'] ) ) {
+			                    $usage_tracking['enabled'] = true;
+		                    }
+		                    update_option( 'cff_usage_tracking', $usage_tracking, false );
+	                    }
+	                    $cff_usage_tracking_enable = isset( $usage_tracking['enabled'] ) ? $usage_tracking['enabled'] : true;
+	                    ?>
+                        <th class="bump-left"><label class="bump-left"><?php _e("Enable Usage Tracking", 'custom-facebook-feed'); ?></label></th>
+                        <td>
+                            <input name="cff_usage_tracking_enable" type="checkbox" id="cff_usage_tracking_enable" <?php if( $cff_usage_tracking_enable ) echo "checked"; ?> />
+                            <label for="cff_usage_tracking_enable"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What is usage tracking?', 'custom-facebook-feed'); ?></a>
+                            <p class="cff-tooltip"><?php _e("Understanding how you are using the plugin allows us to further improve it. The plugin will send a report in the background once per week which includes information about your plugin settings and statistics about your site, which we can use to help improve the features which matter most to you and improve your experience using the plugin. The plugin will never collect any sensitive information like access tokens, email addresses, or user information, and sending this data won't slow down your site at all. For more information,", 'custom-facebook-feed'); ?> <a href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/" target="_blank"><?php _e("see here", 'custom-facebook-feed'); ?></a>.</p>
                         </td>
                     </tr>
                 
@@ -4711,5 +4737,56 @@ function cff_admin_hide_unrelated_notices() {
 }
 add_action( 'admin_print_scripts', 'cff_admin_hide_unrelated_notices' );
 
+function cff_free_add_caps() {
+	global $wp_roles;
 
+	$wp_roles->add_cap( 'administrator', 'manage_custom_facebook_feed_options' );
+
+}
+add_action( 'admin_init', 'cff_free_add_caps', 90 );
+
+/* Usage */
+add_action( 'admin_notices', 'cff_usage_opt_in' );
+function cff_usage_opt_in() {
+	$cap = current_user_can( 'manage_instagram_feed_options' ) ? 'manage_instagram_feed_options' : 'manage_options';
+
+	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+    if ( ! current_user_can( $cap ) ) {
+        return;
+    }
+	$usage_tracking = get_option( 'cff_usage_tracking', false );
+	if ( $usage_tracking ) {
+	    return;
+    }
 ?>
+    <div class="notice notice-warning is-dismissible cff-admin-notice">
+
+        <p>
+            <strong><?php echo __( 'Help us improve the Custom Facebook Feed plugin', 'custom-facebook-feed' ); ?></strong><br>
+	        <?php echo __( 'Understanding how you are using the plugin allows us to further improve it. Opt-in below to agree to send a weekly report of plugin usage data.', 'custom-facebook-feed' ); ?>
+            <a target="_blank" rel="noopener noreferrer" href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/"><?php echo __( 'More information', 'custom-facebook-feed' ); ?></a>
+        </p>
+        <p>
+            <button class="button button-primary cff-opt-in"><?php echo __( 'Yes, I\'d like to help', 'custom-facebook-feed' ); ?></button>
+            <button class="cff-no-usage-opt-out cff-space-left button button-secondary"><?php echo __( 'No, thanks', 'custom-facebook-feed' ); ?></button>
+        </p>
+
+    </div>
+
+<?php
+}
+
+function cff_usage_opt_in_or_out() {
+	if ( ! isset( $_POST['opted_in'] ) ) {
+		die ( 'You did not do this the right way!' );
+	}
+
+	$usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
+
+	$usage_tracking['enabled'] = isset( $_POST['opted_in'] ) ? $_POST['opted_in'] === 'true' : false;
+
+	update_option( 'cff_usage_tracking', $usage_tracking, false );
+
+	die();
+}
+add_action( 'wp_ajax_cff_usage_opt_in_or_out', 'cff_usage_opt_in_or_out' );

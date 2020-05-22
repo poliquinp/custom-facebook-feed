@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.14.1
+Version: 2.14.2
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.14.1');
+define('CFFVER', '2.14.2');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -89,6 +89,8 @@ function cff_check_for_db_updates() {
 add_action( 'wp_loaded', 'cff_check_for_db_updates' );
 
 function cff_plugin_init() {
+	include_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/class-cff-tracking.php';
+
 	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-error-reporter.php';
 	global $cff_error_reporter;
 	$cff_error_reporter = new CFF_Error_Reporter();
@@ -1158,13 +1160,14 @@ function display_cff($atts) {
             
             if($FBdata == null) $cff_content .= '<b>Error:</b> Server configuration issue';
             if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= '<b>Error:</b> No posts available for this Facebook ID';
-
-            if (current_user_can('manage_options')) {
+	        $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	        $cap = apply_filters( 'cff_settings_pages_capability', $cap );
+            if (current_user_can($cap)) {
 	            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
             }
             $cff_content .= '</div></div>'; //End .cff-error-msg and #cff-error-reason
             //Only display errors to admins
-            if( current_user_can( 'manage_options' ) ){
+            if( current_user_can( $cap ) ){
                 $cff_content .= '<style>#cff .cff-error-msg{ display: block !important; }</style>';
             }
         }
@@ -2653,6 +2656,17 @@ function cff_activate() {
 	if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
 		cff_schedule_report_email();
 	}
+	// set usage tracking to false if fresh install.
+	$usage_tracking = get_option( 'cff_usage_tracking', false );
+
+	if ( ! is_array( $usage_tracking ) ) {
+		$usage_tracking = array(
+			'enabled' => false,
+			'last_send' => 0
+		);
+
+		update_option( 'cff_usage_tracking', $usage_tracking, false );
+	}
 }
 register_activation_hook( __FILE__, 'cff_activate' );
 
@@ -2699,6 +2713,13 @@ function cff_uninstall()
     delete_option('cff_style_settings');
 
 	wp_clear_scheduled_hook( 'cff_feed_issue_email' );
+
+	delete_option( 'cff_usage_tracking_config' );
+	delete_option( 'cff_usage_tracking' );
+
+	global $wp_roles;
+	$wp_roles->remove_cap( 'administrator', 'manage_custom_facebook_feed_options' );
+	wp_clear_scheduled_hook( 'cff_usage_tracking_cron' );
 }
 register_uninstall_hook( __FILE__, 'cff_uninstall' );
 add_action( 'wp_head', 'cff_custom_css' );
@@ -2745,6 +2766,10 @@ function cff_js() {
     if( !empty($cff_custom_js) ) echo "\r\n";
     echo '</script>';
     echo "\r\n";
+}
+
+function cff_is_pro_version() {
+	return defined( 'CFFWELCOME_VER' );
 }
 
 

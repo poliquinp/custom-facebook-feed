@@ -777,6 +777,38 @@ jQuery(document).ready(function($) {
 		jQuery('#wpcontent').css('padding', 0);
 	}
 
+	$('.cff-opt-in').click(function(event) {
+		event.preventDefault();
+
+		var $btn = jQuery(this);
+		$btn.prop( 'disabled', true ).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+		cffSubmitOptIn(true);
+	}); // clear_comment_cache click
+
+	$('.cff-no-usage-opt-out').click(function(event) {
+		event.preventDefault();
+
+		var $btn = jQuery(this);
+		$btn.prop( 'disabled', true ).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
+
+		cffSubmitOptIn(false);
+	}); // clear_comment_cache click
+
+	function cffSubmitOptIn(choice) {
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'cff_usage_opt_in_or_out',
+				opted_in: choice,
+			},
+			success : function(data) {
+				$('.cff-no-usage-opt-out').closest('.cff-admin-notice').fadeOut();
+			}
+		}); // ajax call
+	}
+
 });
 
 

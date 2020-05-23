@@ -4119,7 +4119,14 @@ function cff_style_page() {
 	                    if ( isset( $_POST['cff_email_notification_addresses'] ) ) {
 		                    $usage_tracking['enabled'] = false;
 		                    if ( isset( $_POST['cff_usage_tracking_enable'] ) ) {
-			                    $usage_tracking['enabled'] = true;
+		                        if ( ! is_array( $usage_tracking ) ) {
+                                    $usage_tracking = array(
+                                        'enabled' => true,
+                                        'last_send' => 0,
+                                    );
+		                        } else {
+		                            $usage_tracking['enabled'] = true;
+		                        }
 		                    }
 		                    update_option( 'cff_usage_tracking', $usage_tracking, false );
 	                    }

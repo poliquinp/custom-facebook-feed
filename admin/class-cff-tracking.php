@@ -485,7 +485,7 @@ class CFF_Tracking {
 		$data['themename']     = $theme_data->Name;
 		$data['themeversion']  = $theme_data->Version;
 		$data['settings']      = array();
-		$data['pro']           = (int) cff_is_pro_version();
+		$data['pro']           = cff_is_pro_version() ? '1' : '';
 		$data['sites']         = $count_b;
 		$data['usagetracking'] = get_option( 'cff_usage_tracking_config', false );
 		$num_users = function_exists( 'count_users' ) ? count_users() : 'Not Set';
@@ -593,7 +593,10 @@ class CFF_Tracking {
 		) );
 
 		// If we have completed successfully, recheck in 1 week
-		$usage_tracking['last_send'] = time();
+		$usage_tracking = array(
+			'enabled' => true,
+			'last_send' => time(),
+		);
 		update_option( 'cff_usage_tracking', $usage_tracking, false );
 		return true;
 	}
@@ -637,4 +640,4 @@ class CFF_Tracking {
 		return $schedules;
 	}
 }
-new CFF_Tracking();
+//new CFF_Tracking();

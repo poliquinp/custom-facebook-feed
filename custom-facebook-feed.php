@@ -1718,7 +1718,9 @@ function display_cff($atts) {
                     //Add the message
                     if($cff_show_text) $post_text .= $post_text_message;
 
-                    //If it's a shared video post then add the video name after the post text above the video description so it's all one chunk
+	                $post_text = apply_filters( 'cff_post_text', $post_text );
+
+	                //If it's a shared video post then add the video name after the post text above the video description so it's all one chunk
                     if ($cff_post_type == 'video'){
                         if( !empty($cff_description) && $cff_description != '' ){
                             if( (!empty($post_text) && $post_text != '') && !empty($cff_video_name) ) $post_text .= '<br /><br />';

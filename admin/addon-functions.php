@@ -12,7 +12,7 @@ function cff_deactivate_addon() {
 	check_ajax_referer( 'cff-admin', 'nonce' );
 
 	// Check for permissions.
-	if ( ! current_user_can( 'manage_instagram_feed_options' ) ) {
+	if ( ! current_user_can( 'manage_custom_facebook_feed_options' ) ) {
 		wp_send_json_error();
 	}
 

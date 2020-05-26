@@ -4755,7 +4755,7 @@ add_action( 'admin_init', 'cff_free_add_caps', 90 );
 /* Usage */
 add_action( 'admin_notices', 'cff_usage_opt_in' );
 function cff_usage_opt_in() {
-	$cap = current_user_can( 'manage_instagram_feed_options' ) ? 'manage_instagram_feed_options' : 'manage_options';
+	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
 
 	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
     if ( ! current_user_can( $cap ) ) {

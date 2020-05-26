@@ -317,7 +317,7 @@ function display_cff($atts) {
         'headericoncolor' => isset($options[ 'cff_header_icon_color' ]) ? $options[ 'cff_header_icon_color' ] : '',
         'headericonsize' => isset($options[ 'cff_header_icon_size' ]) ? $options[ 'cff_header_icon_size' ] : '',
         'headerinc' => '',
-        'headerexc' => '',
+        'headerexclude' => '',
 
         'videoheight' => isset($options[ 'cff_video_height' ]) ? $options[ 'cff_video_height' ] : '',
         'videoaction' => isset($options[ 'cff_video_action' ]) ? $options[ 'cff_video_action' ] : '',
@@ -1043,14 +1043,14 @@ function display_cff($atts) {
 		$header_details = cff_get_set_cache( $header_details_json_url, $transient_name, $cff_cache_time, WEEK_IN_SECONDS, '', false, $access_token );
 		$header_details = json_decode( $header_details );
 
-		if ( ! empty( $atts['headerinc'] ) || ! empty( $atts['headerexc'] ) ) {
+		if ( ! empty( $atts['headerinc'] ) || ! empty( $atts['headerexclude'] ) ) {
 			if ( ! empty( $atts['headerinc'] ) ) {
 				$header_inc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerinc'] ) ) );
 				$cff_header_cover = in_array( 'cover', $header_inc, true );
 				$cff_header_name  = in_array( 'name', $header_inc, true );
 				$cff_header_bio   = in_array( 'about', $header_inc, true );
 			} else {
-				$header_exc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerinc'] ) ) );
+				$header_exc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerexclude'] ) ) );
 				$cff_header_cover = ! in_array( 'cover', $header_exc, true );
 				$cff_header_name  = ! in_array( 'name', $header_exc, true );
 				$cff_header_bio   = ! in_array( 'about', $header_exc, true );

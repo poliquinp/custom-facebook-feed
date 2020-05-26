@@ -1004,7 +1004,7 @@ function display_cff($atts) {
 
 	$cff_header_type = strtolower( $atts['headertype'] );
 
-
+    $cff_header = '';
 
 	if ($cff_header_type !== "visual") {
 		$cff_header_text = stripslashes( $atts['headertext'] );
@@ -1115,14 +1115,14 @@ function display_cff($atts) {
 	//***START FEED***
     $cff_content = '';
 
+    //Create CFF container HTML
+    $cff_content .= '<div class="cff-wrapper">';
+
     //Add the page header to the outside of the top of feed
     if ($cff_show_header && $cff_header_outside) $cff_content .= $cff_header;
 
     //Add like box to the outside of the top of feed
     if ($cff_like_box_position == 'top' && $cff_show_like_box && $cff_like_box_outside) $cff_content .= $like_box;
-
-    //Create CFF container HTML
-    $cff_content .= '<div class="cff-wrapper">';
 
     $cff_content .= '<div id="cff" data-char="'.$title_limit.'"';
 

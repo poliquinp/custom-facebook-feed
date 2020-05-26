@@ -688,6 +688,15 @@
   #cff.cff-width-resp{
     width: 100% !important;
   }
+  .cff-wrapper .cff-visual-header .cff-header-img img {
+    width: 80px;
+  }
+  .cff-wrapper .cff-visual-header.cff-has-name .cff-header-text {
+    margin-left: 95px;
+  }
+  .cff-wrapper .cff-visual-header.cff-has-cover.cff-has-name .cff-header-text {
+    margin-left: 105px;
+  }
 }
 
 /* Stops emojis from floating to the left of sentences */

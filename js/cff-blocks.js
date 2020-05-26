@@ -60,14 +60,45 @@ window.cffmetatrans = false;
                     noNewChanges: true,
                 })
             }
+
+            function cffGutenbergSizeVisualHeader() {
+                jQuery('.cff-visual-header.cff-has-cover').each(function() {
+                    var wrapperHeight = jQuery(this).find('.cff-header-hero').innerHeight(),
+                        imageHeight = jQuery(this).find('.cff-header-hero img').innerHeight(),
+                        wrapperWidth = jQuery(this).find('.cff-header-hero').innerWidth(),
+                        imageWidth = jQuery(this).find('.cff-header-hero img').innerWidth(),
+                        wrapperAspect = wrapperWidth/wrapperHeight,
+                        imageAspect = imageWidth/imageHeight,
+                        width = wrapperAspect < imageAspect ? wrapperHeight * imageAspect + 'px' : '100%',
+                        difference = imageHeight - wrapperHeight,
+                        topMargin = Math.max(0,Math.round(difference/2)),
+                        leftMargin = width !== '100%' ? Math.max(0,Math.round(((wrapperHeight * imageAspect)-wrapperWidth)/2)) : 0;
+                    jQuery(this).find('.cff-header-hero img').css({
+                        'opacity' : 1,
+                        'display' : 'block',
+                        'visibility' : 'visible',
+                        'max-width' : 'none',
+                        'max-height' : 'none',
+                        'margin-top' : - topMargin + 'px',
+                        'margin-left' : - leftMargin + 'px',
+                        'width' : width,
+                    });
+                });
+            }
+
             function afterRender() {
+                jQuery(window).resize(function () {
+                    setTimeout(function(){
+                        cffGutenbergSizeVisualHeader();
+                    }, 500);
+                });
                 var executed = false;
                 // no way to run a script after AJAX call to get feed so we just try to execute it on a few intervals
-                setTimeout(function() { if (typeof cff_init !== 'undefined' && !executed) {executed = true;cff_init();}},1000);
-                setTimeout(function() { if (typeof cff_init !== 'undefined' && !executed) {executed = true;cff_init();}},2000);
-                setTimeout(function() { if (typeof cff_init !== 'undefined' && !executed) {executed = true;cff_init();}},3000);
-                setTimeout(function() { if (typeof cff_init !== 'undefined' && !executed) {executed = true;cff_init();}},5000);
-                setTimeout(function() { if (typeof cff_init !== 'undefined' && !executed) {executed = true;cff_init();}},10000);
+                setTimeout(function() { if (typeof cffGutenbergSizeVisualHeader !== 'undefined' && !executed) {cffGutenbergSizeVisualHeader();}},1000);
+                setTimeout(function() { if (typeof cffGutenbergSizeVisualHeader !== 'undefined' && !executed) {cffGutenbergSizeVisualHeader();}},2000);
+                setTimeout(function() { if (typeof cffGutenbergSizeVisualHeader !== 'undefined' && !executed) {cffGutenbergSizeVisualHeader();}},3000);
+                setTimeout(function() { if (typeof cffGutenbergSizeVisualHeader !== 'undefined' && !executed) {cffGutenbergSizeVisualHeader();}},5000);
+                setTimeout(function() { if (typeof cffGutenbergSizeVisualHeader !== 'undefined' && !executed) {cffGutenbergSizeVisualHeader();}},10000);
             }
 
             var jsx = [React.createElement(InspectorControls, {

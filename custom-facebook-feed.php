@@ -2717,6 +2717,10 @@ function cff_uninstall()
 	delete_option( 'cff_usage_tracking_config' );
 	delete_option( 'cff_usage_tracking' );
 
+	delete_option( 'cff_statuses' );
+	delete_option( 'cff_rating_notice' );
+	delete_option( 'cff_db_version' );
+
 	global $wp_roles;
 	$wp_roles->remove_cap( 'administrator', 'manage_custom_facebook_feed_options' );
 	wp_clear_scheduled_hook( 'cff_usage_tracking_cron' );

@@ -640,4 +640,4 @@ class CFF_Tracking {
 		return $schedules;
 	}
 }
-//new CFF_Tracking();
+new CFF_Tracking();

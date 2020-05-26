@@ -84,10 +84,12 @@ function cff_settings_page() {
 
     //Timezone
     $defaults = array(
-        'cff_timezone' => 'America/Chicago'
+        'cff_timezone' => 'America/Chicago',
+        'cff_num_mobile' => ''
     );
     $options = wp_parse_args(get_option('cff_style_settings'), $defaults);
     $cff_timezone = $options[ 'cff_timezone' ];
+    $cff_num_mobile = $options[ 'cff_num_mobile' ];
 
 
     //Check nonce before saving data
@@ -103,6 +105,7 @@ function cff_settings_page() {
             isset( $_POST[ $cff_connected_accounts ] ) ? $cff_connected_accounts_val = $_POST[ $cff_connected_accounts ] : $cff_connected_accounts_val = '';
             isset( $_POST[ $cff_page_type ] ) ? $cff_page_type_val = sanitize_text_field( $_POST[ $cff_page_type ] ) : $cff_page_type_val = '';
             isset( $_POST[ $num_show ] ) ? $num_show_val = sanitize_text_field( $_POST[ $num_show ] ) : $num_show_val = '';
+            isset( $_POST[ 'cff_num_mobile' ] ) ? $cff_num_mobile = sanitize_text_field( $_POST[ 'cff_num_mobile' ] ) : $cff_num_mobile = '';
             isset( $_POST[ $cff_post_limit ] ) ? $cff_post_limit_val = sanitize_text_field( $_POST[ $cff_post_limit ] ) : $cff_post_limit_val = '';
             isset( $_POST[ $cff_show_others ] ) ? $cff_show_others_val = sanitize_text_field( $_POST[ $cff_show_others ] ) : $cff_show_others_val = '';
             isset( $_POST[ $cff_cache_time ] ) ? $cff_cache_time_val = sanitize_text_field( $_POST[ $cff_cache_time ] ) : $cff_cache_time_val = '';
@@ -125,6 +128,7 @@ function cff_settings_page() {
             update_option( $cff_locale, $cff_locale_val );
 
             $options[ 'cff_timezone' ] = $cff_timezone;
+            $options[ 'cff_num_mobile' ] = $cff_num_mobile;
             update_option( 'cff_style_settings', $options );
             
             //Delete ALL transients
@@ -547,11 +551,23 @@ function cff_settings_page() {
                     </tr>
 
                     <tr valign="top">
-                        <th scope="row"><label><?php _e('Number of posts to display', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> num
-                        Eg: num=5</code></th>
+                        <th scope="row"><label><?php _e('Number of posts to display', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> num, nummobile
+                        Eg: num=5
+                        nummobile=3</code></th>
                         <td>
                             <input name="cff_num_show" type="text" value="<?php esc_attr_e( $num_show_val, 'custom-facebook-feed' ); ?>" size="4" />
                             <i style="color: #666; font-size: 11px;">Max 100</i>
+                            <div style="margin: 8px 0 0 1px; font-size: 12px;">
+                                <input type="checkbox" name="cff_show_num_mobile" id="cff_show_num_mobile" <?php if(! empty( $cff_num_mobile )) echo 'checked="checked"' ?> />&nbsp;<label for="cff_show_num_mobile"><?php _e('Show different number for mobile'); ?></label>
+                                <div class="cff-mobile-col-settings">
+                                    <div class="cff-row">
+                                        <label title="Click for shortcode option"><?php _e('Mobile Number', 'custom-facebook-feed'); ?>:</label><code class="cff_shortcode"> nummobile
+                                        Eg: nummobile=4</code>
+                                        <input type="text" name="cff_num_mobile" id="cff_num_mobile" size="4" value="<?php echo esc_attr( $cff_num_mobile ); ?>">
+                                        <i style="color: #666; font-size: 11px;"><?php _e('Leave blank for default', 'custom-facebook-feed'); ?></i>
+                                    </div>
+                                </div>
+                            </div>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -3818,6 +3834,7 @@ function cff_style_page() {
                             <span><i style="color: #666; font-size: 11px; margin-left: 5px;"><?php _e('25 max'); ?></i></span>
                             <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
                             <p class="cff-tooltip cff-more-info"><?php _e('The number of comments to show initially when the comments box is expanded.'); ?></p>
+
                         </td>
                     </tr>
                     <tr valign="top" class="cff-pro">

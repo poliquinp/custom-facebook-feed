@@ -195,6 +195,18 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+	function cffToggleNummobile() {
+		if (jQuery('#cff_show_num_mobile').is(':checked')) {
+			jQuery('#cff_show_num_mobile').closest('td').find('.cff-mobile-col-settings').slideDown();
+		} else {
+			jQuery('#cff_show_num_mobile').closest('td').find('.cff-mobile-col-settings').slideUp(function(){
+				jQuery('#cff_num_mobile').val('');
+			});
+		}
+	}
+	cffToggleNummobile();
+	jQuery('#cff_show_num_mobile').change(cffToggleNummobile);
+
 	//Facebook login
 	$('#cff_fb_login').on('click', function(){
 		$('#cff_fb_login_modal').show();

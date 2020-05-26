@@ -726,3 +726,8 @@
     position: relative !important;
     top: auto !important;
 }
+
+/* Num Mobile Hiding */
+.cff-num-diff-hide {
+  display: none !important;
+}

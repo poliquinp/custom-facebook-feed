@@ -201,6 +201,9 @@ function display_cff($atts) {
         'colsmobile' => isset($options[ 'cff_cols_mobile' ]) ? $options[ 'cff_cols_mobile' ] : '',
         'colsjs' => true,
 
+	    //Mobile settings
+        'nummobile' => isset($options[ 'cff_num_mobile' ]) ? max( 0, (int)$options[ 'cff_num_mobile' ] ) : '',
+
         //Post Style
         'poststyle' => isset($options[ 'cff_post_style' ]) ? $options[ 'cff_post_style' ] : '',
         'postbgcolor' => isset($options[ 'cff_post_bg_color' ]) ? $options[ 'cff_post_bg_color' ] : '',
@@ -915,6 +918,14 @@ function display_cff($atts) {
 
     $cff_post_limit = $atts['limit'];
 
+	// If Mobile and Desktop post nums are not the same, use minnum for API requests.
+	$mobile_num = isset( $atts['nummobile'] ) && (int)$atts['nummobile'] > 0 ? (int)$atts['nummobile'] : 0;
+	$desk_num = $show_posts;
+	if ( $desk_num < $mobile_num ) {
+		$feed_options['minnum'] = $mobile_num;
+	}
+	$show_posts = isset( $atts['minnum'] ) ? $atts['minnum'] : $show_posts;
+
     //If the limit isn't set then set it to be 7 more than the number of posts defined
     if ( isset($cff_post_limit) && $cff_post_limit !== '' ) {
         $cff_post_limit = $cff_post_limit;
@@ -1012,7 +1023,7 @@ function display_cff($atts) {
         $cff_post_limit = 1;
     }
 
-    //***START FEED***
+	//***START FEED***
     $cff_content = '';
 
     //Add the page header to the outside of the top of feed
@@ -1023,7 +1034,15 @@ function display_cff($atts) {
 
     //Create CFF container HTML
     $cff_content .= '<div class="cff-wrapper">';
+
     $cff_content .= '<div id="cff" data-char="'.$title_limit.'"';
+
+    // mobile num attribute
+	$mobile_num = isset( $atts['nummobile'] ) && (int)$atts['nummobile'] !== (int)$atts['num'] ? (int)$atts['nummobile'] : false;
+	if ( $mobile_num ) {
+		$cff_content .= ' data-nummobile="'.$mobile_num.'"';
+		$cff_content .= ' data-pag-num="'.(int)$atts['num'].'"';
+	}
 
     //Disable default CSS styles?
     $cff_disable_styles = $atts['disablestyles'];

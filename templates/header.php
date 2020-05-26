@@ -3,7 +3,7 @@
  * Custom Facebook Feed Header Template
  * Adds account information and an avatar to the top of the feed
  *
- * @version 3.13 Custom Facebook Feed Pro by Smash Balloon
+ * @version 2.15 Custom Facebook Feed by Smash Balloon
  *
  */
 

@@ -328,7 +328,7 @@ if(!cff_js_exists){
 					'width' : width,
 				});
 			});
-		}cffSizeVisualHeader();
+		}setTimeout(cffSizeVisualHeader, 200);
 
 		jQuery(window).resize(function () {
 			setTimeout(function(){

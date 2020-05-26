@@ -72,6 +72,27 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+	//Header Type Selection
+	var cff_header_type = jQuery('.cff-header-type select').val(),
+		$cff_facebook_header_options = jQuery('.cff-facebook-header'),
+		$cff_text_header_options = jQuery('.cff-text-header');
+
+	//Should we show anything initially?
+	if(cff_header_type !== 'visual') $cff_facebook_header_options.hide();
+	if(cff_header_type !== 'text') $cff_text_header_options.hide();
+
+	//When Header type is changed show the relevant item
+	jQuery('.cff-header-type').change(function(){
+		cff_header_type = jQuery('.cff-header-type select').val();
+
+		if( cff_header_type !== 'visual' ) {
+			$cff_facebook_header_options.hide();
+			$cff_text_header_options.show();
+		} else {
+			$cff_facebook_header_options.show();
+			$cff_text_header_options.hide();
+		}
+	});
 
 	//Header icon
 	//Icon type

@@ -305,6 +305,36 @@ if(!cff_js_exists){
 			}
 		});
 
+		function cffSizeVisualHeader() {
+			jQuery('.cff-visual-header.cff-has-cover').each(function() {
+				var wrapperHeight = jQuery(this).find('.cff-header-hero').innerHeight(),
+					imageHeight = jQuery(this).find('.cff-header-hero img').innerHeight(),
+					wrapperWidth = jQuery(this).find('.cff-header-hero').innerWidth(),
+					imageWidth = jQuery(this).find('.cff-header-hero img').innerWidth(),
+					wrapperAspect = wrapperWidth/wrapperHeight,
+					imageAspect = imageWidth/imageHeight,
+					width = wrapperAspect < imageAspect ? wrapperHeight * imageAspect + 'px' : '100%',
+					difference = imageHeight - wrapperHeight,
+					topMargin = Math.max(0,Math.round(difference/2)),
+					leftMargin = width !== '100%' ? Math.max(0,Math.round(((wrapperHeight * imageAspect)-wrapperWidth)/2)) : 0;
+				jQuery(this).find('.cff-header-hero img').css({
+					'opacity' : 1,
+					'display' : 'block',
+					'visibility' : 'visible',
+					'max-width' : 'none',
+					'max-height' : 'none',
+					'margin-top' : - topMargin + 'px',
+					'margin-left' : - leftMargin + 'px',
+					'width' : width,
+				});
+			});
+		}cffSizeVisualHeader();
+
+		jQuery(window).resize(function () {
+			setTimeout(function(){
+				cffSizeVisualHeader();
+			}, 500);
+		});
 	}
 	cff_init();
 

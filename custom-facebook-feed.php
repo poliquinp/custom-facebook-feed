@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.14.2
+Version: 2.15
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.14.2');
+define('CFFVER', '2.15');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -90,6 +90,7 @@ add_action( 'wp_loaded', 'cff_check_for_db_updates' );
 
 function cff_plugin_init() {
 	include_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/class-cff-tracking.php';
+	include_once trailingslashit( CFF_PLUGIN_DIR ) . 'inc/class-cff-parse.php';
 
 	require_once trailingslashit( CFF_PLUGIN_DIR ) . 'class-cff-error-reporter.php';
 	global $cff_error_reporter;
@@ -300,6 +301,12 @@ function display_cff($atts) {
         //Page Header
         'showheader' => isset($options[ 'cff_show_header' ]) ? $options[ 'cff_show_header' ] : '',
         'headeroutside' => isset($options[ 'cff_header_outside' ]) ? $options[ 'cff_header_outside' ] : '',
+        'headertype' => isset($options[ 'cff_header_type' ]) ? $options[ 'cff_header_type' ] : '',
+        'headercover' => isset($options[ 'cff_header_cover' ]) ? $options[ 'cff_header_cover' ] : '',
+        'headeravatar' => isset($options[ 'cff_header_avatar' ]) ? $options[ 'cff_header_avatar' ] : '',
+        'headername' => isset($options[ 'cff_header_name' ]) ? $options[ 'cff_header_name' ] : '',
+        'headerbio' => isset($options[ 'cff_header_bio' ]) ? $options[ 'cff_header_bio' ] : '',
+        'headercoverheight' => isset($options[ 'cff_header_cover_height' ]) ? $options[ 'cff_header_cover_height' ] : '',
         'headertext' => isset($options[ 'cff_header_text' ]) ? $options[ 'cff_header_text' ] : '',
         'headerbg' => isset($options[ 'cff_header_bg_color' ]) ? $options[ 'cff_header_bg_color' ] : '',
         'headerpadding' => isset($options[ 'cff_header_padding' ]) ? $options[ 'cff_header_padding' ] : '',
@@ -993,22 +1000,102 @@ function display_cff($atts) {
     $cff_header_outside = $atts['headeroutside'];
     ($cff_header_outside == 'true' || $cff_header_outside == 'on') ? $cff_header_outside = true : $cff_header_outside = false;
 
-    $cff_header_text = stripslashes( $atts['headertext'] );
-    $cff_header_icon = $atts['headericon'];
-    $cff_header_icon_color = $atts['headericoncolor'];
-    $cff_header_icon_size = $atts['headericonsize'];
+	$cff_header_type = strtolower( $atts['headertype'] );
 
-    $cff_header = '<h3 class="cff-header';
-    if ($cff_header_outside) $cff_header .= ' cff-outside';
-    $cff_header .= '" ' . $cff_header_styles . '>';
-    $cff_header .= '<span class="fa fab fa-' . $cff_header_icon . '"';
-    if(!empty($cff_header_icon_color) || !empty($cff_header_icon_size)) $cff_header .= ' style="';
-    if(!empty($cff_header_icon_color)) $cff_header .= 'color: #' . str_replace('#', '', $cff_header_icon_color) . ';';
-    if(!empty($cff_header_icon_size)) $cff_header .= ' font-size: ' . $cff_header_icon_size . 'px;';
-    if(!empty($cff_header_icon_color) || !empty($cff_header_icon_size))$cff_header .= '"';
-    $cff_header .= ' aria-hidden="true"></span>';
-    $cff_header .= '<span class="header-text" style="height: '.$cff_header_icon_size.'px;">' . $cff_header_text . '</span>';
-    $cff_header .= '</h3>';
+
+
+	if ($cff_header_type !== "visual") {
+		$cff_header_text = stripslashes( $atts['headertext'] );
+		$cff_header_icon = $atts['headericon'];
+		$cff_header_icon_color = $atts['headericoncolor'];
+		$cff_header_icon_size = $atts['headericonsize'];
+
+		$cff_header = '<h3 class="cff-header';
+		if ($cff_header_outside) $cff_header .= ' cff-outside';
+		$cff_header .= '" ' . $cff_header_styles . '>';
+		$cff_header .= '<span class="fa fab fa-' . $cff_header_icon . '"';
+		if(!empty($cff_header_icon_color) || !empty($cff_header_icon_size)) $cff_header .= ' style="';
+		if(!empty($cff_header_icon_color)) $cff_header .= 'color: #' . str_replace('#', '', $cff_header_icon_color) . ';';
+		if(!empty($cff_header_icon_size)) $cff_header .= ' font-size: ' . $cff_header_icon_size . 'px;';
+		if(!empty($cff_header_icon_color) || !empty($cff_header_icon_size))$cff_header .= '"';
+		$cff_header .= ' aria-hidden="true"></span>';
+		$cff_header .= '<span class="header-text" style="height: '.$cff_header_icon_size.'px;">' . $cff_header_text . '</span>';
+		$cff_header .= '</h3>';
+	} else {
+
+		// Get Values for API call
+		$access_token   = $atts['accesstoken'];
+		$page_id        = $atts['id'];
+		$cff_cache_time = $atts['cachetime'];
+
+		// Create Transient Name
+		$transient_name = 'cff_header_' . $page_id;
+		$transient_name = substr( $transient_name, 0, 45 );
+
+		//These fields only apply to pages
+		! $cff_is_group ? $page_only_fields = ',fan_count,about' : $page_only_fields = '';
+
+		$header_details_json_url = 'https://graph.facebook.com/v4.0/' . $page_id . '?fields=id,picture.height(150).width(150),cover,name,link' . $page_only_fields . '&access_token=' . $access_token;
+
+		//Get the data
+		$header_details = cff_get_set_cache( $header_details_json_url, $transient_name, $cff_cache_time, WEEK_IN_SECONDS, '', false, $access_token );
+		$header_details = json_decode( $header_details );
+
+		if ( ! empty( $atts['headerinc'] ) || ! empty( $atts['headerexc'] ) ) {
+			if ( ! empty( $atts['headerinc'] ) ) {
+				$header_inc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerinc'] ) ) );
+				$cff_header_cover = in_array( 'cover', $header_inc, true );
+				$cff_header_name  = in_array( 'name', $header_inc, true );
+				$cff_header_bio   = in_array( 'about', $header_inc, true );
+			} else {
+				$header_exc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerinc'] ) ) );
+				$cff_header_cover = ! in_array( 'cover', $header_exc, true );
+				$cff_header_name  = ! in_array( 'name', $header_exc, true );
+				$cff_header_bio   = ! in_array( 'about', $header_exc, true );
+			}
+
+		} else {
+			$cff_header_cover = $atts['headercover'];
+			( $cff_header_cover == 'true' || $cff_header_cover == 'on' ) ? $cff_header_cover = true : $cff_header_cover = false;
+
+			$cff_header_name = $atts['headername'];
+			( $cff_header_name == 'true' || $cff_header_name == 'on' ) ? $cff_header_name = true : $cff_header_name = false;
+
+			$cff_header_bio = $atts['headerbio'];
+			( $cff_header_bio == 'true' || $cff_header_bio == 'on' ) ? $cff_header_bio = true : $cff_header_bio = false;
+		}
+		$cff_header_cover_height = ! empty( $atts['headercoverheight'] ) ? (int)$atts['headercoverheight'] : 300;
+
+		// Facebook Header Output
+		$header_style_attribute = '';
+		$header_styles          = array();
+
+		( ! empty( $cff_header_text_size ) && $cff_header_text_size != 'inherit' ) ? $cff_header_text_size = $cff_header_text_size : $cff_header_text_size = '';
+		if ( ! empty( $cff_header_text_weight ) && $cff_header_text_weight != 'inherit' ) {
+			$header_styles['font-weight'] = $cff_header_text_weight;
+		}
+		if ( ! empty( $cff_header_text_color ) && $cff_header_text_color !== '#' ) {
+			$header_styles['color'] = '#' . str_replace( '#', '', $cff_header_text_color );
+		}
+
+		if ( ! empty( $header_styles ) ) {
+			$header_style_attribute = ' style="';
+			foreach ( $header_styles as $property => $value ) {
+				$header_style_attribute .= $property . ': ' . esc_attr( $value ) . ';';
+			}
+			$header_style_attribute .= '"';
+		}
+
+		$header_data = $header_details;
+
+		//If there's not API error then display the header
+		if ( ! isset( $header_details->error ) ) {
+			ob_start();
+			include trailingslashit( CFF_PLUGIN_DIR ) . 'templates/header.php';
+			$cff_header = ob_get_contents();
+			ob_get_clean();
+		}
+	}
 
     //Misc Settings
     $cff_nofollow = $atts['nofollow'];
@@ -2796,6 +2883,104 @@ function cff_js() {
 function cff_is_pro_version() {
 	return defined( 'CFFWELCOME_VER' );
 }
+
+function cff_get_set_cache($cff_posts_json_url, $transient_name, $cff_cache_time, $cache_seconds, $data_att_html, $cff_show_access_token, $access_token, $backup=false) {
+
+	if( $cff_show_access_token && strlen($access_token) > 130 ){
+		//If using a Page Access Token then set caching time to be minimum of 1 minutes
+		if( $cache_seconds < 60 || !isset($cache_seconds) ) $cache_seconds = 60;
+	} else {
+		//Set caching time to be minimum of 30 minutes
+		if( $cache_seconds < 1800 || !isset($cache_seconds) ) $cache_seconds = 1800;
+
+		//Temporarily increase default caching time to be 3 hours
+		if( $cache_seconds == 3600 ) $cache_seconds = 10800;
+	}
+
+	//Don't use caching if the cache time is set to zero
+	if ($cff_cache_time != 0){
+
+		// Get any existing copy of our transient data
+		if ( false === ( $posts_json = get_transient( $transient_name ) ) || $posts_json === null ) {
+
+			//Get the contents of the Facebook page
+			$posts_json = cff_fetchUrl($cff_posts_json_url);
+
+			//Check whether any data is returned from the API. If it isn't then don't cache the error response and instead keep checking the API on every page load until data is returned.
+			$FBdata = json_decode($posts_json);
+
+			//Check whether the JSON is wrapped in a "data" property as if it doesn't then it's a featured post
+			$prefix_data = '{"data":';
+			(substr($posts_json, 0, strlen($prefix_data)) == $prefix_data) ? $cff_featured_post = false : $cff_featured_post = true;
+
+			//Add API URL to beginning of JSON array
+			$prefix = '{';
+			if (substr($posts_json, 0, strlen($prefix)) == $prefix) $posts_json = substr($posts_json, strlen($prefix));
+
+			//Encode and replace quotes so can be stored as a string
+			$data_att_html = str_replace( '"', '&quot;', json_encode($data_att_html) );
+			$posts_json = '{"api_url":"'.$cff_posts_json_url.'", "shortcode_options":"'.$data_att_html.'", ' . $posts_json;
+
+			//If it's a featured post then it doesn't contain 'data'
+			( $cff_featured_post ) ? $FBdata = $FBdata : $FBdata = $FBdata->data;
+
+			//Check the API response
+			if( !empty($FBdata) ) {
+
+				//Error returned by API
+				if( isset($FBdata->error) ){
+
+					//Cache the error JSON so doesn't keep making repeated requests
+					//See if a backup cache exists
+					if ( false !== get_transient( '!cff_backup_' . $transient_name ) ) {
+
+						$posts_json = get_transient( '!cff_backup_' . $transient_name );
+
+						//Add error message to backup cache so can be displayed at top of feed
+						isset( $FBdata->error->message ) ? $error_message = $FBdata->error->message : $error_message = '';
+						isset( $FBdata->error->type ) ? $error_type = $FBdata->error->type : $error_type = '';
+						$prefix = '{';
+						if (substr($posts_json, 0, strlen($prefix)) == $prefix) $posts_json = substr($posts_json, strlen($prefix));
+						$posts_json = '{"cached_error": { "message": "'.$error_message.'", "type": "'.$error_type.'" }, ' . $posts_json;
+					}
+
+					//Posts data returned by API
+				} else {
+
+					//If a backup should be created for this data then create one
+					if( $backup ){
+						set_transient( '!cff_backup_' . $transient_name, $posts_json, YEAR_IN_SECONDS );
+					}
+				}
+
+				//Set regular cache
+				set_transient( $transient_name, $posts_json, $cache_seconds );
+
+			}
+
+		} else {
+
+			$posts_json = get_transient( $transient_name );
+
+			if( strpos($posts_json, '"error":{"message":') !== false && false !== get_transient( '!cff_backup_' . $transient_name ) ){
+				//Use backup cache if exists
+				$posts_json = get_transient( '!cff_backup_' . $transient_name );
+			}
+
+			//If we can't find the transient then fall back to just getting the json from the api
+			if ($posts_json == false){
+				$posts_json = cff_fetchUrl($cff_posts_json_url);
+			}
+		}
+
+	} else {
+		$posts_json = cff_fetchUrl($cff_posts_json_url);
+
+	}
+
+	return $posts_json;
+
+} //End cff_get_set_cache
 
 
 

@@ -15,7 +15,7 @@
   padding: 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
-  box-sizing: border-box;  
+  box-sizing: border-box;
 }
 /* Individual post item */
 #cff .cff-item{
@@ -64,6 +64,151 @@
 .cff-header svg{
   margin: 0 10px 0 0;
   padding: 0;
+}
+/***************
+ Custom FB Header
+ ***************/
+.cff-visual-header {
+  margin-bottom: 24px !important;
+}
+/* Cover and like counter */
+.cff-visual-header .cff-header-hero {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+.cff-visual-header .cff-header-hero img{
+  width: 100%;
+  display: none;
+}
+.cff-visual-header .cff-likes-box {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px;
+  background: #eee;
+  line-height: 1;
+  border-radius: 2px;
+  color: #445790;
+}
+.cff-visual-header .cff-likes-box .cff-square-logo {
+  float: left;
+  display: inline-block;
+  line-height: 0;
+}
+.cff-visual-header .cff-likes-box .cff-square-logo svg {
+  width: 18px;
+  vertical-align: top;
+}
+.cff-visual-header .cff-likes-box .cff-likes-count {
+  float: left;
+  display: inline-block;
+  margin-left: 8px;
+  vertical-align: top;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+/* Avatar and text */
+.cff-visual-header .cff-header-inner-wrap {
+  position: relative;
+  display: block;
+  text-decoration: none !important;
+}
+.cff-visual-header .cff-header-inner-wrap a {
+  color: inherit !important;
+  border: 0;
+}
+.cff-visual-header .cff-header-img img {
+  display: block;
+  width: 100px;
+  border-radius: 3px;
+  padding: 0;
+  margin: 0;
+}
+.cff-visual-header.cff-has-cover .cff-header-img img {
+  border: 2px solid #fff;
+}
+.cff-visual-header .cff-header-img {
+  position: absolute;
+  display: inline-block;
+  line-height: 1;
+}
+.cff-visual-header.cff-has-cover .cff-header-img {
+  top: -25px;
+  left: 10px;
+}
+
+.cff-visual-header .cff-header-text {
+  display: inline-block;
+  float: left;
+  margin: 20px 0 0 120px;
+}
+#cff .cff-visual-header .cff-header-text h3,
+.cff-visual-header .cff-header-text h3{
+  display: inline-block;
+  width: auto;
+  margin: 0 8px 0 0;
+  padding: 0;
+  font-size: 1.2em;
+  line-height: 1.2em;
+}
+.cff-visual-header .cff-header-text{
+  padding-top: 10px;
+  margin: 0;
+}
+.cff-visual-header.cff-has-name {
+  min-height: 100px;
+}
+.cff-visual-header.cff-has-cover.cff-has-name .cff-header-text {
+  min-height: 75px;
+}
+.cff-visual-header.cff-has-name .cff-header-text {
+  margin-left: 120px;
+}
+.cff-visual-header.cff-has-cover.cff-has-name .cff-header-text{
+  margin-left: 125px;
+}
+.cff-visual-header.cff-has-name .cff-header-text{
+  padding-top: 30px;
+}
+.cff-visual-header.cff-has-name.cff-has-about .cff-header-text,
+.cff-visual-header.cff-has-name.cff-has-cover .cff-header-text{
+  padding-top: 10px;
+}
+#cff .cff-visual-header .cff-header-inner-wrap .cff-bio,
+.cff-visual-header .cff-header-inner-wrap .cff-bio {
+  display: block;
+  width: 100%;
+  clear: both;
+  margin: 3px 0 0 0;
+  padding: 0;
+  line-height: 1.2em;
+}
+.cff-visual-header .cff-header-name{
+  float: left;
+  padding: 0 5px 2px 0;
+}
+.cff-visual-header .cff-bio-info {
+  font-size: .9em;
+  line-height: 1.7;
+}
+.cff-visual-header .cff-bio-info svg {
+  width: 1em;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+.cff-posts-count svg {
+  padding-right: 3px;
+}
+
+.cff-header-text:after,
+.cff-header-inner-wrap:after{
+  display: table;
+  clear: both;
+  content: " ";
 }
 /******************/
 /*** TYPOGRAPHY ***/

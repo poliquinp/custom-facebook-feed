@@ -2501,3 +2501,18 @@
 	content: " ";
 	display: table
 }
+
+/* Visual header settings */
+.cff-header-options{
+	width: auto;
+	max-width: 500px;
+	padding: 10px 15px;
+	margin: 10px 0;
+	background: #f9f9f9;
+	background: rgba(255,255,255,0.8);
+	font-size: 13px;
+
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-radius: 8px;
+}

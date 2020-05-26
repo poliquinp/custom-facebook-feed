@@ -10,9 +10,10 @@ function cff_deactivate_addon() {
 
 	// Run a security check.
 	check_ajax_referer( 'cff-admin', 'nonce' );
-
+	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
 	// Check for permissions.
-	if ( ! current_user_can( 'manage_custom_facebook_feed_options' ) ) {
+	if ( ! current_user_can( $cap ) ) {
 		wp_send_json_error();
 	}
 

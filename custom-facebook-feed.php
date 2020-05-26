@@ -2408,13 +2408,17 @@ function cff_fetchUrl($url){
 
 			return $feedData;
 		} else {
-			cff_log_fb_error( $feedData, $url );
+			if ( strpos( $url, '&limit=' ) !== false ) {
+				cff_log_fb_error( $feedData, $url );
+			}
 
 			return $feedData;
 		}
 
 	} else {
-		cff_log_wp_error( $response, $url );
+		if ( strpos( $url, '&limit=' ) !== false ) {
+			cff_log_wp_error( $response, $url );
+		}
 
 		return '{}';
 	}

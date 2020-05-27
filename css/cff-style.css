@@ -195,6 +195,7 @@
   line-height: 1.7;
 }
 .cff-visual-header .cff-bio-info svg {
+  display: inline-block;
   width: 1em;
   vertical-align: middle;
   position: relative;

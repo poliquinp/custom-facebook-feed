@@ -4418,6 +4418,34 @@ function cff_admin_scripts() {
 			'cff_nonce' => wp_create_nonce( 'cff_nonce' )
 		)
 	);
+	$strings = array(
+		'addon_activate'                  => esc_html__( 'Activate', 'custom-facebook-feed' ),
+		'addon_activated'                 => esc_html__( 'Activated', 'custom-facebook-feed' ),
+		'addon_active'                    => esc_html__( 'Active', 'custom-facebook-feed' ),
+		'addon_deactivate'                => esc_html__( 'Deactivate', 'custom-facebook-feed' ),
+		'addon_inactive'                  => esc_html__( 'Inactive', 'custom-facebook-feed' ),
+		'addon_install'                   => esc_html__( 'Install Addon', 'custom-facebook-feed' ),
+		'addon_error'                     => esc_html__( 'Could not install addon. Please download from smashballoon.com and install manually.', 'custom-facebook-feed' ),
+		'plugin_error'                    => esc_html__( 'Could not install a plugin. Please download from WordPress.org and install manually.', 'custom-facebook-feed' ),
+		'addon_search'                    => esc_html__( 'Searching Addons', 'custom-facebook-feed' ),
+		'ajax_url'                        => admin_url( 'admin-ajax.php' ),
+		'cancel'                          => esc_html__( 'Cancel', 'custom-facebook-feed' ),
+		'close'                           => esc_html__( 'Close', 'custom-facebook-feed' ),
+		'nonce'                           => wp_create_nonce( 'cff-admin' ),
+		'almost_done'                     => esc_html__( 'Almost Done', 'custom-facebook-feed' ),
+		'oops'                            => esc_html__( 'Oops!', 'custom-facebook-feed' ),
+		'ok'                              => esc_html__( 'OK', 'custom-facebook-feed' ),
+		'plugin_install_activate_btn'     => esc_html__( 'Install and Activate', 'custom-facebook-feed' ),
+		'plugin_install_activate_confirm' => esc_html__( 'needs to be installed and activated to import its forms. Would you like us to install and activate it for you?', 'custom-facebook-feed' ),
+		'plugin_activate_btn'             => esc_html__( 'Activate', 'custom-facebook-feed' ),
+	);
+	$strings = apply_filters( 'cff_admin_strings', $strings );
+
+	wp_localize_script(
+		'cff_admin_script',
+		'cff_admin',
+		$strings
+	);
 
     if( !wp_script_is('jquery-ui-draggable') ) { 
         wp_enqueue_script(

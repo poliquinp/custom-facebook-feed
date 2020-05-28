@@ -255,6 +255,7 @@ The most common reason for this is that an add-on or extension you have installe
 == Changelog ==
 = 2.15.1 =
 * Fix: Usage tracking opt-in notice was not dismissing as expected for some sites.
+* Fix: Disabled about page plugin installation if using a version of WordPress earlier than 4.6.
 
 = 2.15 =
 * New: Added a new visual header option which displays the cover photo, avatar, page name, bio, and number of likes from your Facebook page at the top of your feeds. To enable the header, go to Facebook Feed > Customize > General > Header > Header Type > Visual.

@@ -105,7 +105,8 @@ function cff_plugin_init() {
 	if ( is_admin() ) {
 		require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/class-cff-about.php';
 
-		if ( version_compare( PHP_VERSION,  '5.3.0' ) >= 0 ) {
+		if ( version_compare( PHP_VERSION,  '5.3.0' ) >= 0
+		     && version_compare( get_bloginfo('version'), '4.6' , '>' ) ) {
 			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/addon-functions.php';
 			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/PluginSilentUpgrader.php';
 			require_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/PluginSilentUpgraderSkin.php';

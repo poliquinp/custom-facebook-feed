@@ -287,10 +287,7 @@ class CFF_About {
 	 * @since 1.5.8
 	 */
 	protected function output_about_addons() {
-		if(version_compare(get_bloginfo('version'),'3.5', '>=') )
-			echo 'Wordpress Version same or above 3.5';
-		else
-			echo 'Wordpress Version below 3.5';
+
 		if ( ! current_user_can( 'manage_custom_facebook_feed_options' )
              || version_compare( PHP_VERSION,  '5.3.0' ) <= 0
 		     || version_compare( get_bloginfo('version'), '4.6' , '<' ) ){

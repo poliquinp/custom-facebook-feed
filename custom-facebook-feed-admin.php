@@ -4412,7 +4412,7 @@ add_action( 'admin_enqueue_scripts', 'cff_admin_style' );
 //Enqueue admin scripts
 function cff_admin_scripts() {
     //Declare color-picker as a dependency
-    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', CFFVER );
+    wp_enqueue_script( 'cff_admin_script', plugin_dir_url( __FILE__ ) . 'js/cff-admin-scripts.js', false,CFFVER );
 	wp_localize_script( 'cff_admin_script', 'cffA', array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 			'cff_nonce' => wp_create_nonce( 'cff_nonce' )
@@ -4852,6 +4852,17 @@ add_action( 'admin_init', 'cff_free_add_caps', 90 );
 /* Usage */
 add_action( 'admin_notices', 'cff_usage_opt_in' );
 function cff_usage_opt_in() {
+
+    if ( isset( $_GET['trackingdismiss'] ) ) {
+        $usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
+
+        $usage_tracking['enabled'] = false;
+
+        update_option( 'cff_usage_tracking', $usage_tracking, false );
+
+        return;
+    }
+
 	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
 
 	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
@@ -4871,8 +4882,8 @@ function cff_usage_opt_in() {
             <a target="_blank" rel="noopener noreferrer" href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/"><?php echo __( 'More information', 'custom-facebook-feed' ); ?></a>
         </p>
         <p>
-            <button class="button button-primary cff-opt-in"><?php echo __( 'Yes, I\'d like to help', 'custom-facebook-feed' ); ?></button>
-            <button class="cff-no-usage-opt-out cff-space-left button button-secondary"><?php echo __( 'No, thanks', 'custom-facebook-feed' ); ?></button>
+            <a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="button button-primary cff-opt-in"><?php echo __( 'Yes, I\'d like to help', 'custom-facebook-feed' ); ?></a>
+            <a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="cff-no-usage-opt-out cff-space-left button button-secondary"><?php echo __( 'No, thanks', 'custom-facebook-feed' ); ?></a>
         </p>
 
     </div>

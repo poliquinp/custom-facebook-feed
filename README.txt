@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook wall, Facebook page, Cus
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.4
-Stable tag: 2.15
+Stable tag: 2.15.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -253,6 +253,9 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.15.1 =
+* Fix: Usage tracking opt-in notice was not dismissing as expected for some sites.
+
 = 2.15 =
 * New: Added a new visual header option which displays the cover photo, avatar, page name, bio, and number of likes from your Facebook page at the top of your feeds. To enable the header, go to Facebook Feed > Customize > General > Header > Header Type > Visual.
 * New: To help us improve the plugin we've added the ability to opt-in to usage tracking so that we can understand what features and settings are being used, and which features matter to you the most. This is disabled by default and will only be enabled if you explictly choose to opt in. If opted in, the plugin will send a report in the background once per week with your plugin settings and basic information about your website environment. No personal or sensitive data is collected (such as email addresses, Instagram account information, license keys, etc). To enable or disable usage tracking at a later date use the setting at: Instagram Feed > Customize > Advanced > Misc > Enable Usage Tracking. See [here](https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/) for more information.

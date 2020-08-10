@@ -8,11 +8,11 @@ Stable tag: 2.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Formerly "Custom Facebook Feed". Display completely customizable Facebook feeds of any public Facebook page or Group.
+Formerly "Custom Facebook Feed". Display completely customizable Facebook feeds of a Facebook page or Group.
 
 == Description ==
 
-Display Facebook posts on your WordPress site. **Completely customizable**, **responsive** and **search engine crawlable** Facebook feeds. Display **unlimited Facebook feeds** from **any public Facebook page** or your **Facebook Group**, and completely match the look and feel of your site with tons of customization options!
+Display Facebook posts on your WordPress site. **Completely customizable**, **responsive** and **search engine crawlable** Facebook feeds. Display **unlimited Facebook feeds** from your **Facebook page** or **Facebook Group**, and completely match the look and feel of your site with tons of customization options!
 
 *"The perfect Facebook plugin with amazing support! What else do you want? Get it!"* - [JoeJeffries](http://wordpress.org/support/topic/you-dont-already-have-this?facebook)
 
@@ -24,8 +24,8 @@ Display Facebook posts on your WordPress site. **Completely customizable**, **re
 **Super Simple to Set Up**
 One of our main priorities has always been to make our Facebook plugin as easy as possible to setup and use. Get up and running in less less than 1 minute with our signature quick setup - no Facebook Developer App required.
 
-**Display Feeds from ANY Facebook Page or Your Facebook Group**
-Use the plugin to display Facebook feeds from any public Facebook page - even pages you aren't an admin of - or from any Facebook group that you are an admin of.
+**Display Feeds from Your Facebook Page or Facebook Group**
+Use the plugin to display Facebook feeds from a Facebook page or Facebook group that you are an admin of.
 
 **Completely Customizable**
 By default the Facebook feed will adopt the styles of your WordPress theme, but your feeds can be completely customized to look however you like - with tons of options to customize every part of your Facebook posts and feed.

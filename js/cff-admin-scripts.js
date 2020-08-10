@@ -12,6 +12,70 @@ jQuery(document).ready(function($) {
 	});
 
 
+	//The "cff_ppca_access_token_invalid" transient is set if the access token doesn't match the ID specified. Use an Ajax call to check whether that transient is set, and if so, then displays a notice under the access token field. This used so we don't need to make an API call every time the page loads. It stores the value in this transient and checks it via ajax.
+	$.ajax({
+		url : cffA.ajax_url,
+		type : 'get',
+		data : {
+			action : 'cff_ppca_token_check_flag'
+		},
+		success : function(data) {
+			if( data ) $('.cff-ppca-check-notice.cff-error').show();
+		},
+		error : function(e)  {
+			console.log(e);
+		}
+	});
+
+	//If no transient exists (eg. after the settings are saved) then check the API to see whether the ID and token match
+	if( typeof jQuery('#cff_access_token').attr('data-check-ppca') !== 'undefined' ){
+
+		var page_id = $('#cff-admin #cff_page_id').val(),
+			access_token =  $('#cff-admin #cff_access_token').val();
+
+		if( page_id.indexOf(',') == -1 && access_token.indexOf(',') == -1 ){
+			var ppca_check_url = 'https://graph.facebook.com/v8.0/'+page_id+'/posts?limit=1&access_token='+access_token;
+
+			$.ajax({
+		        url: ppca_check_url,
+		        type: 'GET',
+		        dataType: "jsonp",
+		        cache: false,
+		        success: function(data) {
+		        	if (typeof data.error !== 'undefined') {
+		        		if( data.error.message.indexOf('Public Content') !== -1 ){
+		        			//If the API response shows a PPCA error then show the notice below the access token field
+		        			$('.cff-ppca-check-notice.cff-error').show();
+
+		        			//Store the API response in a transient which is then checked above on line 29
+		        			$.ajax({
+								url : cffA.ajax_url,
+								type : 'post',
+								data : {
+									action : 'cff_ppca_token_set_flag'
+								},
+								success : function(data) {
+									//Access token transient set
+								},
+								error : function(e)  {
+									console.log(e);
+								}
+							});
+		        		}
+		        	} else {
+		        		//If the API response shows a good token then display a success notice instead
+		        		$('#cff-admin #cff_access_token').after('<div class="cff-ppca-check-notice cff-success" style="display: block;"><i class="fa fa-check-circle"></i>&nbsp; Valid Access Token</div>');
+		        	}
+		        },
+		        error: function(xhr,textStatus,e) {
+		        	console.log(e);
+
+		            return;
+		        }
+		    }); //End ajax
+		}
+	}
+
 	//Is this a page, group or profile?
 	var cff_page_type = jQuery('.cff-page-type select').val(),
 		$cff_page_type_options = jQuery('.cff-page-options'),
@@ -501,7 +565,7 @@ jQuery(document).ready(function($) {
                         '</div>' +
                         '<div class="cff_ca_shortcode">' +
                             '<p>Copy and paste this shortcode into your page or widget area:<br>' +
-                                '<code>[custom-facebook-feed account="'+id+'"]</code>' +
+                                '<code>[custom-facebook-feed account="'+id+'" pagetype="'+pagetype+'"]</code>' +
                             '</p>';
                         if( cff_multifeed_enabled ) accountsHTML += '<p>To add multiple accounts in the same feed, simply separate them using commas:<br>' +
 								'<code>[custom-facebook-feed account="'+id+', account_2, account_3"]</code>' +

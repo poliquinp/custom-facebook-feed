@@ -653,6 +653,11 @@
 #cff .cff-error-msg p{
   float: none;
 }
+#cff .cff-error-msg .cff_notice_dismiss{
+  position: absolute;
+  top: 4px;
+  right: 8px;
+}
 #cff #cff-error-reason{
   display: none;
   padding: 5px 0 0 0;

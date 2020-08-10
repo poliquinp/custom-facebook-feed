@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.15.1
+Version: 2.16
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.15.1');
+define('CFFVER', '2.16');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -83,7 +83,7 @@ function cff_check_for_db_updates() {
 		}
 
 
-		update_option( 'sbi_db_version', CFF_DBVERSION );
+		update_option( 'cff_db_version', CFF_DBVERSION );
 	}
 }
 add_action( 'wp_loaded', 'cff_check_for_db_updates' );
@@ -1240,8 +1240,29 @@ function display_cff($atts) {
         //Interpret data with JSON
         $FBdata = json_decode($posts_json);
 
+        global $current_user;
+        $user_id = $current_user->ID;
+
+        // Use this to show notice again
+        // delete_user_meta($user_id, 'cff_ppca_check_notice_dismiss');
+
+        //Check to see whether this feed will have a PPCA error come Sep 4. If so, display a warning notice.
+        $cff_ppca_check_error = false;
+        if( ! get_user_meta($user_id, 'cff_ppca_check_notice_dismiss') ){            
+            $cff_posts_json_url = 'https://graph.facebook.com/v8.0/'.$page_id.'/posts?limit=1&access_token='.$access_token;
+            $transient_name = 'cff_ppca_' . substr($page_id, 0, 5) . substr($page_id, strlen($page_id)-5, 5) . '_' . substr($access_token, 15, 10);
+            $cff_cache_time = 1;
+            $cache_seconds = YEAR_IN_SECONDS;
+            $cff_ppca_check = cff_get_set_cache($cff_posts_json_url, $transient_name, $cff_cache_time, $cache_seconds, '', true, $access_token, $backup=false);
+            $cff_ppca_check_json = json_decode($cff_ppca_check);
+
+            if( isset( $cff_ppca_check_json->error ) && strpos($cff_ppca_check_json->error->message, 'Public Content Access') !== false ){
+                $cff_ppca_check_error = true;
+            }
+        }
+
         //If there's no data then show a pretty error message
-        if( empty($FBdata->data) || isset($FBdata->cached_error) ) {
+        if( empty($FBdata->data) || isset($FBdata->cached_error) || $cff_ppca_check_error ) {
 
             //Check whether it's an error in the backup cache
             if( isset($FBdata->cached_error) ) $FBdata->error = $FBdata->cached_error;
@@ -1252,29 +1273,61 @@ function display_cff($atts) {
                 $FBdata->error->type = $FBdata->error->code = $FBdata->error->error_subcode = NULL;
             }
 
-            $cff_content .= '<div class="cff-error-msg">';
-            $cff_content .= '<p><b>This message is only visible to admins.</b><br />';
-            $cff_content .= '<p>Problem displaying Facebook posts.';
-            if( isset($FBdata->cached_error) ) $cff_content .= ' Backup cache in use.';
-            $cff_content .= '<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()">Click to show error</a>';
-            $cff_content .= '<script type="text/javascript">function cffShowError() { document.getElementById("cff-error-reason").style.display = "block"; document.getElementById("cff-show-error").style.display = "none"; }</script>';
-            $cff_content .= '</p><div id="cff-error-reason">';
-            
-            if( isset($FBdata->error->message) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error->message;
-            if( isset($FBdata->error->type) ) $cff_content .= '<br /><b>Type:</b> ' . $FBdata->error->type;
-            if( isset($FBdata->error->error_subcode) ) $cff_content .= '<br />Subcode: ' . $FBdata->error->error_subcode;
+            //Is it a PPCA error from the API?
+            $cff_ppca_error = false;
+            if ( isset($FBdata->error->message) && strpos($FBdata->error->message, 'Public Content Access') !== false ) $cff_ppca_error = true;
 
-            if( isset($FBdata->error_msg) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error_msg;
-            if( isset($FBdata->error_code) ) $cff_content .= '<br />Code: ' . $FBdata->error_code;
+            $cff_content .= '<div class="cff-error-msg">';
+            $cff_content .= '<p><i class="fa fa-lock" aria-hidden="true" style="margin-right: 5px;"></i><b>This message is only visible to admins.</b><br />';
+            if( !$cff_ppca_check_error ) $cff_content .= '<p>Problem displaying Facebook posts.';
+            if( isset($FBdata->cached_error) ) $cff_content .= ' Backup cache in use.';
             
-            if($FBdata == null) $cff_content .= '<b>Error:</b> Server configuration issue';
-            if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= '<b>Error:</b> No posts available for this Facebook ID';
-	        $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
-	        $cap = apply_filters( 'cff_settings_pages_capability', $cap );
-            if (current_user_can($cap)) {
-	            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
+            
+
+            $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+            $cap = apply_filters( 'cff_settings_pages_capability', $cap );
+
+            if( $cff_ppca_check_error || $cff_ppca_error ){
+
+                $cff_content .= '</p>';
+
+                if( $cff_ppca_error ){
+                    $cff_content .= '<b>PPCA Error:</b> Due to Facebook API changes it is no longer possible to display a feed from a Facebook Page you are not an admin of. The Facebook feed below is not using a valid Access Token for this Facebook page and so has stopped updating.';
+                } else {
+                    $cff_content .= "<a class='cff_notice_dismiss' href='" .esc_url( add_query_arg( 'cff_ppca_check_notice_dismiss', '0' ) ). "'><span class='fa fa-times-circle' aria-hidden='true'></span></a></section>";
+                    $cff_content .= '<b class="cff-warning-notice">PPCA Error:</b> Due to Facebook API changes on September 4, 2020, it will no longer be possible to display a feed from a Facebook Page you are not an admin of. The Facebook feed below is not using a valid Access Token for this Facebook page and so will stop updating after this date.';
+                }
+
+                if ( current_user_can( $cap ) ) {
+                    $cff_content .= '<br /><b style="margin-top: 5px; display: inline-block;">Action Required:</b> Please <a href="https://smashballoon.com/facebook-ppca-error-notice/" target="_blank">see here</a> for information on how to fix this.';
+                }
+
+            } else {
+
+                $cff_content .= '<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()">Click to show error</a>';
+                $cff_content .= '<script type="text/javascript">function cffShowError() { document.getElementById("cff-error-reason").style.display = "block"; document.getElementById("cff-show-error").style.display = "none"; }</script>';
+
+                $cff_content .= '</p><div id="cff-error-reason">';
+            
+                if( isset($FBdata->error->message) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error->message;
+                if( isset($FBdata->error->type) ) $cff_content .= '<br /><b>Type:</b> ' . $FBdata->error->type;
+                if( isset($FBdata->error->error_subcode) ) $cff_content .= '<br />Subcode: ' . $FBdata->error->error_subcode;
+
+                if( isset($FBdata->error_msg) ) $cff_content .= '<b>Error:</b> ' . $FBdata->error_msg;
+                if( isset($FBdata->error_code) ) $cff_content .= '<br />Code: ' . $FBdata->error_code;
+                
+                if($FBdata == null) $cff_content .= '<b>Error:</b> Server configuration issue';
+                if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ) $cff_content .= '<b>Error:</b> No posts available for this Facebook ID';
+
+                if (current_user_can($cap)) {
+    	            $cff_content .= '<br /><b>Solution:</b> <a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank">See here</a> for how to solve this error';
+                }
+
+                $cff_content .= '</div>'; //End #cff-error-reason
+
             }
-            $cff_content .= '</div></div>'; //End .cff-error-msg and #cff-error-reason
+
+            $cff_content .= '</div>'; //End .cff-error-msg
             //Only display errors to admins
             if( current_user_can( $cap ) ){
                 $cff_content .= '<style>#cff .cff-error-msg{ display: block !important; }</style>';
@@ -2117,12 +2170,18 @@ function display_cff($atts) {
                     //Link to the Facebook post if it's a link or a video
                     if($cff_post_type == 'link' || $cff_post_type == 'video') $link = "https://www.facebook.com/" . $page_id . "/posts/" . $PostID[1];
 
+                    //Remove "see more" text from post text so isn't included when shared
+                    $cff_post_text_to_share = '';
+                    if( strpos($cff_post_text, '<span class="cff-expand">') ){
+                        $cff_post_text_to_share = explode('<span class="cff-expand">', $cff_post_text)[0];
+                    }
+
                     //Social media sharing URLs
                     $cff_share_facebook = 'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($link);
                     $cff_share_twitter = 'https://twitter.com/intent/tweet?text=' . urlencode($link);
                     $cff_share_google = 'https://plus.google.com/share?url=' . urlencode($link);
-                    $cff_share_linkedin = 'https://www.linkedin.com/shareArticle?mini=true&amp;url=' . urlencode($link) . '&amp;title=' . rawurlencode( strip_tags($cff_post_text) );
-                    $cff_share_email = 'mailto:?subject=Facebook&amp;body=' . urlencode($link) . '%20-%20' . rawurlencode( strip_tags($cff_post_text) );
+                    $cff_share_linkedin = 'https://www.linkedin.com/shareArticle?mini=true&amp;url=' . urlencode($link) . '&amp;title=' . rawurlencode( strip_tags($cff_post_text_to_share) );
+                    $cff_share_email = 'mailto:?subject=Facebook&amp;body=' . urlencode($link) . '%20-%20' . rawurlencode( strip_tags($cff_post_text_to_share) );
 
                     //If it's a shared post then change the link to use the Post ID so that it links to the shared post and not the original post that's being shared
                     if( isset($news->status_type) ){
@@ -2354,7 +2413,11 @@ function cff_log_fb_error( $response, $url ) {
 	$response = json_decode( $response, true );
 	$api_error_code = $response['error']['code'];
 
-	if ( in_array( (int)$api_error_code, $access_token_refresh_errors, true ) ) {
+    //Page Public Content Access error
+    $ppca_error = false;
+    if( strpos($response['error']['message'], 'Public Content Access') !== false ) $ppca_error = true;
+
+	if ( in_array( (int)$api_error_code, $access_token_refresh_errors, true ) && !$ppca_error ) {
 		$pieces = explode( 'access_token=', $url );
 		$accesstoken_parts = isset( $pieces[1] ) ? explode( '&', $pieces[1] ) : 'none';
 		$accesstoken = $accesstoken_parts[0];
@@ -2378,6 +2441,16 @@ function cff_log_fb_error( $response, $url ) {
 		$public_message = __( 'Error connecting to the Facebook API.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
 		$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
 		$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
+
+        //Page Public Content Access admin error
+        if( $ppca_error ){
+            $api_error_number_message = false;
+            $admin_message = '<B>PPCA Error:</b> Due to Facebook API changes it is no longer possible to display a feed from a Facebook Page you are not an admin of. Please use the button below for more information on how to fix this.';
+            $public_message = __( 'Error connecting to the Facebook API.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
+            $frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
+            $backend_directions = '<a class="button button-primary" href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
+        }
+
 		$error = array(
 			'accesstoken' => 'none',
 			'public_message' => $public_message,
@@ -2885,6 +2958,15 @@ function cff_js() {
     if( !empty($cff_custom_js) ) echo "\r\n";
     echo '</script>';
     echo "\r\n";
+}
+
+add_action('init', 'cff_ppca_check_notice_dismiss');
+function cff_ppca_check_notice_dismiss() {
+    global $current_user;
+        $user_id = $current_user->ID;
+        if ( isset($_GET['cff_ppca_check_notice_dismiss']) && '0' == $_GET['cff_ppca_check_notice_dismiss'] ) {
+             add_user_meta($user_id, 'cff_ppca_check_notice_dismiss', 'true', true);
+    }
 }
 
 function cff_is_pro_version() {

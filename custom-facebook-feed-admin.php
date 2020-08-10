@@ -367,8 +367,8 @@ function cff_settings_page() {
 	                        global $cff_error_reporter;
 
 	                        $cff_error_reporter->remove_error( 'accesstoken' );
-                            echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook page below to get an Access Token.</p>';
-                            echo '<p class="cff-tokens-note">Note: This Access Token will allow you to display posts from <b style="font-weight: 900;">any</b> public Facebook page, not just the one selected.</p>';
+                            
+                            echo '<p class="cff-tokens-note"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i> Select a Facebook page below to connect it.</p>';
 
                             echo '<div class="cff-pages-wrap">';
                             foreach ( $pages_data_arr->data as $page => $page_data ) {
@@ -383,6 +383,7 @@ function cff_settings_page() {
                             $cff_use_token_text = 'Connect this page';
                             echo '<a href="JavaScript:void(0);" id="cff-insert-token" class="button button-primary" disabled="disabled">'.$cff_use_token_text.'</a>';
                             echo '<a href="JavaScript:void(0);" id="cff-insert-all-tokens" class="button button-secondary cff_connect_all">Connect All</a>';
+                            echo "<a href='https://smashballoon.com/facebook-pages-im-admin-of-arent-listed-after-authorizing-plugin/' target='_blank' class='cff-connection-note'>One of my pages isn't listed</a>";
 
                         }
 
@@ -446,9 +447,28 @@ function cff_settings_page() {
                     ?>
 
                     <tr valign="top">
+
+                        <?php
+                        //Check to see whether we've already checked the token against the API. If so, then don't do it again until the settings are saved which clears this transient.
+                        //This var is used to add an attr to the access token field below. If it's set then ana Ajax call is made in the admin JS file which checks the API to see if the token matches the ID.
+                        $cff_check_api_for_ppca = false;
+                        if( ! get_transient( 'cff_ppca_admin_token_check' ) ){
+                            $cff_check_api_for_ppca = true;
+                            set_transient( 'cff_ppca_admin_token_check', 1, YEAR_IN_SECONDS );
+                        }
+
+                        ?>
                         <th scope="row" style="padding-bottom: 10px;"><?php _e('Facebook Access Token', 'custom-facebook-feed'); ?><br /><i style="font-weight: normal; font-size: 12px; color: red;"><?php _e('Required', 'custom-facebook-feed'); ?></i></th>
                         <td>
-                            <textarea name="cff_access_token" id="cff_access_token" <?php if($cff_replace_token) echo 'class="cff-replace-token"' ?> style="min-width: 60%;" data-accesstoken="<?php esc_attr_e( $access_token_val ); ?>"><?php esc_attr_e( $access_token_val ); ?></textarea><br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
+                            <textarea name="cff_access_token" id="cff_access_token" <?php if($cff_replace_token) echo 'class="cff-replace-token"' ?> style="min-width: 60%;" data-accesstoken="<?php esc_attr_e( $access_token_val ); ?>" <?php if($cff_check_api_for_ppca) echo 'data-check-ppca="true"'; ?>><?php esc_attr_e( $access_token_val ); ?></textarea>
+
+                            <div class="cff-ppca-check-notice cff-error"><?php _e("<b>Important:</b> This Access Token does not match the Facebook ID used above. To check which Facebook Page this Access Token is for, <a href='https://smashballoon.com/checking-what-facebook-page-an-access-token-is-from/' target='_blank'>see here</a>.", 'custom-facebook-feed'); ?>
+
+                                <span style="display: block; padding-top: 4px;"><i class="fa fa-question-circle" aria-hidden="true"></i>&nbsp;<a class="cff-tooltip-link" style="margin:0;" href="JavaScript:void(0);"><?php _e("Why am I seeing this?"); ?></a></span>
+                                <p class="cff-tooltip cff-more-info"><?php _e("Due to <a href='https://smashballoon.com/facebook-api-changes-september-4-2020/' target='_blank'>Facebook API changes</a> on September 4, 2020, it is only possible to display Facebook feeds from a Facebook page you have admin permissions on. This Access Token doesn't appear to match the Facebook page specified above that you are trying to display a feed from. To troubleshoot this issue, please <a href='https://smashballoon.com/facebook-ppca-error-notice/' target='_blank'>see here</a>.", 'custom-facebook-feed'); ?></p>
+                            </div>
+
+                            <br /><a class="cff-tooltip-link" style="margin-left: 3px;" href="JavaScript:void(0);"><?php _e("What is this?", 'custom-facebook-feed'); ?></a>
                             <p class="cff-tooltip cff-more-info"><?php _e("In order to connect to Facebook and get a feed, you need to use an Access Token. To get one, simply use the blue button above to log into your Facebook account. You will then receive a token that will be used to connect to Facebook's API. If you already have an Access Token then you can enter it here.", 'custom-facebook-feed'); ?></p>
 
                             <div class="cff-notice cff-profile-error cff-access-token">
@@ -4489,6 +4509,70 @@ function cff_reset_log() {
 add_action( 'wp_ajax_cff_reset_log', 'cff_reset_log' );
 
 
+/* Display a notice regarding PPCA changes, which can be dismissed */
+add_action('admin_notices', 'cff_ppca_notice');
+function cff_ppca_notice() {
+
+    global $current_user;
+    $user_id = $current_user->ID;
+
+    $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+    $cap = apply_filters( 'cff_settings_pages_capability', $cap );
+    if( !current_user_can( $cap ) ) return;
+
+    // Use this to show notice again
+    // delete_user_meta($user_id, 'cff_ignore_ppca_notice');
+
+    /* Check whether it's an app token or if the user hasn't already clicked to ignore the message */
+    if( get_user_meta($user_id, 'cff_ignore_ppca_notice') ) return;
+
+    $page_id = get_option( 'cff_page_id' );
+    $cff_access_token = get_option( 'cff_access_token' );
+
+    if( $page_id && $cff_access_token ){
+
+        //Make a call to the API to see whether the ID and token are for the same Facebook page.
+        $cff_ppca_check_url = 'https://graph.facebook.com/v8.0/'.$page_id.'/posts?limit=1&access_token='.$cff_access_token;
+
+        //Store the response in a transient which is deleted and then reset if the settings are saved.
+        if ( ! get_transient( 'cff_ppca_admin_check' ) ) {
+            //Get the contents of the API response
+            $cff_ppca_admin_check_response = cff_fetchUrl($cff_ppca_check_url);
+            set_transient( 'cff_ppca_admin_check', $cff_ppca_admin_check_response, YEAR_IN_SECONDS );
+
+            $cff_ppca_admin_check_json = json_decode($cff_ppca_admin_check_response);
+        } else {
+            $cff_ppca_admin_check_response = get_transient( 'cff_ppca_admin_check' );
+            //If we can't find the transient then fall back to just getting the json from the api
+            if ($cff_ppca_admin_check_response == false) $cff_ppca_admin_check_response = cff_fetchUrl($cff_ppca_check_url);
+
+            $cff_ppca_admin_check_json = json_decode($cff_ppca_admin_check_response);
+        }
+
+        //If there's a PPCA error or it's a multifeed then display notice
+        if( ( isset($cff_ppca_admin_check_json->error->message) && strpos($cff_ppca_admin_check_json->error->message, 'Public Content Access') ) || strpos( $page_id, ',') != false ){
+            _e("
+            <div class='cff-admin-top-notice'>
+                <a class='cff-admin-notice-close' href='" .esc_url( add_query_arg( 'cff_nag_ppca_ignore', '0' ) ). "'>Don't show again<i class='fa fa-close' style='margin-left: 5px;'></i></a>
+                <p style='min-height: 22px;'><img src='" . plugins_url( 'img/fb-icon.png' , __FILE__ ) . "' style='float: left; width: 22px; height: 22px; margin-right: 12px; border-radius: 5px; box-shadow: 0 0 1px 0 #BA7B7B;'>
+                <b>Action required: PPCA Error.</b> <span style='margin-right: 10px;'>Due to Facebook API changes it is no longer possible to display feeds from Facebook Pages you are not an admin of. Please <a href='https://smashballoon.com/facebook-ppca-error-notice/' target='_blank'>see here</a> for more information.</span><a href='admin.php?page=cff-top' class='cff-admin-notice-button'>Go to Facebook Feed Settings</a></p>
+            </div>
+            ");
+        } 
+    }
+
+}
+//If PPCA notice is dismissed then don't show again
+add_action('admin_init', 'cff_nag_ppca_ignore');
+function cff_nag_ppca_ignore() {
+    global $current_user;
+        $user_id = $current_user->ID;
+        if ( isset($_GET['cff_nag_ppca_ignore']) && '0' == $_GET['cff_nag_ppca_ignore'] ) {
+             add_user_meta($user_id, 'cff_ignore_ppca_notice', 'true', true);
+    }
+}
+
+
 // Add a Settings link to the plugin on the Plugins page
 $cff_plugin_file = 'custom-facebook-feed/custom-facebook-feed.php';
 add_filter( "plugin_action_links_{$cff_plugin_file}", 'cff_add_settings_link', 10, 2 );
@@ -4933,3 +5017,22 @@ function cff_usage_opt_in_or_out() {
 	die();
 }
 add_action( 'wp_ajax_cff_usage_opt_in_or_out', 'cff_usage_opt_in_or_out' );
+
+//PPCA token checks
+function cff_ppca_token_check_flag() {
+    if( get_transient('cff_ppca_access_token_invalid') ){
+        print_r(true);
+    } else {
+        print_r(false);
+    }
+
+    die();
+}
+add_action( 'wp_ajax_cff_ppca_token_check_flag', 'cff_ppca_token_check_flag' );
+
+//Set the PPCA token transient. Is cleared when settings are saved.
+function cff_ppca_token_set_flag() {
+    set_transient('cff_ppca_access_token_invalid', true);
+    die();
+}
+add_action( 'wp_ajax_cff_ppca_token_set_flag', 'cff_ppca_token_set_flag' );

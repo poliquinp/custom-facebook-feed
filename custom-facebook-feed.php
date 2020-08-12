@@ -1294,7 +1294,7 @@ function display_cff($atts) {
                 if( $cff_ppca_error ){
                     $cff_content .= '<b>PPCA Error:</b> Due to Facebook API changes it is no longer possible to display a feed from a Facebook Page you are not an admin of. The Facebook feed below is not using a valid Access Token for this Facebook page and so has stopped updating.';
                 } else {
-                    $cff_content .= "<a class='cff_notice_dismiss' href='" .esc_url( add_query_arg( 'cff_ppca_check_notice_dismiss', '0' ) ). "'><span class='fa fa-times-circle' aria-hidden='true'></span></a></section>";
+                    $cff_content .= "<a class='cff_notice_dismiss' href='" .esc_url( add_query_arg( 'cff_ppca_check_notice_dismiss', '0' ) ). "'><span class='fa fa-times-circle' aria-hidden='true'></span></a>";
                     $cff_content .= '<b class="cff-warning-notice">PPCA Error:</b> Due to Facebook API changes on September 4, 2020, it will no longer be possible to display a feed from a Facebook Page you are not an admin of. The Facebook feed below is not using a valid Access Token for this Facebook page and so will stop updating after this date.';
                 }
 

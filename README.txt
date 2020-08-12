@@ -265,6 +265,7 @@ The most common reason for this is that an add-on or extension you have installe
 * Tweak: Added the "pagetype" setting to the shortcode when clicking the "Add to another feed" button on the Settings page to ensure it's set correctly
 * Fix: Fixed a minor compatibility issue with the upcoming WordPress 5.5 release
 * Fix: Removed the see more/less links from post text when using the email share link.
+* Fix: Removed a stray "section" closing tag which was causing a layout issue in some themes and inadvertently displayed the PPCA notice.
 
 = 2.15.1 =
 * Fix: The opt-in notice to help improve the plugin was not dismissing as expected for some sites due to the admin JavaScript file being cached by the browser.

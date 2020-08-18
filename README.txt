@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook group, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.2
 Tested up to: 5.5
-Stable tag: 2.16
+Stable tag: 2.16.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,11 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.16.1 =
+* Fix: Added a workaround for a Facebook API bug which sometimes displays a button in a post with the text "No Button".
+* Fix: Added an additional check when formatting the post text for the share link to prevent potential issues.
+* Fix: Fixed a typo in the "restrictedpage" shortcode option.
+
 = 2.16 =
 * Important: Due to upcoming Facebook API changes on September 4, 2020, it will only be possible to display feeds from Facebook pages which you are an admin of. If a PPCA Error notice is displayed above your feed then this change will affect one or more of your feeds. For more information about this change, please [see here](https://smashballoon.com/facebook-api-changes-september-4-2020/).
 * Tweak: Added the "pagetype" setting to the shortcode when clicking the "Add to another feed" button on the Settings page to ensure it's set correctly

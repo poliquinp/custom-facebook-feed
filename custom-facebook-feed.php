@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.16
+Version: 2.16.1
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -24,7 +24,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define('CFFVER', '2.16');
+define('CFFVER', '2.16.1');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
@@ -2031,7 +2031,9 @@ function display_cff($atts) {
                         }
 
                         isset($news->call_to_action->value->app_link) ? $cff_app_link = $news->call_to_action->value->app_link : $cff_app_link = '';
-                        $cff_post_text .= '<p class="cff-cta-link" '.$cff_title_styles.'><a href="'.$cff_cta_link.'" target="_blank" data-app-link="'.$cff_app_link.'" style="color: #'.$cff_posttext_link_color.';" '.$cff_nofollow_referrer.' >'.$cff_cta_button_text.'</a></p>';
+
+                        //Add the button to the post if the text isn't "NO_BUTTON"
+                        if( $cff_button_type != 'NO_BUTTON' ) $cff_post_text .= '<p class="cff-cta-link" '.$cff_title_styles.'><a href="'.$cff_cta_link.'" target="_blank" data-app-link="'.$cff_app_link.'" style="color: #'.$cff_posttext_link_color.';" '.$cff_nofollow_referrer.' >'.$cff_cta_button_text.'</a></p>';
                     }
 
                     //LINK

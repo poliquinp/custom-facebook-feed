@@ -4092,8 +4092,8 @@ function cff_style_page() {
                     </tr>
 
                     <tr>
-                        <th class="bump-left"><label class="bump-left"><?php _e('Is Facebook Page restricted?'); ?></label><code class="cff_shortcode"> restricedpage
-                        Eg: restricedpage=true</code></th>
+                        <th class="bump-left"><label class="bump-left"><?php _e('Is Facebook Page restricted?'); ?></label><code class="cff_shortcode"> restrictedpage
+                        Eg: restrictedpage=true</code></th>
                         <td>
                             <input name="cff_restricted_page" type="checkbox" id="cff_restricted_page" <?php if($cff_restricted_page == true) echo "checked"; ?> />
                             <label for="cff_ajax"><?php _e('Yes'); ?></label>

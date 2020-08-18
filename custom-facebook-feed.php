@@ -2172,8 +2172,9 @@ function display_cff($atts) {
 
                     //Remove "see more" text from post text so isn't included when shared
                     $cff_post_text_to_share = '';
-                    if( strpos($cff_post_text, '<span class="cff-expand">') ){
-                        $cff_post_text_to_share = explode('<span class="cff-expand">', $cff_post_text)[0];
+                    if( strpos($cff_post_text, '<span class="cff-expand">') !== false ){
+                        $cff_post_text_to_share = explode('<span class="cff-expand">', $cff_post_text);
+                        if( is_array($cff_post_text_to_share) ) $cff_post_text_to_share = $cff_post_text_to_share[0];
                     }
 
                     //Social media sharing URLs

@@ -803,16 +803,13 @@ function display_cff($atts) {
     $access_token = $atts['accesstoken'];
     $page_id = trim( $atts['id'] );
 
-
-
     //If an 'account' is specified then use that instead of the Page ID/token from the settings
     $cff_account = trim($atts['account']);
     if( !empty( $cff_account ) ){
         $cff_connected_accounts = get_option('cff_connected_accounts');
         if( !empty($cff_connected_accounts) ){
-
             $cff_connected_accounts = json_decode( str_replace('\"','"', $cff_connected_accounts) );
-            
+
             //Grab the ID and token from the connected accounts setting
             $page_id = $cff_connected_accounts->{ $cff_account }->{'id'};
             $access_token = $cff_connected_accounts->{ $cff_account }->{'accesstoken'};
@@ -1007,7 +1004,8 @@ function display_cff($atts) {
 
     $cff_header = '';
 
-	if ($cff_header_type !== "visual") {
+	if ($cff_header_type == "text") {
+    //Regular feed header
 		$cff_header_text = stripslashes( $atts['headertext'] );
 		$cff_header_icon = $atts['headericon'];
 		$cff_header_icon_color = $atts['headericoncolor'];
@@ -1024,81 +1022,79 @@ function display_cff($atts) {
 		$cff_header .= ' aria-hidden="true"></span>';
 		$cff_header .= '<span class="header-text" style="height: '.$cff_header_icon_size.'px;">' . $cff_header_text . '</span>';
 		$cff_header .= '</h3>';
-	} else {
+    }
 
-		// Get Values for API call
-		$access_token   = $atts['accesstoken'];
-		$page_id        = $atts['id'];
-		$cff_cache_time = $atts['cachetime'];
+    elseif ($cff_header_type == "visual" && $cff_show_header) {
 
-		// Create Transient Name
-		$transient_name = 'cff_header_' . $page_id;
-		$transient_name = substr( $transient_name, 0, 45 );
+	    // Create Transient Name
+	    $transient_name = 'cff_header_' . $page_id;
+	    $transient_name = substr($transient_name, 0, 45);
 
-		//These fields only apply to pages
-		! $cff_is_group ? $page_only_fields = ',fan_count,about' : $page_only_fields = '';
+        //These fields only apply to pages
+        !$cff_is_group ? $page_only_fields = ',fan_count,about' : $page_only_fields = '';
 
-		$header_details_json_url = 'https://graph.facebook.com/v4.0/' . $page_id . '?fields=id,picture.height(150).width(150),cover,name,link' . $page_only_fields . '&access_token=' . $access_token;
+        $header_access_token = $access_token;
+        if( is_array($access_token) ){
+            $header_access_token = reset($access_token);
+            if( empty($header_access_token) ) $header_access_token = key($access_token);
+        }
+	    $header_details_json_url = 'https://graph.facebook.com/v4.0/'.$page_id.'?fields=id,picture.height(150).width(150),cover,name,link'.$page_only_fields.'&access_token='. $header_access_token;
 
-		//Get the data
+	    //Get the data
 		$header_details = cff_get_set_cache( $header_details_json_url, $transient_name, $cff_cache_time, WEEK_IN_SECONDS, '', false, $access_token );
 		$header_details = json_decode( $header_details );
 
-		if ( ! empty( $atts['headerinc'] ) || ! empty( $atts['headerexclude'] ) ) {
-			if ( ! empty( $atts['headerinc'] ) ) {
-				$header_inc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerinc'] ) ) );
-				$cff_header_cover = in_array( 'cover', $header_inc, true );
-				$cff_header_name  = in_array( 'name', $header_inc, true );
-				$cff_header_bio   = in_array( 'about', $header_inc, true );
-			} else {
-				$header_exc       = explode( ',', str_replace( ' ', '', strtolower( $atts['headerexclude'] ) ) );
-				$cff_header_cover = ! in_array( 'cover', $header_exc, true );
-				$cff_header_name  = ! in_array( 'name', $header_exc, true );
-				$cff_header_bio   = ! in_array( 'about', $header_exc, true );
-			}
+	    if ( !empty( $feed_options['headerinc'] ) || !empty( $feed_options['headerexclude'] ) ) {
+		    if ( !empty( $feed_options['headerinc'] ) ) {
+			    $header_inc = explode( ',', str_replace( ' ', '', strtolower( $feed_options['headerinc'] ) ) );
+			    $cff_header_cover = in_array( 'cover', $header_inc, true );
+			    $cff_header_name = in_array( 'name', $header_inc, true );
+			    $cff_header_bio = in_array( 'about', $header_inc, true );
+		    } else {
+			    $header_exc = explode( ',', str_replace( ' ', '', strtolower( $feed_options['headerexclude'] ) ) );
+			    $cff_header_cover = ! in_array( 'cover', $header_exc, true );
+			    $cff_header_name = ! in_array( 'name', $header_exc, true );
+			    $cff_header_bio = ! in_array( 'about', $header_exc, true );
+		    }
 
-		} else {
-			$cff_header_cover = $atts['headercover'];
-			( $cff_header_cover == 'true' || $cff_header_cover == 'on' ) ? $cff_header_cover = true : $cff_header_cover = false;
+	    } else {
+		    $cff_header_cover = $atts['headercover'];
+		    ($cff_header_cover == 'true' || $cff_header_cover == 'on') ? $cff_header_cover = true : $cff_header_cover = false;
 
-			$cff_header_name = $atts['headername'];
-			( $cff_header_name == 'true' || $cff_header_name == 'on' ) ? $cff_header_name = true : $cff_header_name = false;
+		    $cff_header_name = $atts['headername'];
+		    ($cff_header_name == 'true' || $cff_header_name == 'on') ? $cff_header_name = true : $cff_header_name = false;
 
-			$cff_header_bio = $atts['headerbio'];
-			( $cff_header_bio == 'true' || $cff_header_bio == 'on' ) ? $cff_header_bio = true : $cff_header_bio = false;
-		}
-		$cff_header_cover_height = ! empty( $atts['headercoverheight'] ) ? (int)$atts['headercoverheight'] : 300;
+		    $cff_header_bio = $atts['headerbio'];
+		    ($cff_header_bio == 'true' || $cff_header_bio == 'on') ? $cff_header_bio = true : $cff_header_bio = false;
+	    }
+	    $cff_header_cover_height = ! empty( $atts['headercoverheight'] ) ? (int)$atts['headercoverheight'] : 300;
 
-		// Facebook Header Output
-		$header_style_attribute = '';
-		$header_styles          = array();
+	    // Facebook Header Output
+	    $header_style_attribute = '';
+	    $header_styles = array();
 
-		( ! empty( $cff_header_text_size ) && $cff_header_text_size != 'inherit' ) ? $cff_header_text_size = $cff_header_text_size : $cff_header_text_size = '';
-		if ( ! empty( $cff_header_text_weight ) && $cff_header_text_weight != 'inherit' ) {
-			$header_styles['font-weight'] = $cff_header_text_weight;
-		}
-		if ( ! empty( $cff_header_text_color ) && $cff_header_text_color !== '#' ) {
-			$header_styles['color'] = '#' . str_replace( '#', '', $cff_header_text_color );
-		}
+	    ( !empty($cff_header_text_size) && $cff_header_text_size != 'inherit' ) ? $cff_header_text_size = $cff_header_text_size : $cff_header_text_size = '';
+	    if ( !empty($cff_header_text_weight) && $cff_header_text_weight != 'inherit' ) $header_styles['font-weight'] = $cff_header_text_weight;
+	    if ( !empty($cff_header_text_color) && $cff_header_text_color !== '#' ) $header_styles['color'] = '#' . str_replace('#', '', $cff_header_text_color);
 
-		if ( ! empty( $header_styles ) ) {
-			$header_style_attribute = ' style="';
-			foreach ( $header_styles as $property => $value ) {
-				$header_style_attribute .= $property . ': ' . esc_attr( $value ) . ';';
-			}
-			$header_style_attribute .= '"';
-		}
+	    if ( ! empty( $header_styles ) ) {
+		    $header_style_attribute = ' style="';
+		    foreach ( $header_styles as $property => $value ) {
+			    $header_style_attribute .= $property . ': '. esc_attr( $value ) . ';';
+		    }
+		    $header_style_attribute .= '"';
+	    }
 
-		$header_data = $header_details;
+	    $header_data = $header_details;
 
-		//If there's not API error then display the header
-		if ( ! isset( $header_details->error ) ) {
-			ob_start();
-			include trailingslashit( CFF_PLUGIN_DIR ) . 'templates/header.php';
-			$cff_header = ob_get_contents();
-			ob_get_clean();
-		}
-	}
+        //If there's not API error then display the header
+        if( !isset($header_details->error) ){
+    	    ob_start();
+    	    include trailingslashit( CFF_PLUGIN_DIR ) . 'templates/header.php';
+    	    $cff_header = ob_get_contents();
+    	    ob_get_clean();
+        }
+    }
 
     //Misc Settings
     $cff_nofollow = $atts['nofollow'];
